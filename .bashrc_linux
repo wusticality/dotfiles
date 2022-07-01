@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Add an alias for xdg-open.
+alias open="xdg-open"
+
+# Force flameshot to use a gui.
+alias flameshot="flameshot gui"
+
+# Setup linuxbrew if it's installed.
+[ -d "/home/linuxbrew/.linuxbrew/bin" ] && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+
+# Install bash completions.
+kd_execute "/usr/share/bash-completion/bash_completion"
