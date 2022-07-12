@@ -1,0 +1,34 @@
+[user]
+name = wusticality
+email = 1028792+wusticality@users.noreply.github.com
+
+[credential]
+helper = store
+
+[color]
+ui = true
+diff = true
+
+[color "grep"]
+match = black yellow bold
+
+[alias]
+ci = commit
+st = status
+co = checkout
+br = branch
+lg = log --graph --color --pretty=format:'%C(bold red)%h%C(reset) %s (%C(green)%cr%C(reset)) %C(magenta)%an%C(reset)%C(yellow)%d%C(reset)'
+
+[core]
+editor = emacs
+autocrlf = input
+
+[push]
+default = simple
+
+# Settings for lfs.
+[filter "lfs"]
+required = true
+clean = git-lfs clean -- %f
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
