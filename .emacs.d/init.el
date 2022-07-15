@@ -1874,7 +1874,7 @@
 
     ;; Automatically join a few channels.
     (setq erc-autojoin-channels-alist
-          '(("freenode.net" "#emacs" "#lisp")))
+          '(("libera.chat" "#emacs" "#xmonad")))
 
     ;; Stop annoying keybindings.
     (setq erc-track-enable-keybindings nil)
@@ -1888,7 +1888,7 @@
 (defun chat ()
   "Starts an erc session."
   (interactive)
-  (erc :server "irc.freenode.net"
+  (erc :server "irc.libera.chat"
        :port 6667
        :nick my-erc-nick
        :password my-erc-password))
