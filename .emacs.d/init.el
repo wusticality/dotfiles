@@ -1128,7 +1128,9 @@
   :bind-keymap ("C-c k" . lsp-command-map)
   :bind (("C-c M-u" . lsp-find-references)
          ("C-c M-y" . lsp-find-implementation)
-         ("C-c M-." . xref-find-definitions-other-window))
+         ("C-c M-." . xref-find-definitions-other-window)
+         ("S-<f6>" . lsp-rename)
+         )
   :commands (lsp lsp-deferred)
   :init
   (progn
