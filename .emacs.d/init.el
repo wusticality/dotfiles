@@ -1064,27 +1064,6 @@
   :commands (try try-and-refresh))
 
 ;;
-;; csharp-mode
-;;
-
-;; The c# language.
-(use-package csharp-mode
-  :ensure t
-  :mode "\\.cs$"
-  :init
-  (progn
-    ;; Use electric pair mode.
-    (electric-pair-mode 1)))
-
-;;
-;; protobuf-mode
-;;
-
-(use-package protobuf-mode
-  :ensure t
-  :mode "\\.proto")
-
-;;
 ;; yasnippet
 ;;
 
@@ -1176,10 +1155,6 @@
    ("C-c C-c Q" . lsp-workspace-shutdown)
    ("C-c C-c s" . lsp-rust-analyzer-status))
   :config
-  ;; uncomment for less flashiness
-  ;; (setq lsp-eldoc-hook nil)
-  ;; (setq lsp-enable-symbol-highlighting nil)
-  ;; (setq lsp-signature-auto-activate nil)
 
   ;; comment to disable rustfmt on save
   (setq rustic-format-on-save t)
@@ -1235,61 +1210,7 @@
   :init
   (progn
     ;; Align let bindings / maps / etc.
-    (setq clojure-align-forms-automatically t))
-  :config
-  (progn
-    ;; The hydra.
-    ;; (defhydra hydra-clojure
-    ;;   (:columns 3)
-    ;;   "clojure"
-
-    ;;   ;; Cancel.
-    ;;   ("q" nil "quit" :exit t))
-
-    ;; clojure-mode
-    ;; clojure-align
-    ;; clojurec-mode
-    ;; clojure-unwind
-    ;; clojure-thread
-    ;; clojure-sort-ns
-    ;; clojure-cycle-if
-    ;; clojure-update-ns
-    ;; clojure-mode-menu
-    ;; clojure-cycle-not
-    ;; clojure-view-guide
-    ;; clojure-unwind-all
-    ;; clojurescript-mode
-    ;; clojure-cycle-when
-    ;; clojure-move-to-let
-    ;; clojure-cycle-privacy
-    ;; clojure-introduce-let
-    ;; clojure-view-grimoire
-    ;; clojure-insert-ns-form
-    ;; clojure-view-cheatsheet
-    ;; clojure-mode-report-bug
-    ;; clojure-thread-last-all
-    ;; clojure-thread-first-all
-    ;; clojure-view-style-guide
-    ;; clojure-mode-display-version
-    ;; clojure-forward-logical-sexp
-    ;; clojure-backward-logical-sexp
-    ;; clojure-toggle-keyword-string
-    ;; clojure-view-reference-section
-    ;; clojure-let-forward-slurp-sexp
-    ;; clojure-insert-ns-form-at-point
-    ;; clojure-let-backward-slurp-sexp
-    ;; clojure-convert-collection-to-map
-    ;; clojure-convert-collection-to-set
-    ;; clojure-convert-collection-to-list
-    ;; clojure-convert-collection-to-vector
-    ;; clojure-convert-collection-to-quoted-list
-
-    ;; Clear the C-c keymaps.
-    ;; (define-key clojure-mode-map (kbd "C-c") nil)
-
-    ;; Bind when cider is active.
-    ;; (define-key clojure-mode-map (kbd "C-c y") 'hydra-clojure/body)
-    ))
+    (setq clojure-align-forms-automatically t)))
 
 ;;
 ;; cider
@@ -1392,241 +1313,6 @@
       ;; Cancel.
       ("q" nil "quit" :exit t))
 
-    ;; ;; The hydra.
-    ;; (defhydra hydra-cider
-    ;;   (:columns 3)
-    ;;   "cider"
-
-    ;;   ;; Cancel.
-    ;;   ("q" nil "quit" :exit t))
-
-    ;; complete-symbol
-    ;; cider-run
-    ;; cider-ping
-    ;; cider-quit
-    ;; cider-mode
-    ;; cider-undef
-    ;; cider-refresh
-    ;; cider-scratch
-    ;; cider-version
-    ;; cider-jack-in
-    ;; cider-inspect
-    ;; cider-restart
-    ;; cider-connect
-    ;; cider-pop-back
-    ;; cider-grimoire
-    ;; cider-repl-tab
-    ;; cider-selector
-    ;; cider-interrupt
-    ;; cider-repl-mode
-    ;; cider-eval-file
-    ;; cider-test-jump
-    ;; cider-browse-ns
-    ;; cider-classpath
-    ;; cider-report-bug
-    ;; cider-cheatsheet
-    ;; cider-test-ediff
-    ;; cider--debug-mode
-    ;; cider-drink-a-sip
-    ;; cider-repl-return
-    ;; cider-eval-buffer
-    ;; cider-view-manual
-    ;; cider-browse-spec
-    ;; cider-view-refcard
-    ;; cider-format-defun
-    ;; cider-docview-mode
-    ;; cider-inspect-expr
-    ;; cider-repl-history
-    ;; cider-grimoire-web
-    ;; cider-format-buffer
-    ;; cider-browse-ns-all
-    ;; cider-repl-set-type
-    ;; cider-read-and-eval
-    ;; cider-repl-bol-mark
-    ;; cider-profile-clear
-    ;; cider-format-region
-    ;; cider-inspector-pop
-    ;; cider-profile-toggle
-    ;; cider-repl-mode-menu
-    ;; cider-browse-ns-mode
-    ;; cider-auto-test-mode
-    ;; cider-enlighten-mode
-    ;; cider-eval-all-files
-    ;; cider-docview-source
-    ;; cider-mode-menu-open
-    ;; cider-inspector-mode
-    ;; cider-repl-kill-input
-    ;; cider-debug-move-here
-    ;; cider-repl-next-input
-    ;; cider-toggle-trace-ns
-    ;; cider-profile-samples
-    ;; cider-repl-set-config
-    ;; cider-stacktrace-jump
-    ;; cider-stacktrace-mode
-    ;; cider-docview-javadoc
-    ;; cider-profile-summary
-    ;; cider-test-stacktrace
-    ;; cider-debug-mode-menu
-    ;; cider-browse-spec-all
-    ;; cider--doc-make-xrefs
-    ;; cider-test-report-mode
-    ;; cider-repl-next-prompt
-    ;; cider-browse-spec-mode
-    ;; cider-toggle-trace-var
-    ;; cider-docview-grimoire
-    ;; cider-test-next-result
-    ;; cider-repl-clear-output
-    ;; cider-repl-history-quit
-    ;; cider-format-edn-region
-    ;; cider-repl-history-mode
-    ;; cider-profile-ns-toggle
-    ;; cider-popup-buffer-quit
-    ;; cider-repl-history-save
-    ;; cider-docview-mode-menu
-    ;; cider-popup-buffer-mode
-    ;; cider-inspector-refresh
-    ;; cider-repl-end-of-defun
-    ;; cider-format-edn-buffer
-    ;; cider-inspect-last-sexp
-    ;; cider-repl-history-load
-    ;; cider-repl-clear-buffer
-    ;; cider-test-ediff-cleanup
-    ;; cider-connection-browser
-    ;; cider-repl-forward-input
-    ;; cider-repl-clear-banners
-    ;; cider-visit-error-buffer
-    ;; cider-repl-history-occur
-    ;; cider-repl-closing-return
-    ;; cider-repl-history-update
-    ;; cider-debug-toggle-locals
-    ;; cider-inspect-last-result
-    ;; cider-inspector-next-page
-    ;; cider-load-all-project-ns
-    ;; cider-repl-previous-input
-    ;; cider-close-nrepl-session
-    ;; cider-mode-eval-menu-open
-    ;; cider-profile-var-summary
-    ;; cider-browse-ns-mode-menu
-    ;; cider-repl-shortcuts-help
-    ;; cider-inspector-prev-page
-    ;; cider-repl-backward-input
-    ;; cider-open-classpath-entry
-    ;; cider-docview-grimoire-web
-    ;; cider-debug-defun-at-point
-    ;; cider-test-previous-result
-    ;; cider-eval-print-last-sexp
-    ;; cider-repl-history-forward
-    ;; cider-insert-defun-in-repl
-    ;; cider-replicate-connection
-    ;; cider-repl-previous-prompt
-    ;; cider-repl-handle-shortcut
-    ;; cider-repl-switch-to-other
-    ;; cider-stacktrace-mode-menu
-    ;; cider-insert-region-in-repl
-    ;; cider-debug-mode-send-reply
-    ;; cider-connect-clojurescript
-    ;; cider-stacktrace-next-cause
-    ;; cider-stacktrace-toggle-all
-    ;; cider-browse-spec-view-mode
-    ;; cider-repl-history-previous
-    ;; cider-test-report-mode-menu
-    ;; cider-test-clear-highlights
-    ;; cider-eval-defun-to-comment
-    ;; cider-jack-in-clojurescript
-    ;; cider-stacktrace-toggle-clj
-    ;; cider-switch-to-repl-buffer
-    ;; cider-browse-ns-doc-at-point
-    ;; cider-browse-spec--browse-at
-    ;; cider-browse-ns-handle-mouse
-    ;; cider-inspect-defun-at-point
-    ;; cider-clojure-mode-menu-open
-    ;; cider-stacktrace-toggle-java
-    ;; cider-insert-ns-form-in-repl
-    ;; cider-stacktrace-toggle-repl
-    ;; cider-profile-var-profiled-p
-    ;; cider-find-dwim-other-window
-    ;; cider-describe-nrepl-session
-    ;; cider-repl-clear-help-banner
-    ;; cider-repl-require-repl-utils
-    ;; cider-display-connection-info
-    ;; cider-repl-beginning-of-defun
-    ;; cider-toggle-request-dispatch
-    ;; cider-completion-flush-caches
-    ;; cider-close-ancillary-buffers
-    ;; cider-repl-newline-and-indent
-    ;; cider-inspector-set-page-size
-    ;; cider-browse-ns-find-at-point
-    ;; cider-connections-buffer-mode
-    ;; cider-make-connection-default
-    ;; cider-jump-to-locref-at-point
-    ;; cider-insert-last-sexp-in-repl
-    ;; cider-browse-instrumented-defs
-    ;; cider-stacktrace-cycle-cause-1
-    ;; cider-stacktrace-cycle-cause-2
-    ;; cider-stacktrace-cycle-cause-3
-    ;; cider-stacktrace-cycle-cause-4
-    ;; cider-stacktrace-cycle-cause-5
-    ;; cider-create-sibling-cljs-repl
-    ;; cider-repl-next-matching-input
-    ;; cider-browse-spec-example-mode
-    ;; cider-connections-make-default
-    ;; cider-toggle-buffer-connection
-    ;; cider-refresh-dynamic-font-lock
-    ;; cider-stacktrace-previous-cause
-    ;; cider-stacktrace-toggle-tooling
-    ;; cider-rotate-default-connection
-    ;; cider-jump-to-compilation-error
-    ;; cider-repl-history-mouse-insert
-    ;; cider--connections-make-default
-    ;; cider-eval-last-sexp-in-context
-    ;; cider-repl-history-clear-preview
-    ;; cider-change-buffers-designation
-    ;; cider-popup-buffer-quit-function
-    ;; cider-browse-ns-operate-at-point
-    ;; cider-inspector-operate-on-click
-    ;; cider-find-and-clear-repl-output
-    ;; cider-inspector-operate-on-point
-    ;; cider-repl-toggle-pretty-printing
-    ;; cider-mode-interactions-menu-open
-    ;; cider-repl-history-search-forward
-    ;; cider-stacktrace-cycle-all-causes
-    ;; cider-connections-goto-connection
-    ;; cider-read-and-eval-defun-at-point
-    ;; cider-connections-close-connection
-    ;; cider-repl-history-search-backward
-    ;; cider-stacktrace-toggle-duplicates
-    ;; cider-assoc-buffer-with-connection
-    ;; cider-clear-compilation-highlights
-    ;; cider-pprint-eval-defun-to-comment
-    ;; cider-repl-history-insert-and-quit
-    ;; cider-stacktrace-show-only-project
-    ;; cider-repl-previous-matching-input
-    ;; cider-pprint-eval-last-sexp-to-repl
-    ;; cider--calculate-opening-delimiters
-    ;; cider-eval-sexp-at-point-in-context
-    ;; cider-assoc-project-with-connection
-    ;; cider-switch-to-last-clojure-buffer
-    ;; cider-clear-buffer-local-connection
-    ;; cider-repl-history-undo-other-window
-    ;; cider-stacktrace-cycle-current-cause
-    ;; cider-repl-indent-and-complete-symbol
-    ;; cider-pprint-eval-last-sexp-to-comment
-    ;; cider-inspector-next-inspectable-object
-    ;; cider-enable-on-existing-clojure-buffers
-    ;; cider-disable-on-existing-clojure-buffers
-    ;; cider-browse-spec--print-curr-spec-example
-    ;; cider-inspector-previous-inspectable-object
-    ;; helm-cider-mode
-    ;; helm-cider-spec
-    ;; helm-cider-spec-ns
-    ;; helm-cider-apropos
-    ;; helm-cider-cheatsheet
-    ;; helm-cider-apropos-ns
-    ;; helm-cider-spec-symbol
-    ;; helm-cider-repl-history
-    ;; helm-cider-apropos-symbol
-    ;; helm-cider-apropos-symbol-doc
-
     ;; Clear the C-c keymaps.
     (define-key clojure-mode-map (kbd "C-c") nil)
     (define-key cider-mode-map (kbd "C-c") nil)
@@ -1639,7 +1325,6 @@
     (-each (list cider-mode-map
                  cider-repl-mode-map)
       (lambda (x)
-        ;; (define-key x (kbd "C-c l") 'hydra-cider/body)
         (define-key x (kbd "C-c f") 'hydra-cider-find/body)
         (define-key x (kbd "C-c u") 'hydra-cider-docs/body)
         (define-key x (kbd "C-c t") 'hydra-cider-test/body)))
@@ -1759,55 +1444,6 @@
   :mode "\\.md$")
 
 ;;
-;; eshell
-;;
-
-;; TODO
-;; * Look into eshell alises, not having "la" sucks.
-;; * Check to make sure the initial directory is set.
-
-;; The emacs shell.
-(use-package eshell
-  :disabled
-  :ensure t
-  :commands eshell
-  :config
-  (progn
-    ;; We need these.
-    (require 's)
-    (require 'f)
-
-    ;; History size.
-    (setq eshell-history-size 100000)
-
-    ;; Make our prompt look like the terminal.
-    (setq
-     eshell-prompt-function
-     (lambda ()
-       (let ((color-yellow "#ffff87")
-             (color-green "#00af00")
-             (color-red "#d75f5f"))
-         (concat
-          (propertize "[" 'face `(:foreground ,color-yellow :weight bold))
-          (propertize
-           (concat
-            (user-login-name)
-            "@"
-            (s-trim (shell-command-to-string "hostname -s")))
-           'face `(:foreground ,color-green :weight bold))
-          " "
-          (propertize
-           (f-short (s-trim (shell-command-to-string "pwd")))
-           'face `(:foreground ,color-red :weight bold))
-          (propertize "]" 'face `(:foreground ,color-yellow :weight bold))
-          "\n"
-          (propertize "$" 'face `(:foreground ,color-red :weight bold))
-          " "))))
-
-    ;; Fix the prompt regex.
-    (setq eshell-prompt-regexp "^[$] ")))
-
-;;
 ;; erc
 ;;
 
@@ -1889,11 +1525,6 @@
     ;; Prevent restclient from hijacking our M-x binding.
     (define-key restclient-mode-map (kbd "C-c n") nil)))
 
-(use-package restclient-helm
-  :disabled
-  :ensure t
-  :after restclient)
-
 ;;
 ;; rego
 ;;
@@ -1902,15 +1533,9 @@
   :ensure t)
 
 ;;
-;; terraform
+;; protobuf-mode
 ;;
 
-(use-package terraform-mode
-  :ensure t)
-
-;;
-;; 2048
-;;
-
-(use-package 2048-game
-  :ensure t)
+(use-package protobuf-mode
+  :ensure t
+  :mode "\\.proto")
