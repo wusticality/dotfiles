@@ -182,10 +182,6 @@
 ;; c / c++
 ;;
 
-;; TODO
-;; * See if we can initialize this stuff
-;;   using the use-package macro.
-
 ;; Open header files in c++ mode.
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
@@ -661,14 +657,10 @@
    ("C-x b" . counsel-switch-buffer)
    ("C-h a" . counsel-apropos)
    ("C-h b" . counsel-descbinds)
-   ;; ("M-i" . my-swiper)
    ("M-i" . swiper)
    ("C-c M-i" . counsel-git-grep)
    ("C-x p" . counsel-git))
   :init
-  ;; (setq ivy-display-functions-alist
-  ;;       '((swiper . ivy-display-function-other-window)))
-
   ;; Show recent files / bookmarks.
   (setq ivy-use-virtual-buffers t)
 
@@ -692,8 +684,6 @@
   (setq ivy-re-builders-alist
         '((t . ivy--regex-ignore-order)))
   :config
-  ;; Customize the default input for various commands.
-  ;; (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
 
   ;; Enable everywhere.
   (ivy-mode 1))
@@ -718,12 +708,6 @@
 ;;
 ;; magit
 ;;
-
-;; TODO
-;; * Open the status buffer in the current window.
-;; * Add a keymap for magit so we get which-key
-;;   support.
-;; * Customize this package.
 
 ;; The best git interface ever.
 (use-package magit
@@ -933,10 +917,10 @@
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
 (defun rk/rustic-mode-hook ()
-  ;; so that run C-c C-c C-r works without having to confirm, but don't try to
-  ;; save rust buffers that are not file visiting. Once
-  ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
-  ;; no longer be necessary.
+  ;; Do this so that running C-c C-c C-r works without having to
+  ;; confirm, but don't try to save rust buffers that are not file
+  ;; visiting. Once https://github.com/brotzeit/rustic/issues/253
+  ;; has been resolved this should no longer be necessary.
   (when buffer-file-name
     (setq-local buffer-save-without-query t)))
 
