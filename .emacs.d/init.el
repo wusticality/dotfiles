@@ -205,9 +205,11 @@
   (custom-set-faces
    '(default ((t (:height 160 :width normal :family "Menlo"))))))
 
+(setq my-font "Fira Code")
+
 (when (and is-gnu is-gui)
   (custom-set-faces
-   '(default ((t (:height 140 :width normal :family "Consolas"))))))
+   `(default ((t (:height 134 :width normal :family ,my-font))))))
 
 ;;
 ;; c / c++
@@ -330,33 +332,12 @@
 ;;
 
 ;; Setup our theme path.
-;; (setq custom-theme-directory (concat user-emacs-directory "themes"))
+(setq custom-theme-directory (concat user-emacs-directory "themes"))
 
-;; Use the it3ration theme for now.
-;; (condition-case nil
-;;     (load-theme 'it3ration t)
-;;   (wrong-number-of-arguments (load-theme 'it3ration)))
-
-;; This package is just awesome, details can be found here:
-;; * http://chriskempson.com/projects/base16/?
-;; * https://github.com/belak/base16-emasc
-;; You must use a terminal that supports 24bit color:
-;; * https://github.com/syl20bnr/spacemacs/wiki/Terminal
-(use-package base16-theme
-  :ensure t
-  :init
-  (when is-terminal
-    (setq base16-theme-256-color-source 'colors))
-  :config
-  ;; My favorite themes, in order. :)
-  (load-theme 'base16-hopscotch t)
-  ;; (load-theme 'base16-darktooth t)
-  ;; (load-theme 'base16-gruvbox-dark-soft t)
-  ;; (load-theme 'base16-spacemacs t)
-  ;; (load-theme 'base16-monokai t)
-  ;; (load-theme 'base16-woodland t)
-  ;; (load-theme 'base16-paraiso t)
-  )
+;; Use your own color theme.
+(condition-case nil
+    (load-theme 'wusticality t)
+  (wrong-number-of-arguments (load-theme 'wusticality)))
 
 ;;
 ;; text-mode
