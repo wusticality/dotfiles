@@ -1838,7 +1838,7 @@
     (make-variable-buffer-local 'erc-fill-column)
     (add-hook
      'window-configuration-change-hook
-     '(lambda ()
+     (lambda ()
         (save-excursion
           (walk-windows
            (lambda (w)
