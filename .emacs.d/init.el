@@ -160,6 +160,9 @@
 ;; This keybinding is annoying as hell.
 (global-unset-key (kbd "C-x C-b"))
 
+;; Make vertical dividers more visually pleasing.
+(window-divider-mode)
+
 ;; All focus to follow the mouse.
 (setq mouse-autoselect-window t)
 
@@ -202,11 +205,11 @@
   (custom-set-faces
    '(default ((t (:height 160 :width normal :family "Menlo"))))))
 
-(setq my-font "Fira Code")
+(setq my-font "IBM Plex Mono")
 
 (when (and is-gnu is-gui)
   (custom-set-faces
-   `(default ((t (:height 134 :width normal :family ,my-font))))))
+   `(default ((t (:height 136 :width normal :family ,my-font))))))
 
 ;;
 ;; c / c++
