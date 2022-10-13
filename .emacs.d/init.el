@@ -149,6 +149,9 @@
 ;; This keybinding is annoying as hell.
 (global-unset-key (kbd "C-x C-b"))
 
+;; All focus to follow the mouse.
+(setq mouse-autoselect-window t)
+
 ;;
 ;; backups
 ;;
