@@ -658,6 +658,7 @@
   (("C-s" . swiper-isearch)
    ("M-x" . counsel-M-x)
    ("C-c n" . counsel-M-x)
+   ("C-c b" . counsel-recentf)
    ("C-x C-f" . counsel-find-file)
    ("M-y" . counsel-yank-pop)
    ("C-h f" . counsel-describe-function)
@@ -669,9 +670,6 @@
    ("C-c M-i" . counsel-git-grep)
    ("C-x p" . counsel-git))
   :init
-  ;; Show recent files / bookmarks.
-  (setq ivy-use-virtual-buffers t)
-
   ;; Show the count format.
   (setq ivy-count-format "(%d/%d) ")
 
