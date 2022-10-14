@@ -177,6 +177,8 @@
 
 (global-set-key (kbd "C-c i") 'indent-buffer)
 
+(global-set-key (kbd "C-c y") 'window-swap-states)
+
 ;;
 ;; backups
 ;;
