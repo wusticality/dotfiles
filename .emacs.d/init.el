@@ -170,6 +170,13 @@
 
 (global-set-key (kbd "<f12>") 'reload-emacs)
 
+(defun indent-buffer ()
+  (interactive)
+  (save-excursion
+    (indent-region (point-min) (point-max) nil)))
+
+(global-set-key (kbd "C-c i") 'indent-buffer)
+
 ;;
 ;; backups
 ;;
