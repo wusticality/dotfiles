@@ -706,6 +706,16 @@
   :config
   (ivy-rich-mode 1)
 
+  ;; Columns for switch-buffer.
+  (ivy-rich-set-columns
+   'ivy-switch-buffer
+   '((ivy-switch-buffer-transformer (:width 0.3))
+     (ivy-rich-switch-buffer-path (:width 0.35 :face font-lock-comment-face))
+     (ivy-rich-switch-buffer-indicators (:width 0.04 :face font-lock-builtin-face :align right))
+     (ivy-rich-switch-buffer-size (:width 0.04 :face font-lock-comment-face))
+     (ivy-rich-switch-buffer-major-mode (:width 0.12 :face font-lock-type-face))
+     (ivy-rich-switch-buffer-project (:width 0.12 :face font-lock-string-face))))
+
   ;; Highlight the entire line in the minibuffer.
   (setcdr (assoc t ivy-format-functions-alist) #'ivy-format-function-line))
 
