@@ -172,8 +172,10 @@
   (save-excursion
     (indent-region (point-min) (point-max) nil)))
 
+;; Hotkey to indent a buffer.
 (global-set-key (kbd "C-c i") 'indent-buffer)
 
+;; Hotkey to swap adjacent windows.
 (global-set-key (kbd "C-c y") 'window-swap-states)
 
 ;;
@@ -728,6 +730,17 @@
 (use-package avy
   :ensure t
   :bind (("C-;" . avy-goto-char)))
+
+;;
+;; ace-window
+;;
+
+(use-package ace-window
+  :ensure t
+  :bind (("M-o" . ace-window))
+  :init
+  (progn
+    (setq aw-dispatch-always t)))
 
 ;;
 ;; magit
