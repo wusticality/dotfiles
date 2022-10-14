@@ -11,13 +11,7 @@
 ;; platform
 ;;
 
-(defvar is-terminal (equal window-system nil)
-  "Non-nil if Emacs is running in the terminal.")
-
-(defvar is-gui (memq window-system '(mac ns x))
-  "Non-nil if Emacs is running in gui mode.")
-
-(defvar is-mac (equal system-type 'darwin)
+(defvar is-mac (memq system-type '(darwin))
   "Non-nil if Emacs is running on mac.")
 
 (defvar is-gnu (memq system-type '(gnu gnu/linux gnu/kfreebsd))
@@ -144,8 +138,8 @@
 (setq-default cursor-type 'box)
 (setq-default cursor-in-non-selected-windows nil)
 
-;; Start gui emacs fullscreen.
-(when (and is-mac is-gui)
+;; Start gui emacs fullscreen on mac.
+(when (and (display-graphic-p) is-mac)
   (set-frame-parameter nil 'fullscreen 'fullboth))
 
 ;; Bind C-M-h to M-<backspace>.
@@ -201,15 +195,13 @@
 ;; font
 ;;
 
-(when (and is-mac is-gui)
+(when is-mac
   (custom-set-faces
    '(default ((t (:height 160 :width normal :family "Menlo"))))))
 
-(setq my-font "IBM Plex Mono")
-
-(when (and is-gnu is-gui)
+(when is-gnu
   (custom-set-faces
-   `(default ((t (:height 136 :width normal :family ,my-font))))))
+   `(default ((t (:height 134 :width normal :family "IBM Plex Mono"))))))
 
 ;;
 ;; c / c++
@@ -288,8 +280,8 @@
 ;; copy / paste
 ;;
 
-;; Copy / paste on mac / gnu.
-(when (and (or is-mac is-gnu) is-terminal)
+;; Copy / paste on mac / gnu in the terminal.
+(when (not (display-graphic-p))
   (use-package xclip
     :ensure t
     :config
@@ -303,7 +295,7 @@
 (use-package exec-path-from-shell
   :ensure t
   :config
-  (when is-gui
+  (when (display-graphic-p)
     (exec-path-from-shell-initialize)))
 
 ;;
