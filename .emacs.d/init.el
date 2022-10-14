@@ -163,6 +163,13 @@
 ;; All focus to follow the mouse.
 (setq mouse-autoselect-window t)
 
+(defun reload-emacs ()
+  "Reload your init.el file."
+  (interactive)
+  (load user-init-file))
+
+(global-set-key (kbd "<f12>") 'reload-emacs)
+
 ;;
 ;; backups
 ;;
