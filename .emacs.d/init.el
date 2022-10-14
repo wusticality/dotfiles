@@ -1,18 +1,27 @@
+;;; init.el --- My Emacs initialization file.
+
+;;; Commentary:
+
 ;; Kevin Depue (2022)
+;; Contains all packages, settings, etc. that I care about.
+
+;;; Code:
 
 ;;
 ;; platform
 ;;
 
-;; Define some platform-specific variables.
-(setq is-terminal (equal window-system nil))
-(setq is-gui (memq window-system '(mac ns x)))
-(setq is-osx (equal system-type 'darwin))
-(setq is-wsl
-      (and
-       (equal system-type 'gnu/linux)
-       (string-match "[Mm]icrosoft" operating-system-release)))
-(setq is-gnu (memq system-type '(gnu gnu/linux gnu/kfreebsd)))
+(defvar is-terminal (equal window-system nil)
+  "Non-nil if Emacs is running in the terminal.")
+
+(defvar is-gui (memq window-system '(mac ns x))
+  "Non-nil if Emacs is running in gui mode.")
+
+(defvar is-mac (equal system-type 'darwin)
+  "Non-nil if Emacs is running on mac.")
+
+(defvar is-gnu (memq system-type '(gnu gnu/linux gnu/kfreebsd))
+  "Non-nil if Emacs is running on gnu.")
 
 ;;
 ;; private
@@ -52,8 +61,8 @@
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
 
-;; Clear the minibuffer please.
 (defun display-startup-echo-area-message ()
+  "Clear the minibuffer on startup please."
   (message ""))
 
 ;; Make the scratch buffer empty.
@@ -62,9 +71,11 @@
 ;; Auto refresh buffers.
 (global-auto-revert-mode 1)
 
-;; Auto refresh dired.
-(setq global-auto-revert-non-file-buffers t)
-(setq auto-revert-verbose nil)
+(defvar global-auto-revert-non-file-buffers t
+  "Auto refresh Dired.")
+
+(defvar auto-revert-verbose nil
+  "Suppress auto revert messages.")
 
 ;; Highlight the line that point is on.
 (global-hl-line-mode t)
@@ -134,7 +145,7 @@
 (setq-default cursor-in-non-selected-windows nil)
 
 ;; Start gui emacs fullscreen.
-(when (and is-osx is-gui)
+(when (and is-mac is-gui)
   (set-frame-parameter nil 'fullscreen 'fullboth))
 
 ;; Bind C-M-h to M-<backspace>.
@@ -171,7 +182,7 @@
 ;; font
 ;;
 
-(when (and is-osx is-gui)
+(when (and is-mac is-gui)
   (custom-set-faces
    '(default ((t (:height 160 :width normal :family "Menlo"))))))
 
@@ -258,29 +269,12 @@
 ;; copy / paste
 ;;
 
-;; Copy / paste on osx / gnu.
-(when (and (or is-osx is-gnu) (not is-wsl) is-terminal)
+;; Copy / paste on mac / gnu.
+(when (and (or is-mac is-gnu) is-terminal)
   (use-package xclip
     :ensure t
     :config
     (progn (xclip-mode 1))))
-
-;; Copy / paste on wsl.
-(when (and is-wsl is-terminal)
-  ;; Copy from the clipboard.
-  (defun wsl-copy ()
-    (s-replace "" "" (shell-command-to-string "win32yank -o")))
-
-  ;; Paste from the clipboard.
-  (defun wsl-paste (text &optional push)
-    (let ((process-connection-type nil))
-      (let ((proc (start-process "win32yank" nil "win32yank" "-i")))
-        (process-send-string proc text)
-        (process-send-eof proc))))
-
-  ;; Install the commands.
-  (setq interprogram-paste-function 'wsl-copy)
-  (setq interprogram-cut-function 'wsl-paste))
 
 ;;
 ;; paths
@@ -423,7 +417,7 @@
     (global-set-key (kbd "C-c m") 'hydra-marking/body)))
 
 (defun er/reset-region ()
-  "Resets any marked region."
+  "Reset any marked region."
   (interactive)
   (er/contract-region 0))
 
@@ -529,7 +523,7 @@
     (define-key paredit-mode-map (kbd "C-c j") 'hydra-paredit/body)))
 
 (defun inside-sexp-p ()
-  "Returns true if point is on a sexp."
+  "Return non-nil if point is on a sexp."
   (let ((b (bounds-of-thing-at-point 'sexp)))
     (and b (>= (point) (car b)) (< (point) (cdr b)))))
 
