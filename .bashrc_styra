@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Kubernetes environment variables.
+export KUBECONFIG="$HOME/.kube/config:$HOME/.styra/kube-config:$HOME/.styra/kubectl-user"
+
+# Use a sane editor please.
+export KUBE_EDITOR=emacs
+
+# Setup an alias for kubectl.
+alias k="kubectl"
+
+# Completions for the above alias.
+source <(kubectl completion bash)
+complete -F __start_kubectl k
+
+# Styra environment variables.
+export CONF="$HOME/.styra"
+export STYRA_ROOT="$HOME/repos"
+export STYRA_CONFIG_ROOT="$HOME/.styra"
+export STYRA_FEATURES_ROOT="$HOME/.styra"
+
+# Setup our path.
+kd_add_path "$HOME/.krew/bin"
+kd_add_path "$STYRA_ROOT/fetchdb/build"
