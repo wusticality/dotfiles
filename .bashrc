@@ -86,6 +86,11 @@ kd_add_path $GOPATH/bin
 # rust
 kd_execute "$HOME/.cargo/env"
 
+# Install nvm.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
 # Setup platform-specific things.
 kd_execute "$HOME/.bashrc_linux"
 kd_execute "$HOME/.bashrc_styra"
