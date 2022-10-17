@@ -1,0 +1,2 @@
+# Enable numlock.
+numlockx &
