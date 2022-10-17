@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Load our .bash_profile file when logging in.
+[ -f "$HOME/.bash_profile" ] && . "$HOME/.bash_profile"
