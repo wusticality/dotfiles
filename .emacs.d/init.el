@@ -203,7 +203,7 @@
 
 (when is-gnu
   (custom-set-faces
-   `(default ((t (:height 134 :width normal :family "IBM Plex Mono"))))))
+   `(default ((t (:height 132 :width normal :family "IBM Plex Mono"))))))
 
 ;;
 ;; c / c++
