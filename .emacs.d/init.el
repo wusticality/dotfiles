@@ -955,6 +955,8 @@
    ("C-c C-c Q" . lsp-workspace-shutdown)
    ("C-c C-c s" . lsp-rust-analyzer-status))
   :config
+  ;; Use electric pair mode.
+  (electric-pair-mode 1)
 
   ;; comment to disable rustfmt on save
   (setq rustic-format-on-save t)
