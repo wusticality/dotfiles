@@ -878,6 +878,37 @@
   :ensure t)
 
 ;;
+;; dired-sidebar
+;;
+
+(use-package dired-sidebar
+  :ensure t
+  :bind (("C-c SPC" . dired-sidebar-toggle-sidebar))
+  :init
+  (progn
+    ;; Follow what file you're on.
+    (setq dired-sidebar-should-follow-file t)
+
+    ;; Don't jump to sidebar when it's opened.
+    (setq dired-sidebar-pop-to-sidebar-on-toggle-open nil)
+    
+    ;; Follow files immediately.
+    (setq dired-sidebar-follow-file-idle-delay 0)
+
+    ;; Detect changes immediately.
+    (setq dired-sidebar-stale-buffer-time-idle-delay 0))
+  :config
+  (progn
+    ;; Don't navigate to this window via other-window. Instead,
+    ;; use something like ace-window to navigate to it.
+    (defadvice dired-sidebar-toggle-sidebar
+        (after prevent-other-window activate)
+      (if (dired-sidebar-showing-sidebar-p)
+          (set-window-parameter
+           (get-buffer-window (dired-sidebar-buffer))
+           'no-other-window t)))))
+
+;;
 ;; flycheck
 ;;
 
