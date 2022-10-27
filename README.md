@@ -115,3 +115,7 @@ Then, paste the following into said file:
 ```
 
 Finally, open `about:config` and set the `toolkit.legacyUserProfileCustomizations.stylesheets` option to `true`. Restart your browser, done!
+
+## Loading / saving sound settings
+
+When you reinstall Linux, use `alsamixer` to setup your sound settings. There are two bash functions called `load_alsa` and `save_alsa`. After configuring your sound settings via `alsamixer`, make sure to type `save_alsa` in the terminal to regenerate the `~/.config/asound.state` file. This is loaded when your system is rebooted and will ensure that your sound preferences are restored.

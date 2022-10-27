@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# The asla functions below were lifted from here:
+# https://askubuntu.com/questions/50067/howto-save-alsamixer-settings
+
+# Load alsa settings.
+load_alsa () {
+    alsactl --file ~/.config/asound.state restore
+}
+
+# Save alsa settings.
+save_alsa () {
+    alsactl --file ~/.config/asound.state store
+}

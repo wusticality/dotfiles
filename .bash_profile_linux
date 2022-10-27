@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Load our custom alsa settings.
+load_alsa
