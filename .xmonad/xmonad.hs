@@ -46,12 +46,13 @@ myKeys =
       -- Launch dmenu.
       ("M-p", spawn "j4-dmenu-desktop"),
 
-      -- Raise / lower volume.
-      ("<XF86AudioLowerVolume>", spawn "amixer -q sset Master 5%-,5%-"),
-      ("<XF86AudioRaiseVolume>", spawn "amixer -q sset Master 5%+,5%+"),
-
       -- Play / pause.
       ("<XF86AudioPlay>", spawn "playerctl play-pause"),
+
+      -- Raise / lower volume. Lifted from here:
+      -- https://lambdablob.com/posts/xmonad-audio-volume-alsa-pulseaudio/
+      ("<XF86AudioLowerVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%"),
+      ("<XF86AudioRaiseVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%"),
 
       -- Screenshots.
       ("<Print>", spawn "flameshot gui"),
