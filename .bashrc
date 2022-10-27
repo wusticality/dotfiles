@@ -1,20 +1,7 @@
 #!/bin/bash
 
-# Do nothing if not interactive.
-# case $- in
-#     *i*) ;;
-#     *) return;;
-# esac
-
-# Add a path if it exists.
-kd_add_path () {
-    [ -d $1 ] && export PATH=$PATH:$1
-}
-
-# Execute file if it exists.
-kd_execute () {
-    [ -r $1 ] && . $1
-}
+# Load bash functions.
+source "$HOME/.bash_functions"
 
 # Clear our path.
 unset PATH
@@ -91,7 +78,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Setup platform-specific things.
+# Load platform-specific things.
 kd_execute "$HOME/.bashrc_linux"
 kd_execute "$HOME/.bashrc_styra"
 
