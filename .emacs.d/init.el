@@ -340,6 +340,26 @@
      '(c-mode-hook c++-mode-hook))))
 
 ;;
+;; dired
+;;
+
+(use-package dired)
+
+;;
+;; dired-x
+;;
+
+(use-package dired-x
+  :after dired
+  :config
+  (progn
+    ;; When opening multiple files, open them in the
+    ;; background, not in new windows please. :/
+    (define-key dired-mode-map (kbd "F")
+      #'(lambda () (interactive)
+      (dired-do-find-marked-files t)))))
+
+;;
 ;; hydra
 ;;
 
