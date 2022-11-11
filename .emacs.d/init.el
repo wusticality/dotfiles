@@ -301,6 +301,12 @@
     (exec-path-from-shell-initialize)))
 
 ;;
+;; all-the-icons
+;;
+
+(use-package all-the-icons)
+
+;;
 ;; theme
 ;;
 
@@ -882,13 +888,6 @@
 (use-package try
   :ensure t
   :commands (try try-and-refresh))
-
-;;
-;; all-the-icons
-;;
-
-(use-package all-the-icons
-  :if (display-graphic-p))
 
 ;;
 ;; yasnippet

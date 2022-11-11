@@ -10,13 +10,13 @@
 (deftheme wusticality "My own personal theme.")
 
 (let ((c-bg "#282c34")
-      (c-hl "#2C323C")
       (c-fg "#bbbbbb")
+      (c-hl "#1d2026")
+      (c-border "#313842")
       (c-blue "#61afef")
       (c-tan "#e5c07b")
       (c-brown "#d19a66")
       (c-gray "#5c6370")
-      (c-dark-gray "#404859")
       (c-pink "#ef596f")
       (c-magenta "#d55fde")
       (c-green "#89ca78")
@@ -28,30 +28,26 @@
       ;; ("atom-one-dark-green"    . "#98C379")
       ;; ("atom-one-dark-red-1"    . "#E06C75")
 
-      (c-blue-dark "#005faf")
-      (c-purple "#af87ff")
-      (c-black "#080808")
-
+      ;; (c-blue-dark "#005faf")
+      ;; (c-purple "#af87ff")
+      ;; (c-black "#080808")
       ;; (c-disabled "#686a4e")
       ;; (c-function-call "#ffc66d")
       ;; (c-cyan "#2bbac5")
       ;; (c-rustdoc "#77b767")
       ;; (c-red "#870000")
+      ;; (c-yellow "#ffff87")
       )
-  ;; The cider headerline.
-  (add-hook
-   'cider-mode-hook
-   (lambda ()
-     (setq
-      header-line-format
-      '((:eval (propertize "%* " 'face '(:foreground "#00cd00" :weight bold)))
-        (:eval (propertize (cider-current-ns) 'face '(:foreground "#ffff87" :weight bold)))))))
-
   ;; the modeline.
   (setq-default
    mode-line-format
-   '((:eval (propertize "%* " 'face '(:foreground "#00cd00" :weight bold)))
-     (:eval (propertize "%b " 'face '(:foreground "#ffff87" :weight bold)))
+   `(;; Whether or not the buffer is modified.
+     (:eval (propertize "%* " 'face '(:foreground ,c-green :weight bold)))
+
+     ;; The current buffer name.
+     (:eval (propertize "%b " 'face '(:foreground ,c-magenta :weight bold)))
+
+     ;; Where we are in the file.
      (:eval (propertize (concat
                          (format "%s"
                                  (round
@@ -59,15 +55,30 @@
                                      (/ (float (1- (point)))
                                         (float (1- (point-max)))))))
                          "%% ")
-                        'face '(:foreground "#00cd00" :weight bold)))
-     (:eval (propertize "(%l, %c) " 'face '(:foreground "#ff8700" :weight bold)))
-     (:eval (propertize "%m " 'face '(:foreground "#af87ff" :weight bold)))
+                        'face '(:foreground ,c-green :weight bold)))
+
+     ;; Our current line and column number.
+     (:eval (propertize "(%l, %c) " 'face '(:foreground ,c-brown :weight bold)))
+
+     ;; The current major mode.
+     (:eval
+      (propertize
+       (format "%s " (s-trim (s-downcase (format "%s" major-mode))))
+       'face '(:foreground ,c-blue :weight bold)))
+
+     ;; Our current git branch, if any.
      (:eval
       (when vc-mode
-        (propertize
-         (s-trim (substring-no-properties vc-mode))
-         'face
-         '(:foreground "#00a7ff" :weight bold))))))
+        (concat
+         (propertize
+          (all-the-icons-octicon "git-branch")
+          'face '(:family (all-the-icons-octicon-family) :foreground ,c-green)
+          'display '(raise 0.0))
+         (propertize
+          (car (vc-git-branches))
+          'face
+          '(:foreground ,c-green :weight bold)))))
+     ))
   ;; The theme.
   (custom-theme-set-faces
    'wusticality
@@ -84,11 +95,11 @@
    ;; link-visited
    `(cursor ((t (:background ,c-red))))
    ;; fringe
-   `(region ((t (:background ,c-dark-gray))))
-   `(highlight ((t (:background ,c-dark-gray))))
+   `(region ((t (:background ,c-border))))
+   `(highlight ((t (:background ,c-border))))
    `(hl-line ((t (:background ,c-hl))))
    ;; `(header-line ((t (:background ,c-light-gray :foreground ,c-fg :bold t))))
-   `(vertical-border ((t (:foreground ,c-hl))))
+   `(vertical-border ((t (:foreground ,c-border))))
    ;; secondary-selection
    ;; `(query-replace ((t (:background ,c-black))))
    `(minibuffer-prompt ((t (:foreground ,c-blue))))
@@ -103,19 +114,19 @@
    ;; modeline
    ;;
 
-   `(mode-line ((t (:background ,c-dark-gray :foreground ,c-fg :bold t :box nil))))
+   `(mode-line ((t (:background ,c-hl :foreground ,c-fg :bold t :box nil))))
    ;; mode-line-buffer-id
    ;; mode-line-emphasis
    ;; mode-line-highlight
-   `(mode-line-inactive ((t (:background ,c-hl :foreground ,c-fg :bold t :box nil))))
+   `(mode-line-inactive ((t (:background ,c-border :foreground ,c-fg :bold t :box nil))))
 
    ;;
    ;; window-divider
    ;;
 
-   `(window-divider ((t (:foreground ,c-hl))))
-   `(window-divider-first-pixel ((t (:foreground ,c-hl))))
-   `(window-divider-last-pixel ((t (:foreground ,c-hl))))
+   `(window-divider ((t (:foreground ,c-border))))
+   `(window-divider-first-pixel ((t (:foreground ,c-border))))
+   `(window-divider-last-pixel ((t (:foreground ,c-border))))
 
    ;;
    ;; font lock
@@ -233,7 +244,7 @@
    ;; ivy-action
    ;; ivy-completions-annotations
    ;; ivy-confirm-face
-   `(ivy-current-match ((t (:background ,c-dark-gray))))
+   `(ivy-current-match ((t (:background ,c-hl))))
    ;; ivy-cursor
    ;; ivy-grep-info
    ;; ivy-grep-line-number
@@ -287,7 +298,7 @@
    ;; counsel-outline-8
    ;; counsel-outline-default
    ;; counsel-variable-documentation
-   
+
    ;;
    ;; flycheck
    ;;
@@ -841,3 +852,5 @@
    ))
 
 (provide-theme 'wusticality)
+
+;;; wusticality-theme.el ends here
