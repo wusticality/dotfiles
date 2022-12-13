@@ -1026,6 +1026,13 @@
     (setq-local buffer-save-without-query t)))
 
 ;;
+;; wgsl-mode
+;;
+
+(use-package wgsl-mode
+  :ensure t)
+
+;;
 ;; shader-mode
 ;;
 
