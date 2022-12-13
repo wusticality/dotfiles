@@ -639,7 +639,12 @@
   :config
   (progn
     ;; No delay please.
-    (setq which-key-idle-delay 0.0)
+    (setq which-key-idle-delay 0)
+
+    ;; Settings to make which-key opt-in.
+    ;; (setq which-key-show-early-on-C-h t)
+    ;; (setq which-key-idle-delay 10000)
+    ;; (setq which-key-idle-secondary-delay 0)
 
     ;; Show count / total on the modeline.
     (setq which-key-show-remaining-keys t)
