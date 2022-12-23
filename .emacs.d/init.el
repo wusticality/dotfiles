@@ -635,6 +635,7 @@
 ;; The replacement for guide-key. Given a key
 ;; sequence, shows what commands are available.
 (use-package which-key
+  :disabled
   :ensure t
   :config
   (progn
