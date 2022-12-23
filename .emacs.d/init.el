@@ -952,8 +952,8 @@
   :bind (("C-c M-u" . lsp-find-references)
          ("C-c M-y" . lsp-find-implementation)
          ("C-c M-." . xref-find-definitions-other-window)
-         ("S-<f6>" . lsp-rename)
-         )
+         ("M-RET" . lsp-execute-code-action)
+         ("S-<f6>" . lsp-rename))
   :commands (lsp lsp-deferred)
   :init
   (progn
