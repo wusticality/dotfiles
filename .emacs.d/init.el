@@ -237,46 +237,46 @@
 (add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))
 
 ;;
-;; packages
+;; straight
 ;;
 
-;; Setup our load path.
-(setq site-lisp-dir (expand-file-name "site-lisp" user-emacs-directory))
-(add-to-list 'load-path site-lisp-dir)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;; Setup packages.
-(require 'package)
-(setq package-enable-at-startup nil)
+;;
+;; use-package
+;;
 
-;; Setup package repositories.
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(straight-use-package 'use-package)
 
-;; Initialize packages.
-(package-initialize)
-
-;; Install / setup use-package.
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-when-compile
-  (require 'use-package))
-(require 'bind-key)
+(use-package straight
+  :config
+  (progn
+    ;; Use straight to install packages.
+    (setq straight-use-package-by-default t)))
 
 ;;
 ;; libraries
 ;;
 
 ;; The string library.
-(use-package s
-  :ensure t)
+(use-package s)
 
 ;; The file library.
-(use-package f
-  :ensure t)
+(use-package f)
 
 ;; The list library.
-(use-package dash
-  :ensure t)
+(use-package dash)
 
 ;;
 ;; copy / paste
@@ -285,7 +285,6 @@
 ;; Copy / paste on mac / gnu in the terminal.
 (when (not (display-graphic-p))
   (use-package xclip
-    :ensure t
     :config
     (progn (xclip-mode 1))))
 
@@ -295,7 +294,6 @@
 
 ;; For gui emacs, loads PATH from ~/.profile.
 (use-package exec-path-from-shell
-  :ensure t
   :config
   (when (display-graphic-p)
     (exec-path-from-shell-initialize)))
@@ -349,13 +347,17 @@
 ;; dired
 ;;
 
-(use-package dired)
+(use-package dired
+  :straight (:type built-in))
+
+;; (use-package org :straight (:type built-in))
 
 ;;
 ;; dired-x
 ;;
 
 (use-package dired-x
+  :straight (:type built-in)
   :after dired
   :config
   (progn
@@ -369,8 +371,7 @@
 ;; hydra
 ;;
 
-(use-package hydra
-  :ensure t)
+(use-package hydra)
 
 ;;
 ;; uniquify
@@ -387,7 +388,6 @@
 
 ;; Makes grep buffers editable.
 (use-package wgrep
-  :ensure t
   :init
   (progn
     ;; Save modified buffers when you exit.
@@ -397,15 +397,13 @@
 ;; rg
 ;;
 
-(use-package rg
-  :ensure t)
+(use-package rg)
 
 ;;
 ;; expand-region
 ;;
 
 (use-package expand-region
-  :ensure t
   :config
   (progn
     ;; The hydra.
@@ -464,8 +462,7 @@
 ;; rainbow-delimiters
 ;;
 
-(use-package rainbow-delimiters
-  :ensure t)
+(use-package rainbow-delimiters)
 
 ;; Turn this on for Emacs lisp.
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
@@ -475,7 +472,6 @@
 ;;
 
 (use-package paredit
-  :ensure t
   :init
   (progn
     ;; Turn it on for all lisp modes.
@@ -596,7 +592,6 @@
 ;;
 
 (use-package paxedit
-  :ensure t
   :init
   (progn
     ;; Turn it on for all lisp modes.
@@ -613,7 +608,6 @@
 ;; This mode enables make-
 ;; believe intellisense.
 (use-package company
-  :ensure t
   :init
   (progn
     ;; No delay please.
@@ -636,7 +630,6 @@
 ;; sequence, shows what commands are available.
 (use-package which-key
   :disabled
-  :ensure t
   :config
   (progn
     ;; No delay please.
@@ -664,7 +657,6 @@
 ;;
 
 (use-package projectile
-  :ensure t
   :demand t
   :init
   (progn
@@ -686,7 +678,6 @@
 ;;
 
 (use-package counsel
-  :ensure t
   :demand t
   :bind
   (("C-s" . swiper-isearch)
@@ -729,11 +720,9 @@
   (ivy-mode 1))
 
 (use-package ivy-hydra
-  :ensure t
   :after (ivy hydra))
 
 (use-package ivy-rich
-  :ensure t
   :after ivy
   :config
   (ivy-rich-mode 1)
@@ -752,7 +741,6 @@
   (setcdr (assoc t ivy-format-functions-alist) #'ivy-format-function-line))
 
 (use-package lsp-ivy
-  :ensure t
   :after ivy)
 
 ;;
@@ -760,7 +748,6 @@
 ;;
 
 (use-package avy
-  :ensure t
   :bind (("C-;" . avy-goto-char)))
 
 ;;
@@ -768,7 +755,6 @@
 ;;
 
 (use-package ace-window
-  :ensure t
   :bind (("M-o" . ace-window))
   :init
   (progn
@@ -780,7 +766,6 @@
 
 ;; The best git interface ever.
 (use-package magit
-  :ensure t
   :bind (("C-x g" . magit-status))
   :init
   (progn
@@ -796,7 +781,6 @@
 ;;
 
 (use-package multiple-cursors
-  :ensure t
   :config
   (progn
     ;; The hydra.
@@ -864,7 +848,6 @@
 ;;
 
 (use-package rainbow-mode
-  :ensure t
   :config
   (progn
     ;; Only style hex colors please.
@@ -878,7 +861,6 @@
 ;;
 
 (use-package undo-tree
-  :ensure t
   :bind (("C-x u" . undo-tree-visualize))
   :config
   (progn
@@ -886,28 +868,16 @@
     (global-undo-tree-mode)))
 
 ;;
-;; try
-;;
-
-;; Allows you to try packages
-;; without installing them.
-(use-package try
-  :ensure t
-  :commands (try try-and-refresh))
-
-;;
 ;; yasnippet
 ;;
 
-(use-package yasnippet
-  :ensure t)
+(use-package yasnippet)
 
 ;;
 ;; dired-sidebar
 ;;
 
 (use-package dired-sidebar
-  :ensure t
   :bind (("C-c SPC" . dired-sidebar-toggle-sidebar))
   :init
   (progn
@@ -938,7 +908,6 @@
 ;;
 
 (use-package flycheck
-  :ensure t
   :init (global-flycheck-mode))
 
 ;;
@@ -946,7 +915,6 @@
 ;;
 
 (use-package lsp-mode
-  :ensure t
   :hook (lsp-mode . lsp-enable-which-key-integration)
   :bind-keymap ("C-c k" . lsp-command-map)
   :bind (("C-c M-u" . lsp-find-references)
@@ -989,7 +957,6 @@
 ;;
 
 (use-package lua-mode
-  :ensure t
   :mode "\\.lua$")
 
 ;;
@@ -997,7 +964,6 @@
 ;;
 
 (use-package rustic
-  :ensure t
   :hook (rustic-mode . yas-minor-mode)
   :bind
   (:map
@@ -1030,8 +996,7 @@
 ;; wgsl-mode
 ;;
 
-(use-package wgsl-mode
-  :ensure t)
+(use-package wgsl-mode)
 
 ;;
 ;; shader-mode
@@ -1039,7 +1004,6 @@
 
 ;; For editing shaders.
 (use-package shader-mode
-  :ensure t
   :mode ("\\.shader$"
          "\\.compute$"
          "\\.hlsl$"
@@ -1052,7 +1016,6 @@
 ;;
 
 (use-package slime
-  :ensure t
   :init
   (progn
     ;; We're using SBCL as our CL runtime.
@@ -1068,7 +1031,6 @@
 ;; The clojure language.
 (use-package clojure-mode
   :disabled
-  :ensure t
   :mode "\\.clj$"
   :hook (clojure-mode . rainbow-delimiters-mode)
 
@@ -1084,7 +1046,6 @@
 ;; This is -the- clojure ide.
 (use-package cider
   :disabled
-  :ensure t
   :init
   (progn
     ;; Make the scratch buffer empty.
@@ -1095,8 +1056,7 @@
   :config
   (progn
     ;; Refactoring support.
-    (use-package clj-refactor
-      :ensure t)
+    (use-package clj-refactor)
 
     ;; The docs hydra.
     (defhydra hydra-cider-docs
@@ -1190,7 +1150,6 @@
 
 ;; The yaml language.
 (use-package yaml-mode
-  :ensure t
   :mode "\\.yml$")
 
 ;;
@@ -1202,7 +1161,6 @@
 
 ;; For web-based languages.
 (use-package web-mode
-  :ensure t
   :mode ("\\.js$"
          "\\.jsx$"
          "\\.json$"
@@ -1228,7 +1186,6 @@
 ;;
 
 (use-package go-mode
-  :ensure t
   :mode "\\.go$"
   :hook ((go-mode . lsp-deferred)
 		 (go-mode . yas-minor-mode)
@@ -1241,8 +1198,7 @@
     (electric-pair-mode 1)
 
     ;; Use this for running tests.
-    (use-package gotest
-      :ensure t)
+    (use-package gotest)
 
     ;; The hydra for go tests.
     (defhydra hydra-go-test
@@ -1281,8 +1237,7 @@
 ;;
 
 (use-package haskell-mode
-  ;; :disabled
-  :ensure t
+  :disabled
   :mode "\\.hs$"
   :config
   (progn
@@ -1294,7 +1249,6 @@
 ;;
 
 (use-package markdown-mode
-  :ensure t
   :mode "\\.md$")
 
 ;;
@@ -1302,7 +1256,7 @@
 ;;
 
 (use-package erc
-  :ensure t
+  :straight (:type built-in)  
   :init
   (progn
     ;; Fill chat messages based on window width.
@@ -1371,7 +1325,6 @@
 ;;
 
 (use-package restclient
-  :ensure t
   :mode ("\\.rest$" . restclient-mode)
   :commands restclient-mode
   :config
@@ -1383,13 +1336,11 @@
 ;; rego
 ;;
 
-(use-package rego-mode
-  :ensure t)
+(use-package rego-mode)
 
 ;;
 ;; protobuf-mode
 ;;
 
 (use-package protobuf-mode
-  :ensure t
   :mode "\\.proto")
