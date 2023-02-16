@@ -365,7 +365,15 @@
     ;; background, not in new windows please. :/
     (define-key dired-mode-map (kbd "F")
       #'(lambda () (interactive)
-      (dired-do-find-marked-files t)))))
+          (dired-do-find-marked-files t)))))
+
+;;
+;; project
+;;
+
+;; Load this first so the keymap is loaded as we
+;; override it when loading the counsel package.
+(use-package project)
 
 ;;
 ;; hydra
@@ -677,7 +685,7 @@
 ;; ivy
 ;;
 
-(use-package counsel
+(use-package counsel 
   :demand t
   :bind
   (("C-s" . swiper-isearch)
