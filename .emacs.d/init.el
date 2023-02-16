@@ -1333,6 +1333,13 @@
     (define-key restclient-mode-map (kbd "C-c n") nil)))
 
 ;;
+;; copilot
+;;
+
+(use-package copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el")))
+
+;;
 ;; rego
 ;;
 
