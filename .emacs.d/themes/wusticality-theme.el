@@ -550,6 +550,12 @@
    ;; company-tooltip-selection
 
    ;;
+   ;; copilot
+   ;;
+
+   `(copilot-overlay-face ((t (:foreground ,c-gray :italic t))))
+
+   ;;
    ;; dired
    ;;
 
