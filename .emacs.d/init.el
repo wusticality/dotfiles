@@ -1345,7 +1345,19 @@
 ;;
 
 (use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el")))
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :after company
+  :config
+  (progn
+    ;; Enable copilot for programming modes.
+    (add-hook 'prog-mode-hook 'copilot-mode)
+
+    ;; When to show / hide predicates.
+    (add-to-list 'copilot-disable-predicates #'company--active-p)
+    (add-to-list 'copilot-disable-display-predicates #'company--active-p)
+
+    ;; Complete using the tab key.
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)))
 
 ;;
 ;; rego
