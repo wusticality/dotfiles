@@ -631,6 +631,13 @@
     (add-hook 'after-init-hook 'global-company-mode)))
 
 ;;
+;; company-box
+;;
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
+;;
 ;; which-key
 ;;
 
