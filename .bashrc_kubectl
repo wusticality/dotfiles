@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Use a sane editor please.
+export KUBE_EDITOR=emacs
+
+# Setup an alias for kubectl.
+alias k="kubectl"
+
+# Completions for the above alias.
+source <(kubectl completion bash)
+complete -F __start_kubectl k

@@ -80,7 +80,7 @@ export NVM_DIR="$HOME/.nvm"
 
 # Load platform-specific things.
 kd_execute "$HOME/.bashrc_linux"
-kd_execute "$HOME/.bashrc_styra"
+kd_execute "$HOME/.bashrc_kubectl"
 
 # Start in your home directory.
 cd $HOME
