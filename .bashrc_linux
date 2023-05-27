@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Setup our path.
+kd_add_path "/snap/bin"
+
 # Add an alias for xdg-open.
 alias open="xdg-open"
 
