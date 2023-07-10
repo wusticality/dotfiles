@@ -1252,7 +1252,6 @@
 ;;
 
 (use-package haskell-mode
-  :disabled
   :mode "\\.hs$"
   :config
   (progn
