@@ -58,10 +58,7 @@ myKeys =
       ("<Print>", spawn "flameshot gui"),
 
       -- Emacs.
-      ("M-e", spawn myEmacs),
-
-      -- Terminal.
-      ("M-r", spawn myTerminal),
+      ("M-S-e", spawn myEmacs),
 
       -- Fix keyboard speed.
       ("M-y", spawn "xset r rate 264 48"),
