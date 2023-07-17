@@ -14,3 +14,6 @@ alias flameshot="flameshot gui"
 
 # Install bash completions.
 kd_execute "/usr/share/bash-completion/bash_completion"
+
+# Setup stuff for JetBrains.
+export PATH="$PATH:/home/kevin/.local/share/JetBrains/Toolbox/scripts"
