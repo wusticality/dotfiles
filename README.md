@@ -29,3 +29,35 @@ XKBOPTIONS="altwin:swap_alt_win"
 ```
 
 This will cause these settings to persist in the event of unwelcomed changes.
+
+## Building Emacs from source.
+
+You'll have to build Emacs from source to get the jit / fast json functionality:
+
+```
+git clone https://git.savannah.gnu.org/git/emacs.git
+cd emacs
+./autogen.sh
+./configure --without-pop \
+    --without-imagemagick \
+    --without-compress-install \
+    --without-dbus \
+    --without-xwidgets \
+    --without-gconf \
+    --without-gsettings \
+    --without-sound \
+    --with-gnutls \
+    --with-mailutils \
+    --with-native-compilation=aot \
+    --with-json \
+    --with-modules \
+    --with-harfbuzz \
+    --with-threads \
+    --with-x \
+    CC="gcc-12" \
+    CFLAGS="-O3 -mtune=native -march=native -fomit-frame-pointer"
+make NATIVE_FULL_AOT=1 -j$(nproc)
+sudo make install
+```
+
+You can install dependencies by looking at [this](https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation) article.
