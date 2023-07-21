@@ -55,3 +55,7 @@ key_bindings:
 
   # Delete forward by word.
   - { key: D, mods: Super, chars: "\x1bd" }
+
+# Use option as alt on both sides.
+window:
+  option_as_alt: Both
