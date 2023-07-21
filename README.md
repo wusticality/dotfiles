@@ -61,3 +61,7 @@ sudo make install
 ```
 
 You can install dependencies by looking at [this](https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation) article.
+
+## Enabling ssh access.
+
+To allow ssh connections, do something like [this](https://linuxhint.com/enable-ssh-server-pop-os/).
