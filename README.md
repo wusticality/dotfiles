@@ -65,3 +65,11 @@ You can install dependencies by looking at [this](https://www.masteringemacs.org
 ## Enabling ssh access.
 
 To allow ssh connections, do something like [this](https://linuxhint.com/enable-ssh-server-pop-os/).
+
+## Fixing play / pause.
+
+You will need to install `playerctl` to enable play / pause functionality:
+
+```
+sudo apt install playerctl
+```
