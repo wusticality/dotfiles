@@ -73,3 +73,15 @@ You will need to install `playerctl` to enable play / pause functionality:
 ```
 sudo apt install playerctl
 ```
+
+You will also need to modify the script that launches xmonad. On my current machine, the script is here:
+
+`/usr/share/xsessions/xmonad.desktop`
+
+Modify the `Exec` line to be the following:
+
+```
+dbus-launch --exit-with-session xmonad-session
+```
+
+Then reboot your computer.
