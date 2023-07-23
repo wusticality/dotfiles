@@ -85,3 +85,11 @@ dbus-launch --exit-with-session xmonad-session
 ```
 
 Then reboot your computer.
+
+## Firefox
+
+I modify the following Firefox settings (via `about:config`):
+
+### Remove fullscreen animations
+
+This is to remove fullscreen animations when pressing the `F11` key. Enter `about:config` and add a new number preference with the name `ui.prefersReducedMotion` and set its value to `1`.
