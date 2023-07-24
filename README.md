@@ -93,3 +93,25 @@ I modify the following Firefox settings (via `about:config`):
 ### Remove fullscreen animations
 
 This is to remove fullscreen animations when pressing the `F11` key. Enter `about:config` and add a new number preference with the name `ui.prefersReducedMotion` and set its value to `1`.
+
+### Remove multimedia control overlay
+
+Follow these instructions to remove the annoying multimedia controls that are rendered on top of tabs when making a Google Meet / Zoom call:
+
+In Firefox, go to `about:support` and look at the `Profile Directory` listing in the `Application Basics` table (for example, on my machine, this folder is `/home/kevin/.mozilla/firefox/yd79h972.default-release`). 
+
+Navigate to that folder and create the following file:
+
+`chrome/userChrome.css`
+
+Then, paste the following into said file:
+
+```
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#webrtcIndicator {
+  display: none !important;
+}
+```
+
+Finally, open `about:config` and set the `toolkit.legacyUserProfileCustomizations.stylesheets` option to `true`. Restart your browser, done!
