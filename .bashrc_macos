@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Setup our path.
+kd_add_path_tail "/opt/homebrew/bin"
