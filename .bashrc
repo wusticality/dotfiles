@@ -67,6 +67,7 @@ kd_add_path_tail $GOPATH/bin
 kd_execute "$HOME/.bashrc_linux"
 kd_execute "$HOME/.bashrc_macos"
 kd_execute "$HOME/.bashrc_kubectl"
+kd_execute "$HOME/.bashrc_ngrok"
 
 # Cleanup our final path.
 kd_uniquify_path
