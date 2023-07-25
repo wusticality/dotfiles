@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setup our path.
-kd_add_path "/snap/bin"
+kd_add_path_tail "$HOME/.local/share/JetBrains/Toolbox/scripts"
 
 # Add an alias for xdg-open.
 alias open="xdg-open"
@@ -14,6 +14,3 @@ alias flameshot="flameshot gui"
 
 # Install bash completions.
 kd_execute "/usr/share/bash-completion/bash_completion"
-
-# Setup stuff for JetBrains.
-export PATH="$PATH:/home/kevin/.local/share/JetBrains/Toolbox/scripts"
