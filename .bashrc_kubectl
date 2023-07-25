@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Only execute this script if kubectl exists.
+if ! command -v kubectl &> /dev/null; then
+    return
+fi
+
 # Use a sane editor please.
 export KUBE_EDITOR=emacs
 

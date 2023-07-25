@@ -3,18 +3,8 @@
 # Load bash functions.
 source "$HOME/.bash_functions"
 
-# Clear our path.
-unset PATH
-
 # Setup our path.
-kd_add_path "$HOME/bin"
-kd_add_path "/opt/homebrew/bin"
-kd_add_path "/usr/local/bin"
-kd_add_path "/usr/local/sbin"
-kd_add_path "/usr/bin"
-kd_add_path "/usr/sbin"
-kd_add_path "/bin"
-kd_add_path "/sbin"
+kd_add_path_tail "$HOME/bin"
 
 # Check window size after each command.
 shopt -s checkwinsize
@@ -65,22 +55,21 @@ alias jq="jq --color-output"
 # fzf
 kd_execute "$HOME/.fzf.bash"
 
-# golang
-kd_add_path "/usr/local/go/bin"
-export GOPATH="$(go env GOPATH)"
-kd_add_path $GOPATH/bin
-
 # rust
 kd_execute "$HOME/.cargo/env"
 
-# Install nvm.
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+# golang
+kd_add_path_tail "/usr/local/go/bin"
+export GOPATH="$(go env GOPATH)"
+kd_add_path_tail $GOPATH/bin
 
 # Load platform-specific things.
 kd_execute "$HOME/.bashrc_linux"
+kd_execute "$HOME/.bashrc_macos"
 kd_execute "$HOME/.bashrc_kubectl"
+
+# Cleanup our final path.
+kd_uniquify_path
 
 # Start in your home directory.
 cd $HOME
