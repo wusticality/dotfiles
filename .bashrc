@@ -19,9 +19,6 @@ export HISTFILESIZE=100000
 shopt -s histappend
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
-# Set the prompt.
-export PS1="\[\033]0;\u@\h \w\007\]\[\033[01;33m\][\[\033[00m\]\[\033[01;32m\]\u@\h\[\033[00m\] \[\033[01;31m\]\w\[\033[00m\]\[\033[01;33m\]]\[\033[00m\]\n\[\033[01;31m\]$ \[\033[00m\]"
-
 # Make rm, cp, mv safe.
 alias rm="rm -i"
 alias cp="cp -i"
@@ -64,6 +61,7 @@ export GOPATH="$(go env GOPATH)"
 kd_add_path_tail $GOPATH/bin
 
 # Load platform-specific things.
+kd_execute "$HOME/.bashrc_prompt"
 kd_execute "$HOME/.bashrc_linux"
 kd_execute "$HOME/.bashrc_macos"
 kd_execute "$HOME/.bashrc_kubectl"
