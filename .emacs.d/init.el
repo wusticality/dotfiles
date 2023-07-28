@@ -1366,14 +1366,15 @@
     (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)))
 
 ;;
-;; rego
-;;
-
-(use-package rego-mode)
-
-;;
 ;; protobuf-mode
 ;;
 
 (use-package protobuf-mode
   :mode "\\.proto")
+
+;;
+;; typescript-mode
+;;
+
+(use-package typescript-mode
+  :mode "\\.ts")
