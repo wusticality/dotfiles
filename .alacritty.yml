@@ -14,35 +14,62 @@ scrolling:
 # Draw bold text using bright color variants.
 draw_bold_text_with_bright_colors: true
 
-# These colors borrow from DoomOne.
+# One Dark Vivid
 colors:
+  # Default colors
   primary:
-    background: '#282c34'
-    foreground: '#bbc2cf'
-  cursor:
-    text: CellBackground
-    cursor: '#528bff'
-  selection:
-    text: CellForeground
-    background: '#3e4451'
+    background: "#282c34"
+    foreground: "#abb2bf"
+
+  # Normal colors
   normal:
-    black:   '#1c1f24'
-    red:     '#ff6c6b'
-    green:   '#98be65'
-    yellow:  '#da8548'
-    blue:    '#51afef'
-    magenta: '#c678dd'
-    cyan:    '#5699af'
-    white:   '#202328'
+    black:   "#282c34"
+    red:     "#ef596f"
+    green:   "#89ca78"
+    yellow:  "#e5c07b"
+    blue:    "#61afef"
+    magenta: "#d55fde"
+    cyan:    "#2bbac5"
+    white:   "#abb2bf"
   bright:
-    black:   '#5b6268'
-    red:     '#da8548'
-    green:   '#4db5bd'
-    yellow:  '#ecbe7b'
-    blue:    '#3071db'
-    magenta: '#a9a1e1'
-    cyan:    '#46d9ff'
-    white:   '#dfdfdf'
+    black:   "#282c34"
+    red:     "#ef596f"
+    green:   "#89ca78"
+    yellow:  "#e5c07b"
+    blue:    "#61afef"
+    magenta: "#d55fde"
+    cyan:    "#2bbac5"
+    white:   "#abb2bf"
+
+# Doom One
+# colors:
+#   primary:
+#     background: '#282c34'
+#     foreground: '#bbc2cf'
+#   cursor:
+#     text: CellBackground
+#     cursor: '#528bff'
+#   selection:
+#     text: CellForeground
+#     background: '#3e4451'
+#   normal:
+#     black:   '#282c34'
+#     red:     '#ff6c6b'
+#     green:   '#98be65'
+#     yellow:  '#da8548'
+#     blue:    '#51afef'
+#     magenta: '#c678dd'
+#     cyan:    '#5699af'
+#     white:   '#bbc2cf'
+#   bright:
+#     black:   '#5b6268'
+#     red:     '#da8548'
+#     green:   '#4db5bd'
+#     yellow:  '#ecbe7b'
+#     blue:    '#3071db'
+#     magenta: '#a9a1e1'
+#     cyan:    '#46d9ff'
+#     white:   '#dfdfdf'
 
 # Setup various keybindings. You can look here for other keybinding examples:
 # https://github.com/alacritty/alacritty/issues/62#issuecomment-347552058
