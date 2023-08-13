@@ -6,3 +6,10 @@ The repository for all my dotfiles. To set this up properly, you will need to cl
 
 This will prevent `git` from tracking existing files unless they are explicitly added.
 
+## Rust Analyzer
+
+To setup `rust-analyzer` for local development, first clone the [repo](https://github.com/rust-lang/rust-analyzer) locally. Then execute the following command to install it:
+
+`cargo xtask install --server`
+
+Note that you will have to do this anytime you run `rustup update`.
