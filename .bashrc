@@ -60,6 +60,11 @@ kd_add_path_tail "/usr/local/go/bin"
 export GOPATH="$(go env GOPATH)"
 kd_add_path_tail $GOPATH/bin
 
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 # Load platform-specific things.
 kd_execute "$HOME/.bashrc_prompt"
 kd_execute "$HOME/.bashrc_linux"
