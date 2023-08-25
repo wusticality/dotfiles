@@ -2,3 +2,4 @@
 
 # Setup our path.
 kd_add_path_tail "/opt/homebrew/bin"
+kd_add_path_tail "$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
