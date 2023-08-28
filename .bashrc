@@ -65,6 +65,9 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# aws-vault
+export AWS_VAULT_KEYCHAIN_NAME="login"
+
 # Load platform-specific things.
 kd_execute "$HOME/.bashrc_prompt"
 kd_execute "$HOME/.bashrc_linux"
