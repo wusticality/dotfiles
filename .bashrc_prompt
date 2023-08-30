@@ -5,15 +5,6 @@ tput_wrap() {
     echo "\[$(tput "$@")\]"
 }
 
-# Emits the current git branch if within a git repository.
-git_branch() {
-    if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-        echo " git:$(git symbolic-ref --short HEAD 2> /dev/null)"
-    else
-        echo ""
-    fi
-}
-
 # Assign tput sequences to variables
 reset=$(tput_wrap sgr0)
 bold=$(tput_wrap bold)
@@ -26,12 +17,10 @@ magenta=$(tput_wrap setaf 5)
 # Build the PS1 prompt using tput variables.
 PS1="${bold}${yellow}"
 PS1+="["
-PS1+="${reset}${bold}${green}"
+PS1+="${reset}${bold}${blue}"
 PS1+="\u@\h"
 PS1+="${reset}${bold}${red}"
 PS1+=" \w"
-PS1+="${reset}${magenta}"
-PS1+="\$(git_branch)"
 PS1+="${reset}${bold}${yellow}"
 PS1+="]\n"
 PS1+="${reset}${bold}${red}"
