@@ -125,3 +125,19 @@ When you reinstall Linux, use `alsamixer` to setup your sound settings. There ar
 You'll need to install the following program to enable numlock on startup:
 
 `sudo apt install numlockx`
+
+## Adjust the DPI
+
+You'll need to adjust the DPI for some applications:
+
+### Chrome
+
+Edit `/usr/share/applications/google-chrome.desktop` and add this parameter to every `Exec` line:
+
+`--force-device-scale-factor=2.2`
+
+### Brave
+
+Edit `/usr/share/applications/brave-browser.desktop` and add this parameter to every `Exec` line:
+
+`--force-device-scale-factor=2.4`
