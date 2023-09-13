@@ -1378,3 +1378,10 @@
 
 (use-package typescript-mode
   :mode "\\.ts")
+
+;;
+;; nix-mode
+;;
+
+(use-package nix-mode
+  :mode "\\.nix")
