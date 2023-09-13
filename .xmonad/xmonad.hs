@@ -5,8 +5,6 @@ import XMonad
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
-
--- I don't know about this one, we need the newer version.
 import XMonad.Hooks.ManageDocks
 
 -- Layout.
@@ -110,7 +108,7 @@ myStartupHook = do
 
 -- The entry point.
 main :: IO ()
-main = xmonad $ ewmh $ def
+main = xmonad $ ewmh . docks $ def
   {
     modMask            = myModMask,
     terminal           = myTerminal,
@@ -119,10 +117,6 @@ main = xmonad $ ewmh $ def
     focusedBorderColor = myFocusedBorderColor,
     layoutHook         = myLayoutHook,
     manageHook         = myManageHook,
-    startupHook        = myStartupHook,
-    
-    -- I don't know about this one, we need the newer version.
-    -- Specifically, use this instead: ewmhFullscreen
-    handleEventHook    = docksEventHook <+> fullscreenEventHook
+    startupHook        = myStartupHook--,
   }
   `additionalKeysP` myKeys
