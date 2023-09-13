@@ -90,6 +90,10 @@ Then reboot your computer.
 
 I modify the following Firefox settings (via `about:config`):
 
+### Disable middle mouse paste
+
+Open `about:config` and set `middlemouse.paste` to `false`.
+
 ### Remove fullscreen animations
 
 This is to remove fullscreen animations when pressing the `F11` key. Enter `about:config` and add a new number preference with the name `ui.prefersReducedMotion` and set its value to `1`.
