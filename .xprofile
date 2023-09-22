@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Load bash functions.
+source "$HOME/.bash_functions"
+
+# Set our primary display.
+xrandr --output DP-4 --primary
+
+# Load our custom alsa settings.
+load_alsa
+
+# Load our ssh key into ssh-agent.
+ssh-add
+
+# Turn on numlock.
+numlockx
