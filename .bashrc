@@ -77,6 +77,9 @@ kd_execute "$HOME/.bashrc_kubectl"
 # Cleanup our final path.
 kd_uniquify_path
 
+# Setup direnv.
+eval "$(direnv hook bash)"
+
 # Start in your home directory.
 cd $HOME
 
