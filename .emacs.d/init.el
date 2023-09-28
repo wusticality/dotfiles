@@ -1385,3 +1385,12 @@
 
 (use-package nix-mode
   :mode "\\.nix")
+
+;;
+;; direnv
+;;
+
+(use-package direnv
+  :ensure t
+  :config
+  (direnv-mode))
