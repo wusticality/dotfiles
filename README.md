@@ -90,6 +90,10 @@ Then reboot your computer.
 
 I modify the following Firefox settings (via `about:config`):
 
+### Show http / https in address bar
+
+Open `about:config` and set `browser.urlbar.trimURLs` to `false`.
+
 ### Disable middle mouse paste
 
 Open `about:config` and set `middlemouse.paste` to `false`.
