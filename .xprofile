@@ -14,3 +14,6 @@ ssh-add
 
 # Turn on numlock.
 numlockx
+
+# Load our .Xresources file.
+xrdb -merge ~/.Xresources
