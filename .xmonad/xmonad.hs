@@ -98,7 +98,7 @@ myStartupHook = do
   -- spawnOnce "lxsession"
   
   -- Spawn emacs as a daemon.
-  spawn "emacs --daemon"
+  spawnOnce "emacs --daemon"
 
   -- Setup your wallpaper.
   spawnOnce "nitrogen --restore &"
@@ -117,6 +117,6 @@ main = xmonad $ ewmh . docks $ def
     focusedBorderColor = myFocusedBorderColor,
     layoutHook         = myLayoutHook,
     manageHook         = myManageHook,
-    startupHook        = myStartupHook--,
+    startupHook        = myStartupHook
   }
   `additionalKeysP` myKeys
