@@ -103,6 +103,9 @@ myStartupHook = do
   -- Setup your wallpaper.
   spawnOnce "nitrogen --restore &"
 
+  -- Setup your screensaver.
+  spawnOnce "xscreensaver -no-splash"
+
   -- Compatibility with java apps.
   setWMName "LG3D"
 
