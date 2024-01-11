@@ -259,6 +259,7 @@ in
     unstable.jetbrains.datagrip
     (unstable.jetbrains.plugins.addPlugins unstable.jetbrains.clion [ "github-copilot" ])
     (unstable.jetbrains.plugins.addPlugins unstable.jetbrains.goland [ "github-copilot" ])
+    (unstable.jetbrains.plugins.addPlugins unstable.jetbrains.rider [ "github-copilot" ])
     (unstable.jetbrains.plugins.addPlugins unstable.jetbrains.rust-rover [ "github-copilot" ])
     unzip
     wget
