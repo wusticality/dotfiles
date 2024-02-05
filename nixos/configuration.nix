@@ -246,7 +246,6 @@ in
     procs
     pulseaudio
     ripgrep
-    signal-desktop
     simp1e-cursors
     slack
     tmux
@@ -261,6 +260,7 @@ in
     (unstable.jetbrains.plugins.addPlugins unstable.jetbrains.goland [ "github-copilot" ])
     (unstable.jetbrains.plugins.addPlugins unstable.jetbrains.rider [ "github-copilot" ])
     (unstable.jetbrains.plugins.addPlugins unstable.jetbrains.rust-rover [ "github-copilot" ])
+    unstable.signal-desktop
     unzip
     wget
     xclip
