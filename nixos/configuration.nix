@@ -209,6 +209,7 @@ in
   environment.systemPackages = with pkgs; [
     alacritty
     bash-completion
+    binutils
     bottom
     cmatrix
     curl
