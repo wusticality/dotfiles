@@ -148,9 +148,9 @@ in
 
     # Adjust monitor layout, force 144hz, and force gsync.
     screenSection = ''
-    Option "metamodes" "DP-4: 3840x2160_144 +0+0 {AllowGSYNCCompatible=On}, DP-2: 3840x2160_144 +3840+0 {AllowGSYNCCompatible=On}"
+    Option "metamodes" "DP-4: 3840x2160_144 +3840+0 {AllowGSYNCCompatible=On}, DP-2: 3840x2160_144 +0+0 {AllowGSYNCCompatible=On}, DP-0: 3840x2160_144 +7680+0 {AllowGSYNCCompatible=On}"
     '';
-
+      
     # Use gdm.
     displayManager = {
       gdm = {
