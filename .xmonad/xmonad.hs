@@ -18,6 +18,9 @@ import XMonad.Util.EZConfig
 import XMonad.Util.Run
 import XMonad.Util.SpawnOnce
 
+-- Keybindings.
+import XMonad.Actions.PhysicalScreens
+
 -- Variables.
 myModMask :: KeyMask
 myModMask = mod4Mask
@@ -123,3 +126,8 @@ main = xmonad $ ewmh . docks $ def
     startupHook        = myStartupHook
   }
   `additionalKeysP` myKeys
+  `additionalKeys`
+  [ ((myModMask, xK_q), viewScreen def 0) -- Switch focus to screen 1
+  , ((myModMask, xK_w), viewScreen def 1) -- Switch focus to screen 2
+  , ((myModMask, xK_e), viewScreen def 2) -- Switch focus to screen 3
+  ]
