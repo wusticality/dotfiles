@@ -122,7 +122,7 @@ in
     # Enable power management (do not disable this unless you have a reason to).
     powerManagement.enable = true;
 
-    # User proprietary Nvidia drivers.
+    # Use proprietary Nvidia drivers.
     open = false;
 
     # Enable the Nvidia settings menu.
