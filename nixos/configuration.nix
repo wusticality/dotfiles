@@ -150,7 +150,7 @@ in
     screenSection = ''
     Option "metamodes" "DP-4: 3840x2160_144 +3840+0 {AllowGSYNCCompatible=On}, DP-2: 3840x2160_144 +0+0 {AllowGSYNCCompatible=On}, DP-0: 3840x2160_144 +7680+0 {AllowGSYNCCompatible=On}"
     '';
-      
+
     # Use gdm.
     displayManager = {
       gdm = {
@@ -201,8 +201,31 @@ in
   users.users.kevin = {
     isNormalUser = true;
     description = "Kevin Depue";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "kvm" "libvirtd" ];
   };
+
+  # Enable the kvm kernel modules.
+  boot.kernelModules = [ "kvm-amd" ];
+
+  # Enable the libvirtd daemon.
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      runAsRoot = true;
+      swtpm.enable = true;
+      ovmf = {
+        enable = true;
+        packages = [ (pkgs.OVMFFull.override {
+          secureBoot = true;
+          tpmSupport = true;
+        }).fd ];
+      };
+    };
+  };
+
+  # Enable the virt-manager.
+  programs.virt-manager.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -246,9 +269,13 @@ in
     playerctl
     procs
     pulseaudio
+    qemu
+    qemu_kvm
     ripgrep
     simp1e-cursors
     slack
+    spice-vdagent
+    swtpm
     tmux
     tokei
     tree
@@ -263,6 +290,7 @@ in
     (unstable.jetbrains.plugins.addPlugins unstable.jetbrains.rust-rover [ "github-copilot" ])
     unstable.signal-desktop
     unzip
+    virt-manager
     wget
     xclip
     xscreensaver
