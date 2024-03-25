@@ -153,3 +153,17 @@ Edit `/usr/share/applications/google-chrome.desktop` and add this parameter to e
 Edit `/usr/share/applications/brave-browser.desktop` and add this parameter to every `Exec` line:
 
 `--force-device-scale-factor=2.4`
+
+## Windows VM
+
+I couldn't figure out how to get secure boot and TPM 2.0 support working. At first I tried this approach:
+
+https://adamsimpson.net/writing/windows-11-as-kvm-guest
+
+Then I got fed up and just disabled both using this hack:article:
+
+https://www.isumsoft.com/windows-11/install-windows-11-without-tpm-and-secure-boot.html
+
+Once Windows is installed, you'll need to install the VirtIO guest tools within the VM:
+
+https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win-guest-tools.exe
