@@ -57,8 +57,5 @@ setxkbmap -option altwin:swap_alt_win,caps:none
 # Set your keyboard repeat speed.
 xset r rate 264 48
 
-# Set your compositor.
-picom &
-
 # Start xmonad.
 exec xmonad
