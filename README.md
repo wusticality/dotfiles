@@ -8,7 +8,7 @@ This will prevent `git` from tracking existing files unless they are explicitly 
 
 ## Setting up the keyboard.
 
-We need to swap the super and alt keys and disable caps lock. Add this file to `/etc/X11/00-keyboard.conf`:
+We need to swap the super and alt keys and disable caps lock. Add this file to `/etc/X11/xorg.conf.d/00-keyboard.conf`:
 
 ```
 Section "InputClass"
@@ -25,7 +25,6 @@ EndSection
 ```
 adobe-source-sans-fonts
 alacritty
-alsa-utils
 base-devel
 bash-completion
 bottom
@@ -86,6 +85,7 @@ xf86-video-vesa
 xmonad
 xmonad-contrib
 xorg-server
+xorg-xinit
 xscreensaver
 xterm
 ```

@@ -1,13 +1,4 @@
 #!/bin/bash
 
-# Set our primary display.
-xrandr --output DP-4 --primary
-
-# Load our ssh key into ssh-agent.
-ssh-add
-
-# Turn on numlock.
-numlockx
-
-# Load our .Xresources file.
-xrdb -merge ~/.Xresources
+# Load common x settings.
+[ -f "$HOME/.xcommon" ] && source "$HOME/.xcommon"
