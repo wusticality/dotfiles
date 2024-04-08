@@ -62,6 +62,7 @@ procs
 ripgrep
 signal-desktop
 sudo
+telegram-desktop
 ttf-croscore
 ttf-fira-code
 ttf-fira-mono
