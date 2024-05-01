@@ -24,6 +24,3 @@ xset r rate 264 48
 
 # Turn on numlock.
 numlockx
-
-# Load our ssh key into ssh-agent.
-ssh-add
