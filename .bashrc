@@ -52,6 +52,12 @@ alias jq="jq --color-output"
 # fzf
 kd_execute "$HOME/.fzf.bash"
 
+# Load our ssh key into ssh-agent.
+if [ -z "$SSH_AUTH_SOCK" ] ; then
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/id_ed25519
+fi
+
 # rust
 kd_execute "$HOME/.cargo/env"
 
