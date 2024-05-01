@@ -32,6 +32,7 @@ clang
 discord
 dmenu
 dosfstools
+dust
 efibootmgr
 emacs-nativecomp
 eza
