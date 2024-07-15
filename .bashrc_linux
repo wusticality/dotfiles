@@ -17,6 +17,6 @@ kd_execute "/usr/share/bash-completion/bash_completion"
 
 # Setup fzf on linux.
 if command -v fzf-share >/dev/null; then
-  source "$(fzf-share)/key-bindings.bash"
-  source "$(fzf-share)/completion.bash"
+    source "$(fzf-share)/key-bindings.bash"
+    source "$(fzf-share)/completion.bash"
 fi
