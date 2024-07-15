@@ -491,7 +491,7 @@
   :config
   (progn
     ;; Paredit hijacks C-j in lisp-interaction-mode, so fix that.
-    (define-key lisp-interaction-mode-map [remap paredit-newline] #'eval-print-last-sexp)
+    (define-key lisp-interaction-mode-map [remap paredit-C-j] #'eval-print-last-sexp)
 
     ;; The hydra.
     (defhydra hydra-paredit
