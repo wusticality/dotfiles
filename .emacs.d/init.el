@@ -1027,6 +1027,14 @@
          "\\.cginc$"))
 
 ;;
+;; glsl-mode
+;;
+
+(use-package glsl-mode
+  :mode ("\\.vert$"
+         "\\.frag$"))
+
+;;
 ;; slime
 ;;
 
