@@ -62,14 +62,16 @@ fi
 kd_execute "$HOME/.cargo/env"
 
 # golang
-kd_add_path_tail "/usr/local/go/bin"
-export GOPATH="$(go env GOPATH)"
-kd_add_path_tail $GOPATH/bin
+if command -v go >/dev/null 2>&1; then
+    kd_add_path_tail "/usr/local/go/bin"
+    export GOPATH="$(go env GOPATH)"
+    kd_add_path_tail $GOPATH/bin
+fi
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # aws-vault
 export AWS_VAULT_KEYCHAIN_NAME="login"
@@ -84,10 +86,9 @@ kd_execute "$HOME/.bashrc_kubectl"
 kd_uniquify_path
 
 # Setup direnv.
-eval "$(direnv hook bash)"
-
-# Start in your home directory.
-cd $HOME
+if command -v direnv >/dev/null 2>&1; then
+    eval "$(direnv hook bash)"
+fi
 
 # Clear the screen.
 clear
