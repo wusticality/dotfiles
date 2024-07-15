@@ -25,9 +25,9 @@ alias cp="cp -i"
 alias mv="mv -i"
 
 # use exa instead of ls
-alias ls="exa --color=always"
-alias ll="exa --color=always -l"
-alias la="exa --color=always -la"
+alias ls="eza --color=always"
+alias ll="eza --color=always -l"
+alias la="eza --color=always -la"
 
 # du / df
 alias du="du -h"
