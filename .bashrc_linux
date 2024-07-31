@@ -4,7 +4,7 @@
 kd_add_path_tail "$HOME/.local/share/JetBrains/Toolbox/scripts"
 
 # Add an alias for xdg-open.
-alias open="xdg-open"
+alias open="pcmanfm"
 
 # Force flameshot to use a gui.
 alias flameshot="flameshot gui"
