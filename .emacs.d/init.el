@@ -991,13 +991,20 @@
    ("C-c C-c q" . lsp-workspace-restart)
    ("C-c C-c Q" . lsp-workspace-shutdown)
    ("C-c C-c s" . lsp-rust-analyzer-status))
-  :config
-  ;; Use electric pair mode.
-  (electric-pair-mode 1)
+  :init
+  (progn
+    ;; Use nightly rust for formatting.
+    (setq rustic-rustfmt-args "+nightly")
 
-  ;; comment to disable rustfmt on save
-  (setq rustic-format-on-save t)
-  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+    ;; Use rustfmt on save.
+    (setq rustic-format-on-save t))
+  :config
+  (progn
+    ;; Use electric pair mode.
+    (electric-pair-mode 1)
+
+    ;; This fixes a bug, see below.
+    (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)))
 
 (defun rk/rustic-mode-hook ()
   ;; Do this so that running C-c C-c C-r works without having to
