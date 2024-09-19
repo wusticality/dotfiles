@@ -34,8 +34,8 @@ alias du="du -h"
 alias df="df -h"
 
 # more / less
-alias more="less -R"
-alias less="less -R"
+alias more="bat --plain"
+alias less="bat --plain"
 
 # grep
 alias grep="grep --color=always"
