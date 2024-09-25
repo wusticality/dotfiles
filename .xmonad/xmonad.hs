@@ -21,6 +21,9 @@ import XMonad.Util.SpawnOnce
 -- Keybindings.
 import XMonad.Actions.PhysicalScreens
 
+-- System.
+import System.Exit
+
 -- Variables.
 myModMask :: KeyMask
 myModMask = mod4Mask
@@ -52,20 +55,36 @@ myKeys =
 
       -- Raise / lower volume. Lifted from here:
       -- https://lambdablob.com/posts/xmonad-audio-volume-alsa-pulseaudio/
-      ("<XF86AudioLowerVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%"),
-      ("<XF86AudioRaiseVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%"),
+      ("<XF86AudioLowerVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ -1%"),
+      ("<XF86AudioRaiseVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ +1%"),
 
       -- Screenshots.
       ("<Print>", spawn "flameshot gui"),
 
+      -- Fix keyboard speed.
+      ("M-y", spawn "xset r rate 264 48"),
+
       -- Emacs.
       ("M-S-e", spawn myEmacs),
 
-      -- Fix keyboard speed.
-      ("M-y", spawn "xset r rate 264 48"),
+      -- Unbind these keys.
+      ("M-S-q", return ()),
+      ("M-S-w", return ()),
+      ("M-S-r", return ()),
+
+      -- Switch focus to screen 1, 2, or 3.
+      ("M-q", viewScreen def 0),
+      ("M-w", viewScreen def 1),
+      ("M-e", viewScreen def 2),
+
+      -- Recompile.
+      ("M-r", spawn "xmonad --recompile && xmonad --restart"),
       
-      -- Shutdown.
-      ("M-C-S-q", spawn "shutdown now")
+      -- Logout (keypad 1).
+      ("M-C-S-<KP_End>", io (exitWith ExitSuccess)),
+      
+      -- Shutdown (keypad subtract).
+      ("M-C-S-<KP_Subtract>", spawn "shutdown now")
     ]
 
 -- Spacing for tiling windows.
@@ -92,14 +111,8 @@ myManageHook :: ManageHook
 myManageHook = composeAll
     [ isDialog --> doFloat ]
 
--- xset r rate {delay} {rate}
--- note that xset is very unreliable :(
--- https://askubuntu.com/questions/255890/how-can-i-adjust-the-mouse-scroll-speed/709184#709184
-
 myStartupHook :: X ()
 myStartupHook = do
-  -- spawnOnce "lxsession"
-  
   -- Spawn emacs as a daemon.
   spawnOnce "emacs --daemon"
 
@@ -126,8 +139,8 @@ main = xmonad $ ewmh . docks $ def
     startupHook        = myStartupHook
   }
   `additionalKeysP` myKeys
-  `additionalKeys`
-  [ ((myModMask, xK_q), viewScreen def 0) -- Switch focus to screen 1
-  , ((myModMask, xK_w), viewScreen def 1) -- Switch focus to screen 2
-  , ((myModMask, xK_e), viewScreen def 2) -- Switch focus to screen 3
-  ]
+  -- `additionalKeys`
+  -- [ ((myModMask, xK_q), viewScreen def 0) -- Switch focus to screen 1
+  -- , ((myModMask, xK_w), viewScreen def 1) -- Switch focus to screen 2
+  -- , ((myModMask, xK_e), viewScreen def 2) -- Switch focus to screen 3
+  -- ]
