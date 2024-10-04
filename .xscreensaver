@@ -1,5 +1,5 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-settings 6.08 for kevin on Wed Mar 27 19:50:30 2024.
+# Written by xscreensaver-settings 6.09 for kevin on Thu Oct  3 20:22:13 2024.
 # https://www.jwz.org/xscreensaver/
 
 timeout:	0:06:00
@@ -37,7 +37,7 @@ textFile:
 textProgram:	fortune
 textURL:	https://en.wikipedia.org/w/index.php?title=Special:NewPages&feed=rss
 dialogTheme:	default
-settingsGeom:	3856,16 1682,821
+settingsGeom:	7680,0 1682,821
 
 programs:								      \
 -				maze --root				    \n\
@@ -292,6 +292,8 @@ programs:								      \
 -				droste --root				    \n\
 - GL: 				papercube --root			    \n\
 - GL: 				skulloop --root				    \n\
+- GL: 				highvoltage --root			    \n\
+- GL: 				kallisti --root				    \n\
 
 
 pointerHysteresis:  10
