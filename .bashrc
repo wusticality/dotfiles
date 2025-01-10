@@ -52,11 +52,11 @@ alias jq="jq --color-output"
 # fzf
 kd_execute "$HOME/.fzf.bash"
 
-# Load our ssh key into ssh-agent.
-if [ -z "$SSH_AUTH_SOCK" ] ; then
-  eval "$(ssh-agent -s)"
-  ssh-add ~/.ssh/id_ed25519
-fi
+# # Load our ssh key into ssh-agent.
+# if [ -z "$SSH_AUTH_SOCK" ] ; then
+#   eval "$(ssh-agent -s)"
+#   ssh-add ~/.ssh/id_ed25519
+# fi
 
 # rust
 kd_execute "$HOME/.cargo/env"
@@ -73,14 +73,16 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# aws-vault
-export AWS_VAULT_KEYCHAIN_NAME="login"
-
 # Load platform-specific things.
 kd_execute "$HOME/.bashrc_prompt"
 kd_execute "$HOME/.bashrc_linux"
 kd_execute "$HOME/.bashrc_macos"
 kd_execute "$HOME/.bashrc_kubectl"
+
+# mise
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate bash)"
+fi
 
 # Cleanup our final path.
 kd_uniquify_path
