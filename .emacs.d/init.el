@@ -278,6 +278,9 @@
 ;; The list library.
 (use-package dash)
 
+;; Required for copilot.
+(use-package editorconfig)
+
 ;;
 ;; copy / paste
 ;;
@@ -364,8 +367,8 @@
     ;; When opening multiple files, open them in the
     ;; background, not in new windows please. :/
     (define-key dired-mode-map (kbd "F")
-      #'(lambda () (interactive)
-          (dired-do-find-marked-files t)))))
+                #'(lambda () (interactive)
+                    (dired-do-find-marked-files t)))))
 
 ;;
 ;; project
@@ -1366,19 +1369,28 @@
 ;;
 
 (use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :ensure t
   :after company
   :config
   (progn
     ;; Enable copilot for programming modes.
     (add-hook 'prog-mode-hook 'copilot-mode)
+    (add-hook 'text-mode-hook 'copilot-mode)
 
     ;; When to show / hide predicates.
     (add-to-list 'copilot-disable-predicates #'company--active-p)
     (add-to-list 'copilot-disable-display-predicates #'company--active-p)
 
     ;; Complete using the tab key.
-    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)))
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
+    ;; Setup indentation settings.
+    (add-to-list 'copilot-indentation-alist '(prog-mode 4))
+    (add-to-list 'copilot-indentation-alist '(org-mode 2))
+    (add-to-list 'copilot-indentation-alist '(text-mode 2))
+    (add-to-list 'copilot-indentation-alist '(closure-mode 2))
+    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))))
 
 ;;
 ;; protobuf-mode
@@ -1393,10 +1405,3 @@
 
 (use-package typescript-mode
   :mode "\\.ts")
-
-;;
-;; nix-mode
-;;
-
-(use-package nix-mode
-  :mode "\\.nix")
