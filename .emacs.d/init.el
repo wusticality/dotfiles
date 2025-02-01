@@ -199,7 +199,7 @@
 
 (when is-mac
   (custom-set-faces
-   '(default ((t (:height 160 :width normal :family "IBM Plex Mono"))))))
+   '(default ((t (:height 150 :width normal :family "IBM Plex Mono"))))))
 
 (when is-gnu
   (custom-set-faces
