@@ -1405,3 +1405,13 @@
 
 (use-package typescript-mode
   :mode "\\.ts")
+
+;;
+;; mise
+;;
+
+(use-package mise
+  :config
+  (progn
+    (global-mise-mode)))
+
