@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Added by OrbStack command-line tools and integration.
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init.bash 2>/dev/null || :
+
+# BEGIN stack SECTION
+# This section added by the CIO stack application
+# DO NOT EDIT
+for hook in "${HOME}"/.cio.bashrc.d/*.bashrc;
+do
+    source "${hook}"
+done
+# END stack SECTION
+
