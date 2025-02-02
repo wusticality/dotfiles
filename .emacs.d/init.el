@@ -356,15 +356,6 @@
      '(c-mode-hook c++-mode-hook))))
 
 ;;
-;; dired
-;;
-
-(use-package dired
-  :straight (:type built-in))
-
-;; (use-package org :straight (:type built-in))
-
-;;
 ;; dired-x
 ;;
 
