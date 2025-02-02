@@ -62,15 +62,6 @@
 ;; Make the scratch buffer empty.
 (setq initial-scratch-message "")
 
-;; Auto refresh buffers.
-(global-auto-revert-mode 1)
-
-(defvar global-auto-revert-non-file-buffers t
-  "Auto refresh Dired.")
-
-(defvar auto-revert-verbose nil
-  "Suppress auto revert messages.")
-
 ;; Highlight the line that point is on.
 (global-hl-line-mode t)
 
@@ -300,6 +291,24 @@
   :config
   (when (display-graphic-p)
     (exec-path-from-shell-initialize)))
+
+;;
+;; autorevert
+;;
+
+(use-package autorevert
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Auto revert everywhere.
+    (global-auto-revert-mode 1))
+  :config
+  (progn
+    ;; Auto revert dired buffers.
+    (setq global-auto-revert-non-file-buffers t)
+
+    ;; Suppress revert messages.
+    (setq auto-revert-verbose nil)))
 
 ;;
 ;; all-the-icons
