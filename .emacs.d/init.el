@@ -1,9 +1,9 @@
-;;; init.el --- My Emacs initialization file.
+;;; init.el --- My init file.
 
 ;;; Commentary:
 
-;; Kevin Depue (2022)
-;; Contains all packages, settings, etc. that I care about.
+;; Kevin Depue (2025)
+;; https://github.com/wusticality
 
 ;;; Code:
 
@@ -233,8 +233,11 @@
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
@@ -364,8 +367,8 @@
   :after dired
   :config
   (progn
-    ;; When opening multiple files, open them in the
-    ;; background, not in new windows please. :/
+    ;; When opening multiple files, open them in
+    ;; the background, not in new windows please.
     (define-key dired-mode-map (kbd "F")
                 #'(lambda () (interactive)
                     (dired-do-find-marked-files t)))))
@@ -1370,7 +1373,6 @@
 
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-  :ensure t
   :after company
   :config
   (progn
@@ -1415,3 +1417,6 @@
   (progn
     (global-mise-mode)))
 
+(provide 'init)
+
+;;; init.el ends here
