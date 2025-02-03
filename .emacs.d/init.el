@@ -63,17 +63,7 @@
 (use-package dash)
 
 ;;
-;; custom
-;;
-
-;; Put the special emacs "customize" settings in their own
-;; file. We load it first because we may want to override
-;; these settings in our config below.
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file 'noerror)
-
-;;
-;; basic
+;; defaults
 ;;
 
 ;; I don't ever want to see this.
@@ -102,12 +92,14 @@
 ;; Answering 'y' or 'n' will do.
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; Use utf8 encoding please.
-(setq locale-coding-system 'utf-8)
+;; Use utf-8 encoding please.
+(prefer-coding-system 'utf-8)
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
 
 ;; Always show line and column numbers.
 (setq line-number-mode t)
@@ -151,7 +143,7 @@
 (setq debug-on-error nil)
 
 ;; Don't blink the cursor.
-(setq blink-cursor-mode nil)
+(blink-cursor-mode -1)
 
 ;; Don't use a visual bell.
 (setq ring-bell-function 'ignore)
@@ -164,23 +156,38 @@
 (when (and (display-graphic-p) is-mac)
   (set-frame-parameter nil 'fullscreen 'fullboth))
 
-;; Bind C-M-h to M-<backspace>.
-(define-key key-translation-map [?\C-\M-h] [?\C-\M-?])
-
 ;; Remove trailing whitespace on save.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; Bind other-frame to a useful hotkey.
-(global-set-key (kbd "C-c o") 'other-frame)
-
-;; This keybinding is annoying as hell.
-(global-unset-key (kbd "C-x C-b"))
 
 ;; Make vertical dividers more visually pleasing.
 (window-divider-mode)
 
 ;; All focus to follow the mouse.
 (setq mouse-autoselect-window t)
+
+;;
+;; customize
+;;
+
+;; Confine customize settings to their own file.
+(setq custom-file (f-join user-emacs-directory "custom.el"))
+
+;; Load customizations if they exist.
+(when (f-exists? custom-file)
+  (load custom-file))
+
+;;
+;; global keybindings
+;;
+
+;; Bind C-M-h to M-<backspace>.
+(define-key key-translation-map [?\C-\M-h] [?\C-\M-?])
+
+;; This keybinding is annoying as hell.
+(global-unset-key (kbd "C-x C-b"))
+
+;; Bind other-frame to a useful hotkey.
+(global-set-key (kbd "C-c o") 'other-frame)
 
 (defun reload-emacs ()
   "Reload your init.el file."
@@ -1336,7 +1343,7 @@
   (interactive)
   (let ((erc-file "~/.erc.el"))
     (if (f-exists? erc-file)
-        (load erc-file t)
+        (load erc-file)
       (error "No ~/.erc.el file found"))
     (unless (and (boundp 'erc-nick)(boundp 'erc-pass))
       (error "No erc-nick or erc-pass bound in ~/.erc.el"))
@@ -1344,18 +1351,6 @@
          :port 6667
          :nick erc-nick
          :password erc-pass)))
-
-;;
-;; private
-;;
-
-;; Variables for erc.
-(defvar my-erc-nick nil)
-(defvar my-erc-password nil)
-
-;; Put all private variables here.
-(load "~/.private.el" t)
-
 
 ;;
 ;; restclient
