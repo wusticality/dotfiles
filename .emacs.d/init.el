@@ -204,8 +204,34 @@
 ;; Hotkey to indent a buffer.
 (global-set-key (kbd "C-c i") 'indent-buffer)
 
-;; Hotkey to swap adjacent windows.
-(global-set-key (kbd "C-c y") 'window-swap-states)
+(defun rotate-buffers ()
+  "Rotate buffers clockwise in the current frame.
+
+Note that this does list-based rotation, and will not work
+properly if you have more than 3 windows open in a frame."
+  (interactive)
+  (let* ((windows (window-list))
+         (num-windows (length windows)))
+    (when (> num-windows 1)
+      ;; Store the current buffer and point position.
+      (let ((current-buffer (current-buffer))
+            (current-point (point))
+            (buffers (mapcar #'window-buffer windows)))
+
+        ;; Rotate the buffers
+        (dotimes (i num-windows)
+          (let* ((current-window (nth i windows))
+                 (next-buffer (nth (mod (- i 1) num-windows) buffers)))
+            (set-window-buffer current-window next-buffer)))
+
+        ;; Move point to the corresponding window with the same buffer.
+        (let ((new-window (get-buffer-window current-buffer)))
+          (when new-window
+            (select-window new-window)
+            (goto-char current-point)))))))
+
+;; Hotkey to rotate buffers in the current frame.
+(global-set-key (kbd "C-c y") 'rotate-buffers)
 
 ;;
 ;; backups
