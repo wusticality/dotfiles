@@ -309,6 +309,16 @@ properly if you have more than 3 windows open in a frame."
    `(default ((t (:height 132 :width normal :family "IBM Plex Mono"))))))
 
 ;;
+;; paths
+;;
+
+;; Load PATH from ~/.bash_profile.
+(use-package exec-path-from-shell
+  :config
+  (when (display-graphic-p)
+    (exec-path-from-shell-initialize)))
+
+;;
 ;; c / c++
 ;;
 
@@ -339,7 +349,6 @@ properly if you have more than 3 windows open in a frame."
 ;; Only use one '%' in comments, please.
 (add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))
 
-
 ;;
 ;; copy / paste
 ;;
@@ -350,15 +359,6 @@ properly if you have more than 3 windows open in a frame."
     :config
     (progn (xclip-mode 1))))
 
-;;
-;; paths
-;;
-
-;; For gui emacs, loads PATH from ~/.profile.
-(use-package exec-path-from-shell
-  :config
-  (when (display-graphic-p)
-    (exec-path-from-shell-initialize)))
 
 ;;
 ;; all-the-icons
