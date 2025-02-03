@@ -556,6 +556,12 @@
    `(copilot-overlay-face ((t (:foreground ,c-gray :italic t))))
 
    ;;
+   ;; hl-todo
+   ;;
+
+   `(hl-todo ((t (:weight bold :foreground ,c-orange :background nil))))
+
+   ;;
    ;; dired
    ;;
 

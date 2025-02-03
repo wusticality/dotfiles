@@ -319,6 +319,16 @@ properly if you have more than 3 windows open in a frame."
     (exec-path-from-shell-initialize)))
 
 ;;
+;; theme
+;;
+
+;; Setup our theme path.
+(setq custom-theme-directory (f-join user-emacs-directory "themes"))
+
+;; Load our theme.
+(load-theme 'wusticality t)
+
+;;
 ;; c / c++
 ;;
 
@@ -365,18 +375,6 @@ properly if you have more than 3 windows open in a frame."
 ;;
 
 (use-package all-the-icons)
-
-;;
-;; theme
-;;
-
-;; Setup our theme path.
-(setq custom-theme-directory (concat user-emacs-directory "themes"))
-
-;; Use your own color theme.
-(condition-case nil
-    (load-theme 'wusticality t)
-  (wrong-number-of-arguments (load-theme 'wusticality)))
 
 ;;
 ;; text-mode
@@ -1471,5 +1469,18 @@ properly if you have more than 3 windows open in a frame."
     (global-mise-mode)))
 
 (provide 'init)
+
+
+;;
+;; hl-todo
+;;
+
+(use-package hl-todo
+  :hook (prog-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-keyword-faces
+        '(("TODO" . hl-todo)
+          ("NOTE" . hl-todo)
+          ("FIXME" . hl-todo))))
 
 ;;; init.el ends here
