@@ -18,6 +18,51 @@
   "Non-nil if Emacs is running on gnu.")
 
 ;;
+;; straight
+;;
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;;
+;; use-package
+;;
+
+(straight-use-package 'use-package)
+
+(use-package straight
+  :config
+  (progn
+    ;; Always use straight to install packages.
+    (setq straight-use-package-by-default t)))
+
+;;
+;; libraries
+;;
+
+;; The string library.
+(use-package s)
+
+;; The file library.
+(use-package f)
+
+;; The list library.
+(use-package dash)
+
+;;
 ;; custom
 ;;
 
@@ -213,50 +258,6 @@
 ;; Only use one '%' in comments, please.
 (add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))
 
-;;
-;; straight
-;;
-
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-;;
-;; use-package
-;;
-
-(straight-use-package 'use-package)
-
-(use-package straight
-  :config
-  (progn
-    ;; Always use straight to install packages.
-    (setq straight-use-package-by-default t)))
-
-;;
-;; libraries
-;;
-
-;; The string library.
-(use-package s)
-
-;; The file library.
-(use-package f)
-
-;; The list library.
-(use-package dash)
 
 ;;
 ;; copy / paste
