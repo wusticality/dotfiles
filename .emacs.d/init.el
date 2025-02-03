@@ -82,9 +82,6 @@
 ;; Subword mode is the cat's meow.
 (global-subword-mode 1)
 
-;; We're not in the 80's anymore.
-(setq gc-cons-threshold 100000000)
-
 ;; Shoot for an 80 character width.
 (setq fill-column 80)
 (setq-default fill-column 80)
@@ -256,7 +253,7 @@
 (use-package straight
   :config
   (progn
-    ;; Use straight to install packages.
+    ;; Always use straight to install packages.
     (setq straight-use-package-by-default t)))
 
 ;;
@@ -271,9 +268,6 @@
 
 ;; The list library.
 (use-package dash)
-
-;; Required for copilot.
-(use-package editorconfig)
 
 ;;
 ;; copy / paste
