@@ -63,6 +63,17 @@
 (use-package dash)
 
 ;;
+;; customize
+;;
+
+;; Confine customize settings to their own file.
+(setq custom-file (f-join user-emacs-directory "custom.el"))
+
+;; Load customizations if they exist.
+(when (f-exists? custom-file)
+  (load custom-file))
+
+;;
 ;; defaults
 ;;
 
@@ -166,17 +177,6 @@
 (setq mouse-autoselect-window t)
 
 ;;
-;; customize
-;;
-
-;; Confine customize settings to their own file.
-(setq custom-file (f-join user-emacs-directory "custom.el"))
-
-;; Load customizations if they exist.
-(when (f-exists? custom-file)
-  (load custom-file))
-
-;;
 ;; global keybindings
 ;;
 
@@ -237,16 +237,64 @@ properly if you have more than 3 windows open in a frame."
 ;; backups
 ;;
 
-;; TODO
-;; Find a better way to deal with backups.
+;; Never create backup files.
+(setq make-backup-files nil)
 
-;; Put backup files in their own directory.
-(setq backup-directory-alist
-      `(("." . ,(expand-file-name
-                 (concat user-emacs-directory "backups")))))
+;; Inhibit backups for all files.
+(setq backup-inhibited t)
 
-;; Backup files even if we're using source control.
-(setq vc-make-backup-files t)
+;; Disable versioned backups.
+(setq version-control nil)
+
+;;
+;; autorevert
+;;
+
+(use-package autorevert
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Lower the auto revert interval.
+    (setq auto-revert-interval 1)
+
+    ;; Auto revert everywhere.
+    (global-auto-revert-mode 1))
+  :config
+  (progn
+    ;; Auto revert dired buffers.
+    (setq global-auto-revert-non-file-buffers t)
+
+    ;; Suppress revert messages.
+    (setq auto-revert-verbose nil)))
+
+;;
+;; auto saves
+;;
+
+(use-package files
+  :straight (:type built-in)
+  :init
+  (progn
+    (let ((auto-save-dir (f-join user-emacs-directory "auto-saves/")))
+      ;; Create the auto save directory if it doesn't exist.
+      (unless (f-exists? auto-save-dir)
+        (f-mkdir-full-path auto-save-dir))
+
+      ;; Put all auto save files in one place.
+      (setq auto-save-file-name-transforms
+            `((".*" ,auto-save-dir t)))
+
+      ;; Put all auto save metadata in one place.
+      (setq auto-save-list-file-prefix (f-join auto-save-dir "saves-")))
+
+    ;; Never use lockfiles.
+    (setq create-lockfiles nil)
+
+    ;; Auto save after 10 seconds.
+    (setq auto-save-timeout 10)
+
+    ;; Auto save after 200 characters.
+    (setq auto-save-interval 200)))
 
 ;;
 ;; font
@@ -311,24 +359,6 @@ properly if you have more than 3 windows open in a frame."
   :config
   (when (display-graphic-p)
     (exec-path-from-shell-initialize)))
-
-;;
-;; autorevert
-;;
-
-(use-package autorevert
-  :straight (:type built-in)
-  :init
-  (progn
-    ;; Auto revert everywhere.
-    (global-auto-revert-mode 1))
-  :config
-  (progn
-    ;; Auto revert dired buffers.
-    (setq global-auto-revert-non-file-buffers t)
-
-    ;; Suppress revert messages.
-    (setq auto-revert-verbose nil)))
 
 ;;
 ;; all-the-icons
@@ -715,7 +745,7 @@ properly if you have more than 3 windows open in a frame."
 ;; ivy
 ;;
 
-(use-package counsel 
+(use-package counsel
   :demand t
   :bind
   (("C-s" . swiper-isearch)
@@ -924,7 +954,7 @@ properly if you have more than 3 windows open in a frame."
 
     ;; Don't jump to sidebar when it's opened.
     (setq dired-sidebar-pop-to-sidebar-on-toggle-open nil)
-    
+
     ;; Follow files immediately.
     (setq dired-sidebar-follow-file-idle-delay 0)
 
@@ -1308,7 +1338,7 @@ properly if you have more than 3 windows open in a frame."
 ;;
 
 (use-package erc
-  :straight (:type built-in)  
+  :straight (:type built-in)
   :init
   (progn
     ;; Fill chat messages based on window width.
