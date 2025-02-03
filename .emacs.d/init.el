@@ -11,22 +11,11 @@
 ;; platform
 ;;
 
-(defvar is-mac (memq system-type '(darwin))
+(defvar is-mac (eq system-type 'darwin)
   "Non-nil if Emacs is running on mac.")
 
-(defvar is-gnu (memq system-type '(gnu gnu/linux gnu/kfreebsd))
+(defvar is-gnu (eq system-type 'gnu/linux)
   "Non-nil if Emacs is running on gnu.")
-
-;;
-;; private
-;;
-
-;; Variables for erc.
-(defvar my-erc-nick nil)
-(defvar my-erc-password nil)
-
-;; Put all private variables here.
-(load "~/.private.el" t)
 
 ;;
 ;; custom
@@ -1330,7 +1319,7 @@
 
     ;; Automatically join a few channels.
     (setq erc-autojoin-channels-alist
-          '(("libera.chat" "#emacs" "#xmonad")))
+          '(("libera.chat" "#emacs")))
 
     ;; Stop annoying keybindings.
     (setq erc-track-enable-keybindings nil)
@@ -1342,12 +1331,30 @@
     (setq erc-prompt (lambda () (concat "[" (buffer-name) "]")))))
 
 (defun chat ()
-  "Starts an erc session."
+  "Start an erc session."
   (interactive)
-  (erc :server "irc.libera.chat"
-       :port 6667
-       :nick my-erc-nick
-       :password my-erc-password))
+  (let ((erc-file "~/.erc.el"))
+    (if (f-exists? erc-file)
+        (load erc-file t)
+      (error "No ~/.erc.el file found"))
+    (unless (and (boundp 'erc-nick)(boundp 'erc-pass))
+      (error "No erc-nick or erc-pass bound in ~/.erc.el"))
+    (erc :server "irc.libera.chat"
+         :port 6667
+         :nick erc-nick
+         :password erc-pass)))
+
+;;
+;; private
+;;
+
+;; Variables for erc.
+(defvar my-erc-nick nil)
+(defvar my-erc-password nil)
+
+;; Put all private variables here.
+(load "~/.private.el" t)
+
 
 ;;
 ;; restclient
