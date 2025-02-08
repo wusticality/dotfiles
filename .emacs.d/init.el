@@ -9,6 +9,7 @@
 
 ;; TODO: Figure out mark history ring.
 ;; TODO: Experiment with project.el.
+;; TODO: Explore restclient.el alternatives.
 
 ;;
 ;; variables
@@ -590,17 +591,6 @@
     (add-hook 'text-mode-hook 'turn-on-visual-line-mode)))
 
 ;;
-;; js-mode
-;;
-
-(use-package emacs
-  :straight (:type built-in)
-  :init
-  (progn
-    ;; Follow conventions please.
-    (setq js-indent-level 2)))
-
-;;
 ;; org-mode
 ;;
 
@@ -633,19 +623,34 @@
     (add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))))
 
 ;;
-;; dired-x
+;; company
 ;;
 
-(use-package dired-x
-  :straight (:type built-in)
-  :after dired
-  :config
+;; This mode enables make-
+;; believe intellisense.
+(use-package company
+  :demand t
+  :init
   (progn
-    ;; When opening multiple files, open them in
-    ;; the background, not in new windows please.
-    (define-key dired-mode-map (kbd "F")
-                #'(lambda () (interactive)
-                    (dired-do-find-marked-files t)))))
+    ;; No delay please.
+    (setq company-idle-delay 0)
+
+	;; Start completing after a single character.
+	(setq company-minimum-prefix-length 1)
+
+	;; Align fields in completions.
+	(setq company-tooltip-align-annotations t)
+
+    ;; Turn company on globally.
+    (add-hook 'after-init-hook 'global-company-mode)))
+
+;;
+;; company-box
+;;
+
+(use-package company-box
+  :demand t
+  :hook (company-mode . company-box-mode))
 
 ;;
 ;; magit
@@ -663,6 +668,49 @@
   (progn
     ;; Open the status buffer in the current window and select it.
     (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)))
+
+;;
+;; lsp-mode
+;;
+
+(use-package lsp-mode
+  :demand t
+  :hook (lsp-mode . lsp-enable-which-key-integration)
+  :bind-keymap ("C-c k" . lsp-command-map)
+  :bind (("C-c M-u" . lsp-find-references)
+         ("C-c M-y" . lsp-find-implementation)
+         ("C-c M-." . xref-find-definitions-other-window)
+         ("M-RET" . lsp-execute-code-action)
+         ("S-<f6>" . lsp-rename))
+  :commands (lsp lsp-deferred)
+  :init
+  (progn
+    ;; Set the which-key prefix.
+    (setq lsp-keymap-prefix "C-c k")
+
+    ;; Use the correct completion provider.
+    (setq lsp-completion-provider :capf)
+
+    ;; Reduce the idle delay.
+    (setq lsp-idle-delay 0.0)
+
+    ;; Increase the amount of data emacs reads from the process.
+    (setq read-process-output-max (* 1024 1024))
+
+    ;; Turn off file watching for now.
+    (setq lsp-enable-file-watchers nil)
+
+    ;; Disable lsp logging.
+    (setq lsp-log-io nil)
+
+    ;; Don't use breadcrumbs please.
+    ;; (setq lsp-headerline-breadcrumb-enable nil)
+
+    ;; Turn on highlighting please.
+    (setq lsp-semantic-tokens-enable t)
+
+    ;; Don't enable code lens.
+    (setq lsp-lens-enable nil)))
 
 ;;
 ;; copilot
@@ -692,6 +740,16 @@
     (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))))
 
 ;;
+;; flycheck
+;;
+
+(use-package flycheck
+  :demand t
+  :init (global-flycheck-mode))
+
+;; TODO: Fix this!
+
+;;
 ;; c / c++
 ;;
 
@@ -714,6 +772,74 @@
    (c-set-offset 'inline-open '0)
    (c-set-offset 'case-label '4)
    (electric-pair-mode 1)))
+
+;;
+;; multiple-cursors
+;;
+
+(use-package multiple-cursors
+  :demand t
+  :config
+  (progn
+    ;; The hydra.
+    (defhydra hydra-multiple-cursors
+      (:columns 3)
+      "multiple-cursors"
+
+      ;; mc/mark-pop
+      ;; mc/mmlte--up
+      ("l" mc/edit-lines "edit-lines" :exit t)
+      ;; mc/mmlte--left
+      ;; mc/mmlte--down
+      ;; mc/mmlte--right
+      ;; mc/sort-regions
+      ;; mc/mark-all-dwim
+      ;; mc/cycle-forward
+      ;; mc/keyboard-quit
+      ;; mc/cycle-backward
+      ;; mc/vertical-align
+      ;; mc/insert-letters
+      ;; mc/repeat-command
+      ;; mc/insert-numbers
+      ;; mc/reverse-regions
+      ;; mc/mark-next-lines
+      ;; mc/edit-ends-of-lines
+      ("a" mc/mark-all-like-this "mark-all-like-this" :exit t)
+      ("r" mc/mark-all-in-region "mark-all-in-region" :exit t)
+      ;; mc/mark-sgml-tag-pair
+      ;; mc/mark-previous-lines
+      ("n" mc/mark-next-like-this "mark-next-like-this")
+      ;; mc/add-cursor-on-click
+      ("M-n" mc/unmark-next-like-this "unmark-next-like-this")
+      ;; mc/toggle-cursor-on-click
+      ("N" mc/skip-to-next-like-this "skip-to-next-like-this")
+      ;; mc/mark-all-like-this-dwim
+      ("p" mc/mark-previous-like-this "mark-previous-like-this")
+      ;; mc/mark-all-words-like-this
+      ;; mc/mark-next-word-like-this
+      ;; mc/mark-next-like-this-word
+      ;; mc/edit-beginnings-of-lines
+      ;; mc/vertical-align-with-space
+      ("M-p" mc/unmark-previous-like-this "unmark-previous-like-this")
+      ("R" mc/mark-all-in-region-regexp "mark-all-in-region-regexp" :exit t)
+      ("P" mc/skip-to-previous-like-this "skip-to-previous-like-this")
+      ;; mc/mark-all-symbols-like-this
+      ;; mc/mark-next-symbol-like-this
+      ;; mc/mark-next-like-this-symbol
+      ;; mc/mark-all-like-this-in-defun
+      ;; mc/mark-previous-word-like-this
+      ;; mc/mark-previous-like-this-word
+      ;; mc/mark-more-like-this-extended
+      ;; mc/mark-previous-symbol-like-this
+      ;; mc/mark-previous-like-this-symbol
+      ;; mc/mark-all-words-like-this-in-defun
+      ;; mc/mark-all-symbols-like-this-in-defun
+
+      ;; Cancel.
+      ("q" nil "quit" :exit t))
+
+    ;; This should always be bound.
+    (global-set-key (kbd "C-c l") 'hydra-multiple-cursors/body)))
 
 ;;
 ;; expand-region
@@ -774,6 +900,52 @@
   "Reset any marked region."
   (interactive)
   (er/contract-region 0))
+
+;;
+;; dired-x
+;;
+
+(use-package dired-x
+  :straight (:type built-in)
+  :after dired
+  :config
+  (progn
+    ;; When opening multiple files, open them in
+    ;; the background, not in new windows please.
+    (define-key dired-mode-map (kbd "F")
+                #'(lambda () (interactive)
+                    (dired-do-find-marked-files t)))))
+
+;;
+;; dired-sidebar
+;;
+
+(use-package dired-sidebar
+  :demand t
+  :bind (("C-c SPC" . dired-sidebar-toggle-sidebar))
+  :init
+  (progn
+    ;; Follow what file you're on.
+    (setq dired-sidebar-should-follow-file t)
+
+    ;; Don't jump to sidebar when it's opened.
+    (setq dired-sidebar-pop-to-sidebar-on-toggle-open nil)
+
+    ;; Follow files immediately.
+    (setq dired-sidebar-follow-file-idle-delay 0)
+
+    ;; Detect changes immediately.
+    (setq dired-sidebar-stale-buffer-time-idle-delay 0))
+  :config
+  (progn
+    ;; Don't navigate to this window via other-window. Instead,
+    ;; use something like ace-window to navigate to it.
+    (defadvice dired-sidebar-toggle-sidebar
+        (after prevent-other-window activate)
+      (if (dired-sidebar-showing-sidebar-p)
+          (set-window-parameter
+           (get-buffer-window (dired-sidebar-buffer))
+           'no-other-window t)))))
 
 ;;
 ;; rainbow-delimiters
@@ -922,36 +1094,6 @@
     (add-hook 'cider-repl-mode-hook 'paxedit-mode)))
 
 ;;
-;; company
-;;
-
-;; This mode enables make-
-;; believe intellisense.
-(use-package company
-  :demand t
-  :init
-  (progn
-    ;; No delay please.
-    (setq company-idle-delay 0)
-
-	;; Start completing after a single character.
-	(setq company-minimum-prefix-length 1)
-
-	;; Align fields in completions.
-	(setq company-tooltip-align-annotations t)
-
-    ;; Turn company on globally.
-    (add-hook 'after-init-hook 'global-company-mode)))
-
-;;
-;; company-box
-;;
-
-(use-package company-box
-  :demand t
-  :hook (company-mode . company-box-mode))
-
-;;
 ;; ace-window
 ;;
 
@@ -963,72 +1105,12 @@
     (setq aw-dispatch-always t)))
 
 ;;
-;; multiple-cursors
+;; avy
 ;;
 
-(use-package multiple-cursors
+(use-package avy
   :demand t
-  :config
-  (progn
-    ;; The hydra.
-    (defhydra hydra-multiple-cursors
-      (:columns 3)
-      "multiple-cursors"
-
-      ;; mc/mark-pop
-      ;; mc/mmlte--up
-      ("l" mc/edit-lines "edit-lines" :exit t)
-      ;; mc/mmlte--left
-      ;; mc/mmlte--down
-      ;; mc/mmlte--right
-      ;; mc/sort-regions
-      ;; mc/mark-all-dwim
-      ;; mc/cycle-forward
-      ;; mc/keyboard-quit
-      ;; mc/cycle-backward
-      ;; mc/vertical-align
-      ;; mc/insert-letters
-      ;; mc/repeat-command
-      ;; mc/insert-numbers
-      ;; mc/reverse-regions
-      ;; mc/mark-next-lines
-      ;; mc/edit-ends-of-lines
-      ("a" mc/mark-all-like-this "mark-all-like-this" :exit t)
-      ("r" mc/mark-all-in-region "mark-all-in-region" :exit t)
-      ;; mc/mark-sgml-tag-pair
-      ;; mc/mark-previous-lines
-      ("n" mc/mark-next-like-this "mark-next-like-this")
-      ;; mc/add-cursor-on-click
-      ("M-n" mc/unmark-next-like-this "unmark-next-like-this")
-      ;; mc/toggle-cursor-on-click
-      ("N" mc/skip-to-next-like-this "skip-to-next-like-this")
-      ;; mc/mark-all-like-this-dwim
-      ("p" mc/mark-previous-like-this "mark-previous-like-this")
-      ;; mc/mark-all-words-like-this
-      ;; mc/mark-next-word-like-this
-      ;; mc/mark-next-like-this-word
-      ;; mc/edit-beginnings-of-lines
-      ;; mc/vertical-align-with-space
-      ("M-p" mc/unmark-previous-like-this "unmark-previous-like-this")
-      ("R" mc/mark-all-in-region-regexp "mark-all-in-region-regexp" :exit t)
-      ("P" mc/skip-to-previous-like-this "skip-to-previous-like-this")
-      ;; mc/mark-all-symbols-like-this
-      ;; mc/mark-next-symbol-like-this
-      ;; mc/mark-next-like-this-symbol
-      ;; mc/mark-all-like-this-in-defun
-      ;; mc/mark-previous-word-like-this
-      ;; mc/mark-previous-like-this-word
-      ;; mc/mark-more-like-this-extended
-      ;; mc/mark-previous-symbol-like-this
-      ;; mc/mark-previous-like-this-symbol
-      ;; mc/mark-all-words-like-this-in-defun
-      ;; mc/mark-all-symbols-like-this-in-defun
-
-      ;; Cancel.
-      ("q" nil "quit" :exit t))
-
-    ;; This should always be bound.
-    (global-set-key (kbd "C-c l") 'hydra-multiple-cursors/body)))
+  :bind (("C-;" . avy-goto-char)))
 
 ;;
 ;; rainbow-mode
@@ -1056,93 +1138,10 @@
     (global-undo-tree-mode)))
 
 ;;
-;; dired-sidebar
+;; yasnippet
 ;;
 
-(use-package dired-sidebar
-  :demand t
-  :bind (("C-c SPC" . dired-sidebar-toggle-sidebar))
-  :init
-  (progn
-    ;; Follow what file you're on.
-    (setq dired-sidebar-should-follow-file t)
-
-    ;; Don't jump to sidebar when it's opened.
-    (setq dired-sidebar-pop-to-sidebar-on-toggle-open nil)
-
-    ;; Follow files immediately.
-    (setq dired-sidebar-follow-file-idle-delay 0)
-
-    ;; Detect changes immediately.
-    (setq dired-sidebar-stale-buffer-time-idle-delay 0))
-  :config
-  (progn
-    ;; Don't navigate to this window via other-window. Instead,
-    ;; use something like ace-window to navigate to it.
-    (defadvice dired-sidebar-toggle-sidebar
-        (after prevent-other-window activate)
-      (if (dired-sidebar-showing-sidebar-p)
-          (set-window-parameter
-           (get-buffer-window (dired-sidebar-buffer))
-           'no-other-window t)))))
-
-;;
-;; flycheck
-;;
-
-(use-package flycheck
-  :demand t
-  :init (global-flycheck-mode))
-
-;;
-;; lsp-mode
-;;
-
-(use-package lsp-mode
-  :demand t
-  :hook (lsp-mode . lsp-enable-which-key-integration)
-  :bind-keymap ("C-c k" . lsp-command-map)
-  :bind (("C-c M-u" . lsp-find-references)
-         ("C-c M-y" . lsp-find-implementation)
-         ("C-c M-." . xref-find-definitions-other-window)
-         ("M-RET" . lsp-execute-code-action)
-         ("S-<f6>" . lsp-rename))
-  :commands (lsp lsp-deferred)
-  :init
-  (progn
-    ;; Set the which-key prefix.
-    (setq lsp-keymap-prefix "C-c k")
-
-    ;; Use the correct completion provider.
-    (setq lsp-completion-provider :capf)
-
-    ;; Reduce the idle delay.
-    (setq lsp-idle-delay 0.0)
-
-    ;; Increase the amount of data emacs reads from the process.
-    (setq read-process-output-max (* 1024 1024))
-
-    ;; Turn off file watching for now.
-    (setq lsp-enable-file-watchers nil)
-
-    ;; Disable lsp logging.
-    (setq lsp-log-io nil)
-
-    ;; Don't use breadcrumbs please.
-    ;; (setq lsp-headerline-breadcrumb-enable nil)
-
-    ;; Turn on highlighting please.
-    (setq lsp-semantic-tokens-enable t)
-
-    ;; Don't enable code lens.
-    (setq lsp-lens-enable nil)))
-
-;;
-;; lua-mode
-;;
-
-(use-package lua-mode
-  :mode "\\.lua$")
+(use-package yasnippet)
 
 ;;
 ;; rust
@@ -1150,6 +1149,7 @@
 
 (use-package rustic
   :demand t
+  :after yasnippet
   :hook (rustic-mode . yas-minor-mode)
   :bind
   (:map
@@ -1186,52 +1186,12 @@
     (setq-local buffer-save-without-query t)))
 
 ;;
-;; wgsl-mode
-;;
-
-(use-package wgsl-mode)
-
-;;
 ;; glsl-mode
 ;;
 
 (use-package glsl-mode
-  :mode ("\\.vert$"
-         "\\.frag$"))
-
-;;
-;; yaml-mode
-;;
-
-;; The yaml language.
-(use-package yaml-mode
-  :mode "\\.yml$")
-
-;;
-;; web-mode
-;;
-
-;; For web-based languages.
-(use-package web-mode
-  :mode ("\\.js$"
-         "\\.jsx$"
-         "\\.json$"
-         "\\.css$"
-         "\\.scss$"
-         "\\.html"
-         "\\.php")
-  :init
-  (progn
-    ;; Make sure we see embedded jsx code in js files.
-    (setq web-mode-content-types-alist '(("jsx"  . ".*\\.js[x]?\\'")))
-
-    ;; Indenting offsets.
-    (add-hook
-     'web-mode-hook
-     (lambda ()
-       (setq web-mode-markup-indent-offset 4)
-       (setq web-mode-css-indent-offset 4)
-       (setq web-mode-code-indent-offset 4)))))
+  :mode ("\\.vert\\'"
+         "\\.frag\\'"))
 
 ;;
 ;; go-mode
@@ -1239,7 +1199,7 @@
 
 (use-package go-mode
   :demand t
-  :mode "\\.go$"
+  :mode "\\.go\\'"
   :hook ((go-mode . lsp-deferred)
 		 (go-mode . yas-minor-mode)
          (go-mode . toggle-truncate-lines)
@@ -1271,22 +1231,114 @@
   :after go-mode)
 
 ;;
-;; haskell-mode
+;; protobuf-mode
 ;;
 
-(use-package haskell-mode
-  :mode "\\.hs$"
+(use-package protobuf-mode
+  :mode "\\.proto")
+
+;;
+;; yaml-mode
+;;
+
+;; The yaml language.
+(use-package yaml-mode
+  :mode "\\.yml\\'")
+
+;;
+;; lua-mode
+;;
+
+(use-package lua-mode
+  :mode "\\.lua\\'")
+
+;;
+;; web-mode
+;;
+
+;; For web-based languages.
+(use-package web-mode
+  :mode ("\\.jsx\\'"
+         "\\.css\\'"
+         "\\.scss\\'"
+         "\\.html\\'")
+  :init
+  (progn
+    ;; Indenting offsets.
+    (add-hook
+     'web-mode-hook
+     (lambda ()
+       (setq web-mode-markup-indent-offset 4)
+       (setq web-mode-css-indent-offset 4)
+       (setq web-mode-code-indent-offset 4)))))
+
+;;
+;; js-mode
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Follow conventions please.
+    (setq js-indent-level 2)))
+
+;;
+;; js2-mode
+;;
+
+(use-package js2-mode
+  :mode "\\.js\\'"
   :config
   (progn
-    ;; Use electric pair mode.
-    (electric-pair-mode 1)))
+    ;; Use 2 spaces for indentation.
+    (setq js2-basic-offset 2)))
+
+;;
+;; typescript-mode
+;;
+
+(use-package typescript-mode
+  :mode "\\.ts\\'")
 
 ;;
 ;; markdown-mode
 ;;
 
 (use-package markdown-mode
-  :mode "\\.md$")
+  :mode "\\.md\\'")
+
+;;
+;; haskell-mode
+;;
+
+(use-package haskell-mode
+  :mode "\\.hs\\'"
+  :config
+  (progn
+    ;; Use electric pair mode.
+    (electric-pair-mode 1)))
+
+;;
+;; mise
+;;
+
+(use-package mise
+  :config
+  (progn
+    (global-mise-mode)))
+
+;;
+;; hl-todo
+;;
+
+(use-package hl-todo
+  :hook (prog-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-keyword-faces
+        '(("TODO" . hl-todo)
+          ("NOTE" . hl-todo)
+          ("FIXME" . hl-todo))))
 
 ;;
 ;; erc
@@ -1364,41 +1416,6 @@
          :password erc-pass)))
 
 ;;
-;; protobuf-mode
-;;
-
-(use-package protobuf-mode
-  :mode "\\.proto")
-
-;;
-;; typescript-mode
-;;
-
-(use-package typescript-mode
-  :mode "\\.ts")
-
-;;
-;; mise
-;;
-
-(use-package mise
-  :config
-  (progn
-    (global-mise-mode)))
-
-;;
-;; hl-todo
-;;
-
-(use-package hl-todo
-  :hook (prog-mode . hl-todo-mode)
-  :config
-  (setq hl-todo-keyword-faces
-        '(("TODO" . hl-todo)
-          ("NOTE" . hl-todo)
-          ("FIXME" . hl-todo))))
-
-;;
 ;; I'm unsure about these packages!
 ;;
 
@@ -1451,138 +1468,6 @@
 ;;      '(c-mode-hook c++-mode-hook))))
 
 ;;
-;; restclient
-;;
-
-;; (use-package restclient
-;;   :mode ("\\.rest$" . restclient-mode)
-;;   :commands restclient-mode
-;;   :config
-;;   (progn
-;;     ;; Prevent restclient from hijacking our M-x binding.
-;;     (define-key restclient-mode-map (kbd "C-c n") nil)))
-
-;;
-;; clojure-mode
-;;
-
-;; ;; The clojure language.
-;; (use-package clojure-mode
-;;   :disabled
-;;   :mode "\\.clj$"
-;;   :hook (clojure-mode . rainbow-delimiters-mode)
-
-;;   :init
-;;   (progn
-;;     ;; Align let bindings / maps / etc.
-;;     (setq clojure-align-forms-automatically t)))
-
-;;
-;; cider
-;;
-
-;; ;; This is -the- clojure ide.
-;; (use-package cider
-;;   :disabled
-;;   :init
-;;   (progn
-;;     ;; Make the scratch buffer empty.
-;;     (setq cider-scratch-initial-message "")
-
-;;     ;; Colorize usages of functions and variables from all namespaces.
-;;     (setq cider-font-lock-dynamically '(macro core function var)))
-;;   :config
-;;   (progn
-;;     ;; Refactoring support.
-;;     (use-package clj-refactor)
-
-;;     ;; The docs hydra.
-;;     (defhydra hydra-cider-docs
-;;       (:columns 3)
-;;       "cider docs"
-
-;;       ("a" cider-apropos "apropos" :exit t)
-;;       ("d" cider-apropos-documentation "apropos-documentation" :exit t)
-;;       ("j" cider-javadoc "javadoc" :exit t)
-
-;;       ;; Cancel.
-;;       ("q" nil "quit" :exit t))
-
-;;     ;; The eval hydra.
-;;     (defhydra hydra-cider-eval
-;;       (:columns 3)
-;;       "cider eval"
-
-;;       ("e" cider-eval-last-sexp "eval-last-sexp" :exit t)
-;;       ("E" cider-eval-last-sexp-and-replace "eval-last-sexp-and-replace" :exit t)
-;;       ("r" cider-eval-last-sexp-to-repl "eval-last-sexp-to-repl" :exit t)
-;;       ("k" cider-eval-defun-at-point "eval-defun-at-point" :exit t)
-;;       ("d" cider-eval-defun-to-point "eval-defun-to-point")
-;;       ("K" cider-debug-defun-at-point "debug-defun-at-point" :exit t)
-;;       ("s" cider-eval-sexp-at-point "eval-sexp-at-point" :exit t)
-;;       ("R" cider-eval-region "eval-region" :exit t)
-;;       ("i" cider-eval-ns-form "eval-ns-form" :exit t)
-;;       ("n" cider-load-buffer "load-buffer" :exit t)
-;;       ("N" cider-load-buffer-and-switch-to-repl-buffer "load-buffer-and-switch-to-repl-buffer" :exit t)
-;;       ("y" cider-repl-set-ns "repl-set-ns" :exit t)
-;;       ("f" cider-load-file "load-file" :exit t)
-;;       ("a" cider-load-all-files "load-all-files" :exit t)
-;;       ("mm" cider-macroexpand-1 "macroexpand-1" :exit t)
-;;       ("ma" cider-macroexpand-all "macroexpand-all" :exit t)
-;;       ("pe" cider-pprint-eval-last-sexp "pprint-eval-last-sexp" :exit t)
-;;       ("pk" cider-pprint-eval-defun-at-point "pprint-eval-defun-at-point" :exit t)
-
-;;       ;; Cancel.
-;;       ("q" nil "quit" :exit t))
-
-;;     ;; The find hydra.
-;;     (defhydra hydra-cider-find
-;;       (:columns 3)
-;;       "cider find"
-
-;;       ("n" cider-find-ns "find-ns" :exit t)
-;;       ("v" cider-find-var "find-var" :exit t)
-;;       ("d" cider-find-dwim "find-dwim" :exit t)
-;;       ("k" cider-find-keyword "find-keyword" :exit t)
-;;       ("r" cider-find-resource "find-resource" :exit t)
-
-;;       ;; Cancel.
-;;       ("q" nil "quit" :exit t))
-
-;;     ;; The test hydra.
-;;     (defhydra hydra-cider-test
-;;       (:columns 3)
-;;       "cider test"
-
-;;       ("t" cider-test-run-test "test-run-test" :exit t)
-;;       ("r" cider-test-rerun-test "test-rerun-test" :exit t)
-;;       ("n" cider-test-run-ns-tests "test-run-ns-tests" :exit t)
-;;       ("l" cider-test-run-loaded-tests "test-run-loaded-tests" :exit t)
-;;       ("p" cider-test-run-project-tests "test-run-project-tests" :exit t)
-;;       ("f" cider-test-rerun-failed-tests "test-rerun-failed-tests" :exit t)
-;;       ("r" cider-test-show-report "test-show-report" :exit t)
-
-;;       ;; Cancel.
-;;       ("q" nil "quit" :exit t))
-
-;;     ;; Clear the C-c keymaps.
-;;     (define-key clojure-mode-map (kbd "C-c") nil)
-;;     (define-key cider-mode-map (kbd "C-c") nil)
-;;     (define-key cider-repl-mode-map (kbd "C-c") nil)
-
-;;     ;; Only enable these in cider mode.
-;;     (define-key cider-mode-map (kbd "C-c k") 'hydra-cider-eval/body)
-
-;;     ;; Method to add common cider hydras.
-;;     (-each (list cider-mode-map
-;;                  cider-repl-mode-map)
-;;       (lambda (x)
-;;         (define-key x (kbd "C-c f") 'hydra-cider-find/body)
-;;         (define-key x (kbd "C-c u") 'hydra-cider-docs/body)
-;;         (define-key x (kbd "C-c t") 'hydra-cider-test/body)))
-;;     ))
-
-;;
 ;; wgrep
 ;;
 
@@ -1592,26 +1477,6 @@
 ;;   (progn
 ;;     ;; Save modified buffers when you exit.
 ;;     (setq wgrep-auto-save-buffer t)))
-
-
-;;
-;; slime
-;;
-
-;; (use-package slime
-;;   :init
-;;   (progn
-;;     ;; We're using SBCL as our CL runtime.
-;;     (setq inferior-lisp-program "/usr/local/bin/sbcl")
-
-;;     ;; Load the most popular contribs.
-;;     (setq slime-contribs '(slime-fancy))))
-
-;;
-;; rg
-;;
-
-;; (use-package rg)
 
 ;;
 ;; which-key
@@ -1642,40 +1507,6 @@
 
 ;;     ;; Turn it on.
 ;;     (which-key-mode)))
-
-;;
-;; avy
-;;
-
-;; (use-package avy
-;;   :bind (("C-;" . avy-goto-char)))
-
-;;
-;; yasnippet
-;;
-
-;; (use-package yasnippet)
-
-;;
-;; shader-mode
-;;
-
-;; ;; For editing shaders.
-;; (use-package shader-mode
-;;   :mode ("\\.shader$"
-;;          "\\.compute$"
-;;          "\\.hlsl$"
-;;          "\\.glsl$"
-;;          "\\.cg$"
-;;          "\\.cginc$"))
-
-;;
-;; project
-;;
-
-;; Load this first so the keymap is loaded as we
-;; override it when loading the counsel package.
-;; (use-package project)
 
 (provide 'init)
 
