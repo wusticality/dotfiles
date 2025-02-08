@@ -564,7 +564,8 @@ properly if you have more than 3 windows open in a frame."
 ;; all-the-icons
 ;;
 
-(use-package all-the-icons)
+(use-package all-the-icons
+  :if (display-graphic-p))
 
 ;;
 ;; text-mode
