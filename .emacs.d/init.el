@@ -7,7 +7,8 @@
 
 ;;; Code:
 
-;; TODO: Figure out mark history ring!
+;; TODO: Figure out mark history ring.
+;; TODO: Experiment with project.el.
 
 ;;
 ;; variables
@@ -374,6 +375,17 @@
   :config
   (progn
     (xclip-mode 1)))
+
+;;
+;; projects
+;;
+
+(use-package project
+  :straight (:type built-in)
+  :config
+  (progn
+    ;; Don't hijack the C-x p prefix.
+    (define-key global-map (kbd "C-x p") nil)))
 
 ;;
 ;; uniquify
