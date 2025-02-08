@@ -352,6 +352,14 @@
     (exec-path-from-shell-initialize)))
 
 ;;
+;; all-the-icons
+;;
+
+(use-package all-the-icons
+  :demand t
+  :if (display-graphic-p))
+
+;;
 ;; theme
 ;;
 
@@ -1419,12 +1427,6 @@
 ;; I'm unsure about these packages!
 ;;
 
-;;
-;; all-the-icons
-;;
-
-;; (use-package all-the-icons
-;;   :if (display-graphic-p))
 
 ;;
 ;; projectile
