@@ -329,6 +329,18 @@ properly if you have more than 3 windows open in a frame."
 (load-theme 'wusticality t)
 
 ;;
+;; copy / paste
+;;
+
+;; Use xclip for copy / paste when in gui emacs.
+(use-package xclip
+  :demand t
+  :if (not (display-graphic-p))
+  :config
+  (progn
+    (xclip-mode 1)))
+
+;;
 ;; completion engine
 ;;
 
@@ -547,17 +559,6 @@ properly if you have more than 3 windows open in a frame."
 
 ;; Only use one '%' in comments, please.
 (add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))
-
-;;
-;; copy / paste
-;;
-
-;; Copy / paste on mac / gnu in the terminal.
-(when (not (display-graphic-p))
-  (use-package xclip
-    :config
-    (progn (xclip-mode 1))))
-
 
 ;;
 ;; all-the-icons
