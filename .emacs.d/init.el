@@ -329,6 +329,195 @@ properly if you have more than 3 windows open in a frame."
 (load-theme 'wusticality t)
 
 ;;
+;; completion engine
+;;
+
+(defvar my-completion-engine 'ivy
+  "Which completion engine to use.")
+
+(defvar use-ivy (eq my-completion-engine 'ivy)
+  "Non-nil if we are using ivy.")
+
+(defvar use-vertico (eq my-completion-engine 'vertico)
+  "Non-nil if we are using vertico.")
+
+;;
+;; ivy
+;;
+
+(use-package ivy
+  :demand t
+  :if use-ivy)
+
+(use-package counsel
+  :demand t
+  :if use-ivy
+  :after ivy
+  :bind
+  (("C-s" . swiper-isearch)
+   ("M-x" . counsel-M-x)
+   ("C-c n" . counsel-M-x)
+   ("C-c b" . counsel-recentf)
+   ("C-x C-f" . counsel-find-file)
+   ("M-y" . counsel-yank-pop)
+   ("C-h f" . counsel-describe-function)
+   ("C-h v" . counsel-describe-variable)
+   ("C-x b" . counsel-switch-buffer)
+   ("C-h a" . counsel-apropos)
+   ("C-h b" . counsel-descbinds)
+   ("M-i" . swiper)
+   ("C-c M-i" . counsel-git-grep)
+   ("C-x p" . counsel-git))
+  :init
+  ;; Show the count format.
+  (setq ivy-count-format "(%d/%d) ")
+
+  ;; Make highlight extend all the way to the right.
+  (setq ivy-format-function 'ivy-format-function-line)
+
+  ;; Increase the height.
+  (setq ivy-height 18)
+
+  ;; Always stay the same height.
+  (setq ivy-fixed-height-minibuffer t)
+
+  ;; Visually separate things in the kill ring.
+  (setq counsel-yank-pop-separator
+        (concat "\n" (make-string 24 ?-) "\n"))
+
+  ;; Ignore order in completing read.
+  (setq ivy-re-builders-alist
+        '((t . ivy--regex-ignore-order)))
+  :config
+
+  ;; Enable everywhere.
+  (ivy-mode 1))
+
+(use-package ivy-hydra
+  :demand t
+  :if use-ivy
+  :after (ivy hydra))
+
+(use-package ivy-rich
+  :demand t
+  :if use-ivy
+  :after ivy
+  :config
+  (ivy-rich-mode 1)
+
+  ;; Columns for switch-buffer.
+  (ivy-rich-set-columns
+   'ivy-switch-buffer
+   '((ivy-switch-buffer-transformer (:width 0.3))
+     (ivy-rich-switch-buffer-path (:width 0.35 :face font-lock-comment-face))
+     (ivy-rich-switch-buffer-indicators (:width 0.04 :face font-lock-builtin-face :align right))
+     (ivy-rich-switch-buffer-size (:width 0.04 :face font-lock-comment-face))
+     (ivy-rich-switch-buffer-major-mode (:width 0.12 :face font-lock-type-face))
+     (ivy-rich-switch-buffer-project (:width 0.12 :face font-lock-string-face))))
+
+  ;; Highlight the entire line in the minibuffer.
+  (setcdr (assoc t ivy-format-functions-alist) #'ivy-format-function-line))
+
+(use-package lsp-ivy
+  :demand t
+  :if use-ivy
+  :after ivy)
+
+;;
+;; vertico
+;;
+
+(use-package vertico
+  :demand t
+  :if use-vertico
+  :init
+  (progn
+    ;; Show more candidates.
+    (setq vertico-count 18)
+
+    ;; Never resize.
+    (setq vertico-resize nil)
+
+    ;; Enable everywhere.
+    (vertico-mode))
+  :config
+  (progn
+    (defun my-find-file-bindings ()
+      "Add ivy-like keybindings for find-file in vertico."
+      (when (and (or (eq this-command 'find-file)
+                     (eq this-command 'magit-status))
+                 (boundp 'vertico-map)
+                 (minibufferp))
+        (define-key vertico-map (kbd "C-j") #'vertico-directory-enter)
+        (define-key vertico-map (kbd "DEL") #'vertico-directory-up)))
+
+    ;; Install the keybindings.
+    (add-hook 'minibuffer-setup-hook #'my-find-file-bindings)))
+
+;;
+;; orderless
+;;
+
+(use-package orderless
+  :demand t
+  :if use-vertico
+  :after vertico
+  :init
+  (setq completion-styles '(orderless)))
+
+;;
+;; consult
+;;
+
+;; (defun my-git-root ()
+;;   "Find the git repository root for the current buffer."
+;;   (or (locate-dominating-file default-directory ".git")
+;;       default-directory))
+
+;; (defun consult-git ()
+;;   "List all files in a git repository."
+;;   (interactive)
+;;   (let ((dir (my-git-root))
+;;         (files (split-string
+;;                 (shell-command-to-string
+;;                  "git ls-files -z --full-name --")
+;;                 "\0")))
+;;     (consult--read
+;;      (consult--process-collection
+;;       (consult--git-builder)
+;;       :transform (lambda (x) (string-remove-prefix "./" x)))
+;;      :prompt "Git files: "
+;;      :require-match t
+;;      :category 'file
+;;      :state (consult--file-preview)
+;;      :sort nil)
+;;     ))
+
+(use-package consult
+  :demand t
+  :if use-vertico
+  :after vertico
+  :bind (("C-c n" . execute-extended-command)
+         ("C-x b" . consult-buffer)
+         ("M-y" . consult-yank-pop)
+         ("M-i" . consult-line)
+         ("C-c M-i" . consult-git-grep)
+         ;; ("C-x p" . consult-git)
+         )
+  )
+
+;;
+;; marginalia
+;;
+
+(use-package marginalia
+  :demand t
+  :if use-vertico
+  :after vertico
+  :init
+  (marginalia-mode))
+
+;;
 ;; c / c++
 ;;
 
@@ -383,25 +572,25 @@ properly if you have more than 3 windows open in a frame."
 ;; Wrap words in text mode please.
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 
-;;
-;; clang-format
-;;
+;; ;;
+;; ;; clang-format
+;; ;;
 
-(defun my-clang-format-buffer ()
-  "Reformat buffer if .clang-format exists in the projectile root."
-  (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
-    (clang-format-buffer)))
+;; (defun my-clang-format-buffer ()
+;;   "Reformat buffer if .clang-format exists in the projectile root."
+;;   (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
+;;     (clang-format-buffer)))
 
-(let ((path "~/bin/clang-format.el"))
-  (when (f-exists? path)
-    ;; Load the package.
-    (load path)
+;; (let ((path "~/bin/clang-format.el"))
+;;   (when (f-exists? path)
+;;     ;; Load the package.
+;;     (load path)
 
-    ;; Format on save for c / c++.
-    (-map
-     (lambda (x)
-       (add-hook x (lambda () (add-hook 'before-save-hook #'my-clang-format-buffer nil 'local))))
-     '(c-mode-hook c++-mode-hook))))
+;;     ;; Format on save for c / c++.
+;;     (-map
+;;      (lambda (x)
+;;        (add-hook x (lambda () (add-hook 'before-save-hook #'my-clang-format-buffer nil 'local))))
+;;      '(c-mode-hook c++-mode-hook))))
 
 ;;
 ;; dired-x
@@ -718,96 +907,26 @@ properly if you have more than 3 windows open in a frame."
     ;; Turn it on.
     (which-key-mode)))
 
-;;
-;; projectile
-;;
+;; ;;
+;; ;; projectile
+;; ;;
 
-(use-package projectile
-  :demand t
-  :init
-  (progn
-    ;; Add a global prefix.
-    (global-set-key (kbd "C-c p") 'projectile-command-map)
+;; (use-package projectile
+;;   :demand t
+;;   :init
+;;   (progn
+;;     ;; Add a global prefix.
+;;     (global-set-key (kbd "C-c p") 'projectile-command-map)
 
-    ;; Setup the completion system.
-    (setq projectile-completion-system 'ivy)
+;;     ;; Setup the completion system.
+;;     (setq projectile-completion-system 'ivy)
 
-    ;; Set our indexing mode.
-    (setq projectile-indexing-method 'alien))
-  :config
-  (progn
-    ;; Turn projectile on globally.
-    (projectile-mode)))
-
-;;
-;; ivy
-;;
-
-(use-package counsel
-  :demand t
-  :bind
-  (("C-s" . swiper-isearch)
-   ("M-x" . counsel-M-x)
-   ("C-c n" . counsel-M-x)
-   ("C-c b" . counsel-recentf)
-   ("C-x C-f" . counsel-find-file)
-   ("M-y" . counsel-yank-pop)
-   ("C-h f" . counsel-describe-function)
-   ("C-h v" . counsel-describe-variable)
-   ("C-x b" . counsel-switch-buffer)
-   ("C-h a" . counsel-apropos)
-   ("C-h b" . counsel-descbinds)
-   ("M-i" . swiper)
-   ("C-c M-i" . counsel-git-grep)
-   ("C-x p" . counsel-git))
-  :init
-  ;; Show the count format.
-  (setq ivy-count-format "(%d/%d) ")
-
-  ;; Make highlight extend all the way to the right.
-  (setq ivy-format-function 'ivy-format-function-line)
-
-  ;; Increase the height.
-  (setq ivy-height 18)
-
-  ;; Always stay the same height.
-  (setq ivy-fixed-height-minibuffer t)
-
-  ;; Visually separate things in the kill ring.
-  (setq counsel-yank-pop-separator
-        (concat "\n" (make-string 24 ?-) "\n"))
-
-  ;; Ignore order in completing read.
-  (setq ivy-re-builders-alist
-        '((t . ivy--regex-ignore-order)))
-  :config
-
-  ;; Enable everywhere.
-  (ivy-mode 1))
-
-(use-package ivy-hydra
-  :after (ivy hydra))
-
-(use-package ivy-rich
-  :after ivy
-  :config
-  (ivy-rich-mode 1)
-
-  ;; Columns for switch-buffer.
-  (ivy-rich-set-columns
-   'ivy-switch-buffer
-   '((ivy-switch-buffer-transformer (:width 0.3))
-     (ivy-rich-switch-buffer-path (:width 0.35 :face font-lock-comment-face))
-     (ivy-rich-switch-buffer-indicators (:width 0.04 :face font-lock-builtin-face :align right))
-     (ivy-rich-switch-buffer-size (:width 0.04 :face font-lock-comment-face))
-     (ivy-rich-switch-buffer-major-mode (:width 0.12 :face font-lock-type-face))
-     (ivy-rich-switch-buffer-project (:width 0.12 :face font-lock-string-face))))
-
-  ;; Highlight the entire line in the minibuffer.
-  (setcdr (assoc t ivy-format-functions-alist) #'ivy-format-function-line))
-
-(use-package lsp-ivy
-  :after ivy)
+;;     ;; Set our indexing mode.
+;;     (setq projectile-indexing-method 'alien))
+;;   :config
+;;   (progn
+;;     ;; Turn projectile on globally.
+;;     (projectile-mode)))
 
 ;;
 ;; avy
