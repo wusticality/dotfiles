@@ -7,6 +7,8 @@
 
 ;;; Code:
 
+;; TODO: Figure out mark history ring!
+
 ;;
 ;; variables
 ;;
@@ -63,13 +65,16 @@
 ;;
 
 ;; The string library.
-(use-package s)
+(use-package s
+  :demand t)
 
 ;; The file library.
-(use-package f)
+(use-package f
+  :demand t)
 
 ;; The list library.
-(use-package dash)
+(use-package dash
+  :demand t)
 
 ;;
 ;; customize
@@ -272,7 +277,7 @@
 ;; autorevert
 ;;
 
-(use-package autorevert
+(use-package emacs
   :straight (:type built-in)
   :init
   (progn
@@ -289,10 +294,10 @@
     (global-auto-revert-mode 1)))
 
 ;;
-;; auto saves
+;; autosave
 ;;
 
-(use-package files
+(use-package emacs
   :straight (:type built-in)
   :init
   (progn
@@ -337,15 +342,12 @@
 ;; paths
 ;;
 
-(use-package emacs
-  :straight (:type built-in)
-  :init
-  (progn
-    ;; Load PATH from ~/.bash_profile.
-    (use-package exec-path-from-shell
-      :config
-      (when (display-graphic-p)
-        (exec-path-from-shell-initialize)))))
+(use-package exec-path-from-shell
+  :demand t
+  :config
+  (when (display-graphic-p)
+    ;; Load our path from ~/.bash_profile.
+    (exec-path-from-shell-initialize)))
 
 ;;
 ;; theme
@@ -372,6 +374,17 @@
   :config
   (progn
     (xclip-mode 1)))
+
+;;
+;; uniquify
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Customize the look of duplicate values.
+    (setq uniquify-buffer-name-style 'post-forward uniquify-separator ":")))
 
 ;;
 ;; ivy
@@ -547,6 +560,126 @@
   (marginalia-mode))
 
 ;;
+;; hydra
+;;
+
+(use-package hydra
+  :demand t)
+
+;;
+;; text-mode
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Wrap words in text mode please.
+    (add-hook 'text-mode-hook 'turn-on-visual-line-mode)))
+
+;;
+;; js-mode
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Follow conventions please.
+    (setq js-indent-level 2)))
+
+;;
+;; org-mode
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; The style.
+    (add-hook
+     'org-mode-hook
+     (lambda ()
+       ;; Set a reasonable width.
+       (set-fill-column 80)
+
+       ;; Auto fill please.
+       (turn-on-auto-fill)
+
+       ;; Only show rightmost stars.
+       (org-indent-mode)))))
+
+;;
+;; latex
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Only use one '%' in comments, please.
+    (add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))))
+
+;;
+;; dired-x
+;;
+
+(use-package dired-x
+  :straight (:type built-in)
+  :after dired
+  :config
+  (progn
+    ;; When opening multiple files, open them in
+    ;; the background, not in new windows please.
+    (define-key dired-mode-map (kbd "F")
+                #'(lambda () (interactive)
+                    (dired-do-find-marked-files t)))))
+
+;;
+;; magit
+;;
+
+;; The best git interface ever.
+(use-package magit
+  :demand t
+  :bind (("C-x g" . magit-status))
+  :init
+  (progn
+    ;; Turn these off, they're ugly.
+    (setq magit-section-visibility-indicator nil))
+  :config
+  (progn
+    ;; Open the status buffer in the current window and select it.
+    (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)))
+
+;;
+;; copilot
+;;
+
+(use-package copilot
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :after company
+  :config
+  (progn
+    ;; Enable copilot for programming modes.
+    (add-hook 'prog-mode-hook 'copilot-mode)
+    (add-hook 'text-mode-hook 'copilot-mode)
+
+    ;; When to show / hide predicates.
+    (add-to-list 'copilot-disable-predicates #'company--active-p)
+    (add-to-list 'copilot-disable-display-predicates #'company--active-p)
+
+    ;; Complete using the tab key.
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
+    ;; Setup indentation settings.
+    (add-to-list 'copilot-indentation-alist '(prog-mode 4))
+    (add-to-list 'copilot-indentation-alist '(org-mode 2))
+    (add-to-list 'copilot-indentation-alist '(text-mode 2))
+    (add-to-list 'copilot-indentation-alist '(closure-mode 2))
+    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))))
+
+;;
 ;; c / c++
 ;;
 
@@ -571,106 +704,11 @@
    (electric-pair-mode 1)))
 
 ;;
-;; latex
-;;
-
-;; Only use one '%' in comments, please.
-(add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))
-
-;;
-;; all-the-icons
-;;
-
-(use-package all-the-icons
-  :if (display-graphic-p))
-
-;;
-;; text-mode
-;;
-
-;; Wrap words in text mode please.
-(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-
-;; ;;
-;; ;; clang-format
-;; ;;
-
-;; (defun my-clang-format-buffer ()
-;;   "Reformat buffer if .clang-format exists in the projectile root."
-;;   (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
-;;     (clang-format-buffer)))
-
-;; (let ((path "~/bin/clang-format.el"))
-;;   (when (f-exists? path)
-;;     ;; Load the package.
-;;     (load path)
-
-;;     ;; Format on save for c / c++.
-;;     (-map
-;;      (lambda (x)
-;;        (add-hook x (lambda () (add-hook 'before-save-hook #'my-clang-format-buffer nil 'local))))
-;;      '(c-mode-hook c++-mode-hook))))
-
-;;
-;; dired-x
-;;
-
-(use-package dired-x
-  :straight (:type built-in)
-  :after dired
-  :config
-  (progn
-    ;; When opening multiple files, open them in
-    ;; the background, not in new windows please.
-    (define-key dired-mode-map (kbd "F")
-                #'(lambda () (interactive)
-                    (dired-do-find-marked-files t)))))
-
-;;
-;; project
-;;
-
-;; Load this first so the keymap is loaded as we
-;; override it when loading the counsel package.
-(use-package project)
-
-;;
-;; hydra
-;;
-
-(use-package hydra)
-
-;;
-;; uniquify
-;;
-
-(require 'uniquify)
-
-;; Customize the look of duplicate values.
-(setq uniquify-buffer-name-style 'post-forward uniquify-separator ":")
-
-;;
-;; wgrep
-;;
-
-;; Makes grep buffers editable.
-(use-package wgrep
-  :init
-  (progn
-    ;; Save modified buffers when you exit.
-    (setq wgrep-auto-save-buffer t)))
-
-;;
-;; rg
-;;
-
-(use-package rg)
-
-;;
 ;; expand-region
 ;;
 
 (use-package expand-region
+  :demand t
   :config
   (progn
     ;; The hydra.
@@ -729,7 +767,8 @@
 ;; rainbow-delimiters
 ;;
 
-(use-package rainbow-delimiters)
+(use-package rainbow-delimiters
+  :demand t)
 
 ;; Turn this on for Emacs lisp.
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
@@ -739,6 +778,7 @@
 ;;
 
 (use-package paredit
+  :demand t
   :init
   (progn
     ;; Turn it on for all lisp modes.
@@ -859,6 +899,7 @@
 ;;
 
 (use-package paxedit
+  :demand t
   :init
   (progn
     ;; Turn it on for all lisp modes.
@@ -875,6 +916,7 @@
 ;; This mode enables make-
 ;; believe intellisense.
 (use-package company
+  :demand t
   :init
   (progn
     ;; No delay please.
@@ -894,97 +936,26 @@
 ;;
 
 (use-package company-box
+  :demand t
   :hook (company-mode . company-box-mode))
-
-;;
-;; which-key
-;;
-
-;; The replacement for guide-key. Given a key
-;; sequence, shows what commands are available.
-(use-package which-key
-  :disabled
-  :config
-  (progn
-    ;; No delay please.
-    (setq which-key-idle-delay 0)
-
-    ;; Settings to make which-key opt-in.
-    ;; (setq which-key-show-early-on-C-h t)
-    ;; (setq which-key-idle-delay 10000)
-    ;; (setq which-key-idle-secondary-delay 0)
-
-    ;; Show count / total on the modeline.
-    (setq which-key-show-remaining-keys t)
-
-    ;; Allow 50% of the frame to display keys.
-    (setq which-key-side-window-max-height 0.5)
-
-    ;; Open it at the bottom.
-    (which-key-setup-side-window-bottom)
-
-    ;; Turn it on.
-    (which-key-mode)))
-
-;; ;;
-;; ;; projectile
-;; ;;
-
-;; (use-package projectile
-;;   :demand t
-;;   :init
-;;   (progn
-;;     ;; Add a global prefix.
-;;     (global-set-key (kbd "C-c p") 'projectile-command-map)
-
-;;     ;; Setup the completion system.
-;;     (setq projectile-completion-system 'ivy)
-
-;;     ;; Set our indexing mode.
-;;     (setq projectile-indexing-method 'alien))
-;;   :config
-;;   (progn
-;;     ;; Turn projectile on globally.
-;;     (projectile-mode)))
-
-;;
-;; avy
-;;
-
-(use-package avy
-  :bind (("C-;" . avy-goto-char)))
 
 ;;
 ;; ace-window
 ;;
 
 (use-package ace-window
+  :demand t
   :bind (("M-o" . ace-window))
   :init
   (progn
     (setq aw-dispatch-always t)))
 
 ;;
-;; magit
-;;
-
-;; The best git interface ever.
-(use-package magit
-  :bind (("C-x g" . magit-status))
-  :init
-  (progn
-    ;; Turn these off, they're ugly.
-    (setq magit-section-visibility-indicator nil))
-  :config
-  (progn
-    ;; Open the status buffer in the current window and select it.
-    (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)))
-
-;;
 ;; multiple-cursors
 ;;
 
 (use-package multiple-cursors
+  :demand t
   :config
   (progn
     ;; The hydra.
@@ -1052,6 +1023,7 @@
 ;;
 
 (use-package rainbow-mode
+  :demand t
   :config
   (progn
     ;; Only style hex colors please.
@@ -1072,16 +1044,11 @@
     (global-undo-tree-mode)))
 
 ;;
-;; yasnippet
-;;
-
-(use-package yasnippet)
-
-;;
 ;; dired-sidebar
 ;;
 
 (use-package dired-sidebar
+  :demand t
   :bind (("C-c SPC" . dired-sidebar-toggle-sidebar))
   :init
   (progn
@@ -1112,6 +1079,7 @@
 ;;
 
 (use-package flycheck
+  :demand t
   :init (global-flycheck-mode))
 
 ;;
@@ -1119,6 +1087,7 @@
 ;;
 
 (use-package lsp-mode
+  :demand t
   :hook (lsp-mode . lsp-enable-which-key-integration)
   :bind-keymap ("C-c k" . lsp-command-map)
   :bind (("C-c M-u" . lsp-find-references)
@@ -1168,6 +1137,7 @@
 ;;
 
 (use-package rustic
+  :demand t
   :hook (rustic-mode . yas-minor-mode)
   :bind
   (:map
@@ -1210,158 +1180,12 @@
 (use-package wgsl-mode)
 
 ;;
-;; shader-mode
-;;
-
-;; For editing shaders.
-(use-package shader-mode
-  :mode ("\\.shader$"
-         "\\.compute$"
-         "\\.hlsl$"
-         "\\.glsl$"
-         "\\.cg$"
-         "\\.cginc$"))
-
-;;
 ;; glsl-mode
 ;;
 
 (use-package glsl-mode
   :mode ("\\.vert$"
          "\\.frag$"))
-
-;;
-;; slime
-;;
-
-(use-package slime
-  :init
-  (progn
-    ;; We're using SBCL as our CL runtime.
-    (setq inferior-lisp-program "/usr/local/bin/sbcl")
-
-    ;; Load the most popular contribs.
-    (setq slime-contribs '(slime-fancy))))
-
-;;
-;; clojure-mode
-;;
-
-;; The clojure language.
-(use-package clojure-mode
-  :disabled
-  :mode "\\.clj$"
-  :hook (clojure-mode . rainbow-delimiters-mode)
-
-  :init
-  (progn
-    ;; Align let bindings / maps / etc.
-    (setq clojure-align-forms-automatically t)))
-
-;;
-;; cider
-;;
-
-;; This is -the- clojure ide.
-(use-package cider
-  :disabled
-  :init
-  (progn
-    ;; Make the scratch buffer empty.
-    (setq cider-scratch-initial-message "")
-
-    ;; Colorize usages of functions and variables from all namespaces.
-    (setq cider-font-lock-dynamically '(macro core function var)))
-  :config
-  (progn
-    ;; Refactoring support.
-    (use-package clj-refactor)
-
-    ;; The docs hydra.
-    (defhydra hydra-cider-docs
-      (:columns 3)
-      "cider docs"
-
-      ("a" cider-apropos "apropos" :exit t)
-      ("d" cider-apropos-documentation "apropos-documentation" :exit t)
-      ("j" cider-javadoc "javadoc" :exit t)
-
-      ;; Cancel.
-      ("q" nil "quit" :exit t))
-
-    ;; The eval hydra.
-    (defhydra hydra-cider-eval
-      (:columns 3)
-      "cider eval"
-
-      ("e" cider-eval-last-sexp "eval-last-sexp" :exit t)
-      ("E" cider-eval-last-sexp-and-replace "eval-last-sexp-and-replace" :exit t)
-      ("r" cider-eval-last-sexp-to-repl "eval-last-sexp-to-repl" :exit t)
-      ("k" cider-eval-defun-at-point "eval-defun-at-point" :exit t)
-      ("d" cider-eval-defun-to-point "eval-defun-to-point")
-      ("K" cider-debug-defun-at-point "debug-defun-at-point" :exit t)
-      ("s" cider-eval-sexp-at-point "eval-sexp-at-point" :exit t)
-      ("R" cider-eval-region "eval-region" :exit t)
-      ("i" cider-eval-ns-form "eval-ns-form" :exit t)
-      ("n" cider-load-buffer "load-buffer" :exit t)
-      ("N" cider-load-buffer-and-switch-to-repl-buffer "load-buffer-and-switch-to-repl-buffer" :exit t)
-      ("y" cider-repl-set-ns "repl-set-ns" :exit t)
-      ("f" cider-load-file "load-file" :exit t)
-      ("a" cider-load-all-files "load-all-files" :exit t)
-      ("mm" cider-macroexpand-1 "macroexpand-1" :exit t)
-      ("ma" cider-macroexpand-all "macroexpand-all" :exit t)
-      ("pe" cider-pprint-eval-last-sexp "pprint-eval-last-sexp" :exit t)
-      ("pk" cider-pprint-eval-defun-at-point "pprint-eval-defun-at-point" :exit t)
-
-      ;; Cancel.
-      ("q" nil "quit" :exit t))
-
-    ;; The find hydra.
-    (defhydra hydra-cider-find
-      (:columns 3)
-      "cider find"
-
-      ("n" cider-find-ns "find-ns" :exit t)
-      ("v" cider-find-var "find-var" :exit t)
-      ("d" cider-find-dwim "find-dwim" :exit t)
-      ("k" cider-find-keyword "find-keyword" :exit t)
-      ("r" cider-find-resource "find-resource" :exit t)
-
-      ;; Cancel.
-      ("q" nil "quit" :exit t))
-
-    ;; The test hydra.
-    (defhydra hydra-cider-test
-      (:columns 3)
-      "cider test"
-
-      ("t" cider-test-run-test "test-run-test" :exit t)
-      ("r" cider-test-rerun-test "test-rerun-test" :exit t)
-      ("n" cider-test-run-ns-tests "test-run-ns-tests" :exit t)
-      ("l" cider-test-run-loaded-tests "test-run-loaded-tests" :exit t)
-      ("p" cider-test-run-project-tests "test-run-project-tests" :exit t)
-      ("f" cider-test-rerun-failed-tests "test-rerun-failed-tests" :exit t)
-      ("r" cider-test-show-report "test-show-report" :exit t)
-
-      ;; Cancel.
-      ("q" nil "quit" :exit t))
-
-    ;; Clear the C-c keymaps.
-    (define-key clojure-mode-map (kbd "C-c") nil)
-    (define-key cider-mode-map (kbd "C-c") nil)
-    (define-key cider-repl-mode-map (kbd "C-c") nil)
-
-    ;; Only enable these in cider mode.
-    (define-key cider-mode-map (kbd "C-c k") 'hydra-cider-eval/body)
-
-    ;; Method to add common cider hydras.
-    (-each (list cider-mode-map
-                 cider-repl-mode-map)
-      (lambda (x)
-        (define-key x (kbd "C-c f") 'hydra-cider-find/body)
-        (define-key x (kbd "C-c u") 'hydra-cider-docs/body)
-        (define-key x (kbd "C-c t") 'hydra-cider-test/body)))
-    ))
 
 ;;
 ;; yaml-mode
@@ -1374,9 +1198,6 @@
 ;;
 ;; web-mode
 ;;
-
-;; Follow conventions please.
-(setq js-indent-level 2)
 
 ;; For web-based languages.
 (use-package web-mode
@@ -1405,6 +1226,7 @@
 ;;
 
 (use-package go-mode
+  :demand t
   :mode "\\.go$"
   :hook ((go-mode . lsp-deferred)
 		 (go-mode . yas-minor-mode)
@@ -1415,9 +1237,6 @@
   (progn
     ;; Use electric pair mode.
     (electric-pair-mode 1)
-
-    ;; Use this for running tests.
-    (use-package gotest)
 
     ;; The hydra for go tests.
     (defhydra hydra-go-test
@@ -1434,22 +1253,10 @@
 
     (define-key go-mode-map (kbd "C-c t") 'hydra-go-test/body)))
 
-;;
-;; org-mode
-;;
-
-;; The style.
-(add-hook
- 'org-mode-hook
- (lambda ()
-   ;; Set a reasonable width.
-   (set-fill-column 65)
-
-   ;; Auto fill please.
-   (turn-on-auto-fill)
-
-   ;; Only show rightmost stars.
-   (org-indent-mode)))
+;; Use this for running tests.
+(use-package gotest
+  :demand t
+  :after go-mode)
 
 ;;
 ;; haskell-mode
@@ -1545,45 +1352,6 @@
          :password erc-pass)))
 
 ;;
-;; restclient
-;;
-
-(use-package restclient
-  :mode ("\\.rest$" . restclient-mode)
-  :commands restclient-mode
-  :config
-  (progn
-    ;; Prevent restclient from hijacking our M-x binding.
-    (define-key restclient-mode-map (kbd "C-c n") nil)))
-
-;;
-;; copilot
-;;
-
-(use-package copilot
-  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-  :after company
-  :config
-  (progn
-    ;; Enable copilot for programming modes.
-    (add-hook 'prog-mode-hook 'copilot-mode)
-    (add-hook 'text-mode-hook 'copilot-mode)
-
-    ;; When to show / hide predicates.
-    (add-to-list 'copilot-disable-predicates #'company--active-p)
-    (add-to-list 'copilot-disable-display-predicates #'company--active-p)
-
-    ;; Complete using the tab key.
-    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-
-    ;; Setup indentation settings.
-    (add-to-list 'copilot-indentation-alist '(prog-mode 4))
-    (add-to-list 'copilot-indentation-alist '(org-mode 2))
-    (add-to-list 'copilot-indentation-alist '(text-mode 2))
-    (add-to-list 'copilot-indentation-alist '(closure-mode 2))
-    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))))
-
-;;
 ;; protobuf-mode
 ;;
 
@@ -1606,9 +1374,6 @@
   (progn
     (global-mise-mode)))
 
-(provide 'init)
-
-
 ;;
 ;; hl-todo
 ;;
@@ -1620,5 +1385,286 @@
         '(("TODO" . hl-todo)
           ("NOTE" . hl-todo)
           ("FIXME" . hl-todo))))
+
+;;
+;; I'm unsure about these packages!
+;;
+
+;;
+;; all-the-icons
+;;
+
+;; (use-package all-the-icons
+;;   :if (display-graphic-p))
+
+;;
+;; projectile
+;;
+
+;; (use-package projectile
+;;   :demand t
+;;   :init
+;;   (progn
+;;     ;; Add a global prefix.
+;;     (global-set-key (kbd "C-c p") 'projectile-command-map)
+
+;;     ;; Setup the completion system.
+;;     (setq projectile-completion-system 'ivy)
+
+;;     ;; Set our indexing mode.
+;;     (setq projectile-indexing-method 'alien))
+;;   :config
+;;   (progn
+;;     ;; Turn projectile on globally.
+;;     (projectile-mode)))
+
+;;
+;; clang-format
+;;
+
+;; (defun my-clang-format-buffer ()
+;;   "Reformat buffer if .clang-format exists in the projectile root."
+;;   (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
+;;     (clang-format-buffer)))
+
+;; (let ((path "~/bin/clang-format.el"))
+;;   (when (f-exists? path)
+;;     ;; Load the package.
+;;     (load path)
+
+;;     ;; Format on save for c / c++.
+;;     (-map
+;;      (lambda (x)
+;;        (add-hook x (lambda () (add-hook 'before-save-hook #'my-clang-format-buffer nil 'local))))
+;;      '(c-mode-hook c++-mode-hook))))
+
+;;
+;; restclient
+;;
+
+;; (use-package restclient
+;;   :mode ("\\.rest$" . restclient-mode)
+;;   :commands restclient-mode
+;;   :config
+;;   (progn
+;;     ;; Prevent restclient from hijacking our M-x binding.
+;;     (define-key restclient-mode-map (kbd "C-c n") nil)))
+
+;;
+;; clojure-mode
+;;
+
+;; ;; The clojure language.
+;; (use-package clojure-mode
+;;   :disabled
+;;   :mode "\\.clj$"
+;;   :hook (clojure-mode . rainbow-delimiters-mode)
+
+;;   :init
+;;   (progn
+;;     ;; Align let bindings / maps / etc.
+;;     (setq clojure-align-forms-automatically t)))
+
+;;
+;; cider
+;;
+
+;; ;; This is -the- clojure ide.
+;; (use-package cider
+;;   :disabled
+;;   :init
+;;   (progn
+;;     ;; Make the scratch buffer empty.
+;;     (setq cider-scratch-initial-message "")
+
+;;     ;; Colorize usages of functions and variables from all namespaces.
+;;     (setq cider-font-lock-dynamically '(macro core function var)))
+;;   :config
+;;   (progn
+;;     ;; Refactoring support.
+;;     (use-package clj-refactor)
+
+;;     ;; The docs hydra.
+;;     (defhydra hydra-cider-docs
+;;       (:columns 3)
+;;       "cider docs"
+
+;;       ("a" cider-apropos "apropos" :exit t)
+;;       ("d" cider-apropos-documentation "apropos-documentation" :exit t)
+;;       ("j" cider-javadoc "javadoc" :exit t)
+
+;;       ;; Cancel.
+;;       ("q" nil "quit" :exit t))
+
+;;     ;; The eval hydra.
+;;     (defhydra hydra-cider-eval
+;;       (:columns 3)
+;;       "cider eval"
+
+;;       ("e" cider-eval-last-sexp "eval-last-sexp" :exit t)
+;;       ("E" cider-eval-last-sexp-and-replace "eval-last-sexp-and-replace" :exit t)
+;;       ("r" cider-eval-last-sexp-to-repl "eval-last-sexp-to-repl" :exit t)
+;;       ("k" cider-eval-defun-at-point "eval-defun-at-point" :exit t)
+;;       ("d" cider-eval-defun-to-point "eval-defun-to-point")
+;;       ("K" cider-debug-defun-at-point "debug-defun-at-point" :exit t)
+;;       ("s" cider-eval-sexp-at-point "eval-sexp-at-point" :exit t)
+;;       ("R" cider-eval-region "eval-region" :exit t)
+;;       ("i" cider-eval-ns-form "eval-ns-form" :exit t)
+;;       ("n" cider-load-buffer "load-buffer" :exit t)
+;;       ("N" cider-load-buffer-and-switch-to-repl-buffer "load-buffer-and-switch-to-repl-buffer" :exit t)
+;;       ("y" cider-repl-set-ns "repl-set-ns" :exit t)
+;;       ("f" cider-load-file "load-file" :exit t)
+;;       ("a" cider-load-all-files "load-all-files" :exit t)
+;;       ("mm" cider-macroexpand-1 "macroexpand-1" :exit t)
+;;       ("ma" cider-macroexpand-all "macroexpand-all" :exit t)
+;;       ("pe" cider-pprint-eval-last-sexp "pprint-eval-last-sexp" :exit t)
+;;       ("pk" cider-pprint-eval-defun-at-point "pprint-eval-defun-at-point" :exit t)
+
+;;       ;; Cancel.
+;;       ("q" nil "quit" :exit t))
+
+;;     ;; The find hydra.
+;;     (defhydra hydra-cider-find
+;;       (:columns 3)
+;;       "cider find"
+
+;;       ("n" cider-find-ns "find-ns" :exit t)
+;;       ("v" cider-find-var "find-var" :exit t)
+;;       ("d" cider-find-dwim "find-dwim" :exit t)
+;;       ("k" cider-find-keyword "find-keyword" :exit t)
+;;       ("r" cider-find-resource "find-resource" :exit t)
+
+;;       ;; Cancel.
+;;       ("q" nil "quit" :exit t))
+
+;;     ;; The test hydra.
+;;     (defhydra hydra-cider-test
+;;       (:columns 3)
+;;       "cider test"
+
+;;       ("t" cider-test-run-test "test-run-test" :exit t)
+;;       ("r" cider-test-rerun-test "test-rerun-test" :exit t)
+;;       ("n" cider-test-run-ns-tests "test-run-ns-tests" :exit t)
+;;       ("l" cider-test-run-loaded-tests "test-run-loaded-tests" :exit t)
+;;       ("p" cider-test-run-project-tests "test-run-project-tests" :exit t)
+;;       ("f" cider-test-rerun-failed-tests "test-rerun-failed-tests" :exit t)
+;;       ("r" cider-test-show-report "test-show-report" :exit t)
+
+;;       ;; Cancel.
+;;       ("q" nil "quit" :exit t))
+
+;;     ;; Clear the C-c keymaps.
+;;     (define-key clojure-mode-map (kbd "C-c") nil)
+;;     (define-key cider-mode-map (kbd "C-c") nil)
+;;     (define-key cider-repl-mode-map (kbd "C-c") nil)
+
+;;     ;; Only enable these in cider mode.
+;;     (define-key cider-mode-map (kbd "C-c k") 'hydra-cider-eval/body)
+
+;;     ;; Method to add common cider hydras.
+;;     (-each (list cider-mode-map
+;;                  cider-repl-mode-map)
+;;       (lambda (x)
+;;         (define-key x (kbd "C-c f") 'hydra-cider-find/body)
+;;         (define-key x (kbd "C-c u") 'hydra-cider-docs/body)
+;;         (define-key x (kbd "C-c t") 'hydra-cider-test/body)))
+;;     ))
+
+;;
+;; wgrep
+;;
+
+;; ;; Makes grep buffers editable.
+;; (use-package wgrep
+;;   :init
+;;   (progn
+;;     ;; Save modified buffers when you exit.
+;;     (setq wgrep-auto-save-buffer t)))
+
+
+;;
+;; slime
+;;
+
+;; (use-package slime
+;;   :init
+;;   (progn
+;;     ;; We're using SBCL as our CL runtime.
+;;     (setq inferior-lisp-program "/usr/local/bin/sbcl")
+
+;;     ;; Load the most popular contribs.
+;;     (setq slime-contribs '(slime-fancy))))
+
+;;
+;; rg
+;;
+
+;; (use-package rg)
+
+;;
+;; which-key
+;;
+
+;; ;; The replacement for guide-key. Given a key
+;; ;; sequence, shows what commands are available.
+;; (use-package which-key
+;;   :disabled
+;;   :config
+;;   (progn
+;;     ;; No delay please.
+;;     (setq which-key-idle-delay 0)
+
+;;     ;; Settings to make which-key opt-in.
+;;     ;; (setq which-key-show-early-on-C-h t)
+;;     ;; (setq which-key-idle-delay 10000)
+;;     ;; (setq which-key-idle-secondary-delay 0)
+
+;;     ;; Show count / total on the modeline.
+;;     (setq which-key-show-remaining-keys t)
+
+;;     ;; Allow 50% of the frame to display keys.
+;;     (setq which-key-side-window-max-height 0.5)
+
+;;     ;; Open it at the bottom.
+;;     (which-key-setup-side-window-bottom)
+
+;;     ;; Turn it on.
+;;     (which-key-mode)))
+
+;;
+;; avy
+;;
+
+;; (use-package avy
+;;   :bind (("C-;" . avy-goto-char)))
+
+;;
+;; yasnippet
+;;
+
+;; (use-package yasnippet)
+
+;;
+;; shader-mode
+;;
+
+;; ;; For editing shaders.
+;; (use-package shader-mode
+;;   :mode ("\\.shader$"
+;;          "\\.compute$"
+;;          "\\.hlsl$"
+;;          "\\.glsl$"
+;;          "\\.cg$"
+;;          "\\.cginc$"))
+
+;;
+;; project
+;;
+
+;; Load this first so the keymap is loaded as we
+;; override it when loading the counsel package.
+;; (use-package project)
+
+(provide 'init)
 
 ;;; init.el ends here
