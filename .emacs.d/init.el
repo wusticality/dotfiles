@@ -8,7 +8,7 @@
 ;;; Code:
 
 ;;
-;; platform
+;; variables
 ;;
 
 (defvar is-mac (eq system-type 'darwin)
@@ -16,6 +16,15 @@
 
 (defvar is-gnu (eq system-type 'gnu/linux)
   "Non-nil if Emacs is running on gnu.")
+
+(defvar my-completion-engine 'ivy
+  "Which completion engine to use.")
+
+(defvar use-ivy (eq my-completion-engine 'ivy)
+  "Non-nil if we are using ivy.")
+
+(defvar use-vertico (eq my-completion-engine 'vertico)
+  "Non-nil if we are using vertico.")
 
 ;;
 ;; straight
@@ -66,185 +75,198 @@
 ;; customize
 ;;
 
-;; Confine customize settings to their own file.
-(setq custom-file (f-join user-emacs-directory "custom.el"))
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Confine customize settings to their own file.
+    (setq custom-file (f-join user-emacs-directory "custom.el"))
 
-;; Load customizations if they exist.
-(when (f-exists? custom-file)
-  (load custom-file))
+    ;; Load customizations if they exist.
+    (when (f-exists? custom-file)
+      (load custom-file))))
 
 ;;
 ;; defaults
 ;;
 
-;; I don't ever want to see this.
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(if (fboundp 'fringe-mode) (fringe-mode 0))
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; I don't ever want to see this.
+    (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+    (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+    (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+    (if (fboundp 'fringe-mode) (fringe-mode 0))
 
-;; Move as far as possible when scrolling.
-(setq  scroll-error-top-bottom t)
+    ;; Move as far as possible when scrolling.
+    (setq  scroll-error-top-bottom t)
 
-;; No splash screen / startup message.
-(setq inhibit-splash-screen t)
-(setq inhibit-startup-message t)
+    ;; No splash screen / startup message.
+    (setq inhibit-splash-screen t)
+    (setq inhibit-startup-message t)
 
-(defun display-startup-echo-area-message ()
-  "Clear the minibuffer on startup please."
-  (message ""))
+    (defun display-startup-echo-area-message ()
+      "Clear the minibuffer on startup please."
+      (message ""))
 
-;; Make the scratch buffer empty.
-(setq initial-scratch-message "")
+    ;; Make the scratch buffer empty.
+    (setq initial-scratch-message "")
 
-;; Highlight the line that point is on.
-(global-hl-line-mode t)
+    ;; Highlight the line that point is on.
+    (global-hl-line-mode t)
 
-;; Answering 'y' or 'n' will do.
-(defalias 'yes-or-no-p 'y-or-n-p)
+    ;; Answering 'y' or 'n' will do.
+    (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; Use utf-8 encoding please.
-(prefer-coding-system 'utf-8)
-(set-language-environment "UTF-8")
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(setq locale-coding-system 'utf-8)
+    ;; Use utf-8 encoding please.
+    (prefer-coding-system 'utf-8)
+    (set-language-environment "UTF-8")
+    (set-default-coding-systems 'utf-8)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (set-selection-coding-system 'utf-8)
+    (setq locale-coding-system 'utf-8)
 
-;; Always show line and column numbers.
-(setq line-number-mode t)
-(setq column-number-mode t)
+    ;; Always show line and column numbers.
+    (setq line-number-mode t)
+    (setq column-number-mode t)
 
-;; Subword mode is the cat's meow.
-(global-subword-mode 1)
+    ;; Subword mode is the cat's meow.
+    (global-subword-mode 1)
 
-;; Shoot for an 80 character width.
-(setq fill-column 80)
-(setq-default fill-column 80)
+    ;; Shoot for an 80 character width.
+    (setq fill-column 80)
+    (setq-default fill-column 80)
 
-;; Make a vertical split more likely.
-(setq split-height-threshold 100)
+    ;; Make a vertical split more likely.
+    (setq split-height-threshold 100)
 
-;; Save minibuffer history.
-(savehist-mode 1)
-(setq history-length 1000)
+    ;; Save minibuffer history.
+    (savehist-mode 1)
+    (setq history-length 1000)
 
-;; Decrease minibuffer echo time.
-(setq echo-keystrokes 0.1)
+    ;; Decrease minibuffer echo time.
+    (setq echo-keystrokes 0.1)
 
-;; If inserting text, replace active region.
-(delete-selection-mode 1)
+    ;; If inserting text, replace active region.
+    (delete-selection-mode 1)
 
-;; If loading code from a byte-compiled elc
-;; file, prefer raw code from an el file if
-;; it is newer.
-(setq load-prefer-newer t)
+    ;; If loading code from a byte-compiled elc
+    ;; file, prefer raw code from an el file if
+    ;; it is newer.
+    (setq load-prefer-newer t)
 
-;; If we open a help buffer in
-;; any way, navigate to it.
-(setq help-window-select t)
+    ;; If we open a help buffer in
+    ;; any way, navigate to it.
+    (setq help-window-select t)
 
-;; Show matching delimiters instantly.
-(setq show-paren-delay 0)
-(show-paren-mode 1)
+    ;; Show matching delimiters instantly.
+    (setq show-paren-delay 0)
+    (show-paren-mode 1)
 
-;; Don't automatically debug on error.
-;; We enable this by hand if desired.
-(setq debug-on-error nil)
+    ;; Don't automatically debug on error.
+    ;; We enable this by hand if desired.
+    (setq debug-on-error nil)
 
-;; Don't blink the cursor.
-(blink-cursor-mode -1)
+    ;; Don't blink the cursor.
+    (blink-cursor-mode -1)
 
-;; Don't use a visual bell.
-(setq ring-bell-function 'ignore)
+    ;; Don't use a visual bell.
+    (setq ring-bell-function 'ignore)
 
-;; Cursor types.
-(setq-default cursor-type 'box)
-(setq-default cursor-in-non-selected-windows nil)
+    ;; Cursor types.
+    (setq-default cursor-type 'box)
+    (setq-default cursor-in-non-selected-windows nil)
 
-;; Start gui emacs fullscreen on mac.
-(when (and (display-graphic-p) is-mac)
-  (set-frame-parameter nil 'fullscreen 'fullboth))
+    ;; Start gui emacs fullscreen on mac.
+    (when (and (display-graphic-p) is-mac)
+      (set-frame-parameter nil 'fullscreen 'fullboth))
 
-;; Remove trailing whitespace on save.
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+    ;; Remove trailing whitespace on save.
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;; Make vertical dividers more visually pleasing.
-(window-divider-mode)
+    ;; Make vertical dividers more visually pleasing.
+    (window-divider-mode)
 
-;; All focus to follow the mouse.
-(setq mouse-autoselect-window t)
+    ;; All focus to follow the mouse.
+    (setq mouse-autoselect-window t)))
 
 ;;
 ;; global keybindings
 ;;
 
-;; Bind C-M-h to M-<backspace>.
-(define-key key-translation-map [?\C-\M-h] [?\C-\M-?])
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Bind C-M-h to M-<backspace>.
+    (define-key key-translation-map [?\C-\M-h] [?\C-\M-?])
 
-;; This keybinding is annoying as hell.
-(global-unset-key (kbd "C-x C-b"))
+    ;; This keybinding is annoying as hell.
+    (global-unset-key (kbd "C-x C-b"))
 
-;; Bind other-frame to a useful hotkey.
-(global-set-key (kbd "C-c o") 'other-frame)
+    ;; Bind other-frame to a useful hotkey.
+    (global-set-key (kbd "C-c o") 'other-frame)
 
-(defun reload-emacs ()
-  "Reload your init.el file."
-  (interactive)
-  (load user-init-file))
+    (defun reload-emacs ()
+      "Reload your init.el file."
+      (interactive)
+      (load user-init-file))
 
-(global-set-key (kbd "<f12>") 'reload-emacs)
+    (global-set-key (kbd "<f12>") 'reload-emacs)
 
-(defun indent-buffer ()
-  (interactive)
-  (save-excursion
-    (indent-region (point-min) (point-max) nil)))
+    (defun indent-buffer ()
+      (interactive)
+      (save-excursion
+        (indent-region (point-min) (point-max) nil)))
 
-;; Hotkey to indent a buffer.
-(global-set-key (kbd "C-c i") 'indent-buffer)
+    ;; Hotkey to indent a buffer.
+    (global-set-key (kbd "C-c i") 'indent-buffer)
 
-(defun rotate-buffers ()
-  "Rotate buffers clockwise in the current frame.
+    (defun rotate-buffers ()
+      "Rotate buffers clockwise in the current frame."
+      (interactive)
+      (let* ((windows (window-list))
+             (num-windows (length windows)))
+        (when (> num-windows 1)
+          ;; Store the current buffer and point position.
+          (let ((current-buffer (current-buffer))
+                (current-point (point))
+                (buffers (mapcar #'window-buffer windows)))
 
-Note that this does list-based rotation, and will not work
-properly if you have more than 3 windows open in a frame."
-  (interactive)
-  (let* ((windows (window-list))
-         (num-windows (length windows)))
-    (when (> num-windows 1)
-      ;; Store the current buffer and point position.
-      (let ((current-buffer (current-buffer))
-            (current-point (point))
-            (buffers (mapcar #'window-buffer windows)))
+            ;; Rotate the buffers
+            (dotimes (i num-windows)
+              (let* ((current-window (nth i windows))
+                     (next-buffer (nth (mod (- i 1) num-windows) buffers)))
+                (set-window-buffer current-window next-buffer)))
 
-        ;; Rotate the buffers
-        (dotimes (i num-windows)
-          (let* ((current-window (nth i windows))
-                 (next-buffer (nth (mod (- i 1) num-windows) buffers)))
-            (set-window-buffer current-window next-buffer)))
+            ;; Move point to the corresponding window with the same buffer.
+            (let ((new-window (get-buffer-window current-buffer)))
+              (when new-window
+                (select-window new-window)
+                (goto-char current-point)))))))
 
-        ;; Move point to the corresponding window with the same buffer.
-        (let ((new-window (get-buffer-window current-buffer)))
-          (when new-window
-            (select-window new-window)
-            (goto-char current-point)))))))
-
-;; Hotkey to rotate buffers in the current frame.
-(global-set-key (kbd "C-c y") 'rotate-buffers)
+    ;; Hotkey to rotate buffers in the current frame.
+    (global-set-key (kbd "C-c y") 'rotate-buffers)))
 
 ;;
 ;; backups
 ;;
 
-;; Never create backup files.
-(setq make-backup-files nil)
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Never create backup files.
+    (setq make-backup-files nil)
 
-;; Inhibit backups for all files.
-(setq backup-inhibited t)
+    ;; Inhibit backups for all files.
+    (setq backup-inhibited t)
 
-;; Disable versioned backups.
-(setq version-control nil)
+    ;; Disable versioned backups.
+    (setq version-control nil)))
 
 ;;
 ;; autorevert
@@ -257,15 +279,14 @@ properly if you have more than 3 windows open in a frame."
     ;; Lower the auto revert interval.
     (setq auto-revert-interval 1)
 
-    ;; Auto revert everywhere.
-    (global-auto-revert-mode 1))
-  :config
-  (progn
     ;; Auto revert dired buffers.
     (setq global-auto-revert-non-file-buffers t)
 
     ;; Suppress revert messages.
-    (setq auto-revert-verbose nil)))
+    (setq auto-revert-verbose nil)
+    
+    ;; Auto revert everywhere.
+    (global-auto-revert-mode 1)))
 
 ;;
 ;; auto saves
@@ -300,33 +321,45 @@ properly if you have more than 3 windows open in a frame."
 ;; font
 ;;
 
-(when is-mac
-  (custom-set-faces
-   '(default ((t (:height 150 :width normal :family "IBM Plex Mono"))))))
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    (when is-mac
+      (custom-set-faces
+       '(default ((t (:height 150 :width normal :family "IBM Plex Mono"))))))
 
-(when is-gnu
-  (custom-set-faces
-   `(default ((t (:height 132 :width normal :family "IBM Plex Mono"))))))
+    (when is-gnu
+      (custom-set-faces
+       `(default ((t (:height 132 :width normal :family "IBM Plex Mono"))))))))
 
 ;;
 ;; paths
 ;;
 
-;; Load PATH from ~/.bash_profile.
-(use-package exec-path-from-shell
-  :config
-  (when (display-graphic-p)
-    (exec-path-from-shell-initialize)))
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Load PATH from ~/.bash_profile.
+    (use-package exec-path-from-shell
+      :config
+      (when (display-graphic-p)
+        (exec-path-from-shell-initialize)))))
 
 ;;
 ;; theme
 ;;
 
-;; Setup our theme path.
-(setq custom-theme-directory (f-join user-emacs-directory "themes"))
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Setup our theme path.
+    (setq custom-theme-directory (f-join user-emacs-directory "themes"))
 
-;; Load our theme.
-(load-theme 'wusticality t)
+    ;; Load our theme.
+    (load-theme 'wusticality t)))
 
 ;;
 ;; copy / paste
@@ -339,19 +372,6 @@ properly if you have more than 3 windows open in a frame."
   :config
   (progn
     (xclip-mode 1)))
-
-;;
-;; completion engine
-;;
-
-(defvar my-completion-engine 'ivy
-  "Which completion engine to use.")
-
-(defvar use-ivy (eq my-completion-engine 'ivy)
-  "Non-nil if we are using ivy.")
-
-(defvar use-vertico (eq my-completion-engine 'vertico)
-  "Non-nil if we are using vertico.")
 
 ;;
 ;; ivy
@@ -405,11 +425,6 @@ properly if you have more than 3 windows open in a frame."
   ;; Enable everywhere.
   (ivy-mode 1))
 
-(use-package ivy-hydra
-  :demand t
-  :if use-ivy
-  :after (ivy hydra))
-
 (use-package ivy-rich
   :demand t
   :if use-ivy
@@ -429,6 +444,11 @@ properly if you have more than 3 windows open in a frame."
 
   ;; Highlight the entire line in the minibuffer.
   (setcdr (assoc t ivy-format-functions-alist) #'ivy-format-function-line))
+
+(use-package ivy-hydra
+  :demand t
+  :if use-ivy
+  :after (ivy hydra))
 
 (use-package lsp-ivy
   :demand t
@@ -513,10 +533,7 @@ properly if you have more than 3 windows open in a frame."
          ("C-x b" . consult-buffer)
          ("M-y" . consult-yank-pop)
          ("M-i" . consult-line)
-         ("C-c M-i" . consult-git-grep)
-         ;; ("C-x p" . consult-git)
-         )
-  )
+         ("C-c M-i" . consult-git-grep)))
 
 ;;
 ;; marginalia
