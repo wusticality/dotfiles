@@ -559,7 +559,7 @@
    ;; hl-todo
    ;;
 
-   `(hl-todo ((t (:weight bold :foreground ,c-orange :background nil))))
+   `(hl-todo ((t (:weight bold :foreground ,c-orange))))
 
    ;;
    ;; dired
