@@ -1254,6 +1254,20 @@
   :mode "\\.yml\\'")
 
 ;;
+;; restclient
+;;
+
+(use-package restclient
+  :demand t
+  :commands restclient-mode
+  :mode (("\\.http\\'" . restclient-mode)
+         ("\\.rest\\'" . restclient-mode))
+  :config
+  (progn
+    ;; Unbind C-c n, it's our M-x alternative.
+    (define-key restclient-mode-map (kbd "C-c n") nil)))
+
+;;
 ;; lua-mode
 ;;
 
