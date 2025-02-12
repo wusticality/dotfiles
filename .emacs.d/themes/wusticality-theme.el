@@ -239,6 +239,30 @@
  ;; lsp-signature-posframe
 
  ;;
+ ;; dap-mode
+ ;;
+
+ ;; dap-mouse-eval-thing-face
+ ;; dap-result-overlay-face
+ ;; dap-ui-breakpoint-verified-fringe
+ ;; dap-ui-compile-errline
+ ;; dap-ui-controls-fringe
+ ;; dap-ui-locals-scope-face
+ ;; dap-ui-locals-variable-face
+ ;; dap-ui-locals-variable-leaf-face
+ ;; dap-ui-marker-face
+ ;; dap-ui-pending-breakpoint-face
+ ;; dap-ui-sessions-active-session-face
+ ;; dap-ui-sessions-running-face
+ ;; dap-ui-sessions-stack-frame-face
+ ;; dap-ui-sessions-terminated-active-face
+ ;; dap-ui-sessions-terminated-face
+ ;; dap-ui-sessions-thread-active-face
+ ;; dap-ui-sessions-thread-face
+ ;; dap-ui-verified-breakpoint-face
+ ;; dap-variables-pid-face
+
+ ;;
  ;; ivy
  ;;
 

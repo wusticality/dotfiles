@@ -9,7 +9,7 @@
 
 ;; TODO: Figure out mark history ring.
 ;; TODO: Experiment with project.el.
-;; TODO: Explore restclient.el alternatives.
+;; TODO: Checkout treemacs.
 
 ;;
 ;; variables
@@ -1146,6 +1146,34 @@
     (global-undo-tree-mode)))
 
 ;;
+;; dap-mode
+;;
+
+(use-package dap-mode
+  :demand t
+  :after lsp-mode
+  :init
+  (progn
+    ;; Control debug output.
+    ;; (setq dap-print-io t)
+
+    ;; Control which features are enabled.
+    (setq dap-auto-configure-features
+          '(sessions locals breakpoints controls tooltip)))
+  :config
+  (progn
+    ;; Apply our settings above.
+    (dap-auto-configure-mode)
+
+    ;; Requirethe codelldb debugger.
+    (require 'dap-codelldb)
+
+    ;; TODO: Set this correctly per OS!
+
+    ;; Require the lldb debugger.
+    (setq dap-codelldb-debug-program "/usr/bin/codelldb")))
+
+;;
 ;; yasnippet
 ;;
 
@@ -1157,7 +1185,7 @@
 
 (use-package rustic
   :demand t
-  :after yasnippet
+  :after (yasnippet dap-mode)
   :hook (rustic-mode . yas-minor-mode)
   :bind
   (:map
@@ -1183,7 +1211,38 @@
     (electric-pair-mode 1)
 
     ;; This fixes a bug, see below.
-    (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)))
+    (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)
+
+    ;; (add-hook 'rust-mode-hook
+    ;;           (lambda ()
+    ;;             (let* ((root (f-expand (project-root (project-current))))
+    ;;                    (program (f-join root "target/debug/mega_main")))
+    ;;               (message root)
+    ;;               (message program)
+    ;;               (dap-register-debug-template
+    ;;                "Kevin Debug"
+    ;;                (list :type "lldb-vscode"
+    ;;                      :cwd root
+    ;;                      :request "launch"
+    ;;                      :program program
+    ;;                      :name "LLDB::Run"))
+    ;;               )))
+
+    (add-hook 'rust-mode-hook
+              (lambda ()
+                (let* ((root (f-expand (project-root (project-current))))
+                       (program (f-join root "target/debug/mega_main")))
+                  (message root)
+                  (message program)
+                  (dap-register-debug-template
+                   "Codelldb"
+                   (list :type "lldb"
+                         :cwd root
+                         :request "launch"
+                         :program program
+                         :name "LLDB::Run"))
+                  )))
+    ))
 
 (defun rk/rustic-mode-hook ()
   ;; Do this so that running C-c C-c C-r works without having to
@@ -1440,7 +1499,6 @@
 ;;
 ;; I'm unsure about these packages!
 ;;
-
 
 ;;
 ;; projectile
