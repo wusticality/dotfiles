@@ -9,7 +9,7 @@
 
 ;; TODO: Figure out mark history ring.
 ;; TODO: Experiment with project.el.
-;; TODO: Explore restclient.el alternatives.
+;; TODO: Checkout treemacs.
 
 ;;
 ;; variables
@@ -1194,6 +1194,34 @@
     (global-undo-tree-mode)))
 
 ;;
+;; dap-mode
+;;
+
+(use-package dap-mode
+  :demand t
+  :after lsp-mode
+  :init
+  (progn
+    ;; Control debug output.
+    ;; (setq dap-print-io t)
+
+    ;; Control which features are enabled.
+    (setq dap-auto-configure-features
+          '(sessions locals breakpoints controls tooltip)))
+  :config
+  (progn
+    ;; Apply our settings above.
+    (dap-auto-configure-mode)
+
+    ;; Requirethe codelldb debugger.
+    (require 'dap-codelldb)
+
+    ;; TODO: Set this correctly per OS!
+
+    ;; Require the lldb debugger.
+    (setq dap-codelldb-debug-program "/usr/bin/codelldb")))
+
+;;
 ;; yasnippet
 ;;
 
@@ -1485,7 +1513,6 @@
 ;;
 ;; I'm unsure about these packages!
 ;;
-
 
 ;;
 ;; projectile
