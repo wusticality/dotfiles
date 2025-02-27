@@ -366,7 +366,12 @@
 
 (use-package all-the-icons
   :demand t
-  :if (display-graphic-p))
+  :if (or (display-graphic-p) (daemonp))
+  :config
+  (progn
+    ;; Install the fonts if not present.
+    (unless (member "all-the-icons" (font-family-list))
+      (all-the-icons-install-fonts))))
 
 ;;
 ;; theme
