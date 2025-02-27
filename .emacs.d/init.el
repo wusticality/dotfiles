@@ -1265,38 +1265,35 @@
 ;; go-mode
 ;;
 
-(use-package go-mode
-  :demand t
-  :mode "\\.go\\'"
-  :hook ((go-mode . lsp-deferred)
-		 (go-mode . yas-minor-mode)
-         (go-mode . toggle-truncate-lines)
-         (before-save . lsp-format-buffer)
-         (before-save . lsp-organize-imports))
+(use-package go-ts-mode
+  :straight (:type built-in)
+  :mode ("\\.go\\'")
+  :hook(go-ts-mode . lsp-deferred)
   :config
   (progn
-    ;; Use electric pair mode.
-    (electric-pair-mode 1)
+	;; Use the correct tab width please.
+	(setq go-ts-mode-indent-offset tab-width)
 
-    ;; The hydra for go tests.
-    (defhydra hydra-go-test
-      (:columns 3)
-      "go-test"
+    ;; Setup new go buffers.
+    (add-hook
+     'go-ts-mode-hook
+     (lambda ()
+       ;; Use electric pair mode.
+       (electric-pair-local-mode 1)
 
-      ("t" go-test-current-test "test-current-test" :exit t)
-      ("c" go-test-current-test-cache "test-current-test-cache" :exit t)
-      ("f" go-test-current-file "test-current-file" :exit t)
-      ("p" go-test-current-project "test-current-project" :exit t)
+       ;; Golang uses tabs, not spaces.
+       (setq-default indent-tabs-mode t)
 
-      ;; Cancel.
-      ("q" nil "quit" :exit t))
+       ;; Prevent lsp-mode from making edits before saving.
+       (setq-local lsp-before-save-edits nil)
 
-    (define-key go-mode-map (kbd "C-c t") 'hydra-go-test/body)))
+       ;; Let's organize imports and format on save.
+       (add-hook 'before-save-hook 'lsp-organize-imports t t)
+       (add-hook 'before-save-hook 'lsp-format-buffer t t)
 
-;; Use this for running tests.
-(use-package gotest
-  :demand t
-  :after go-mode)
+       ;; Increase the fontlock level.
+       (setq-local treesit-font-lock-level 4)
+       (treesit-font-lock-recompute-features)))))
 
 ;;
 ;; protobuf-mode
