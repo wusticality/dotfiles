@@ -192,10 +192,6 @@
     (setq-default cursor-type 'box)
     (setq-default cursor-in-non-selected-windows nil)
 
-    ;; Start gui emacs fullscreen on mac.
-    (when (and (display-graphic-p) is-mac)
-      (set-frame-parameter nil 'fullscreen 'fullboth))
-
     ;; Remove trailing whitespace on save.
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
