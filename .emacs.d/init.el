@@ -202,6 +202,13 @@
     ;; Make vertical dividers more visually pleasing.
     (window-divider-mode)
 
+	;; Keep the warnings buffer from opening.
+	;; I don't like being interrupted by it.
+    (setq display-buffer-alist
+          '(("^\\*Warnings\\*$"
+             (display-buffer-no-window)
+             (allow-no-window . t))))
+
     ;; All focus to follow the mouse.
     (setq mouse-autoselect-window t)))
 
