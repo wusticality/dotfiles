@@ -655,11 +655,11 @@
     ;; No delay please.
     (setq company-idle-delay 0)
 
-	;; Start completing after a single character.
-	(setq company-minimum-prefix-length 1)
+    ;; Start completing after a single character.
+    (setq company-minimum-prefix-length 1)
 
-	;; Align fields in completions.
-	(setq company-tooltip-align-annotations t)
+    ;; Align fields in completions.
+    (setq company-tooltip-align-annotations t)
 
     ;; Turn company on globally.
     (add-hook 'after-init-hook 'global-company-mode)))
@@ -731,6 +731,59 @@
 
     ;; Don't enable code lens.
     (setq lsp-lens-enable nil)))
+
+;;
+;; treesit
+;;
+
+(use-package treesit
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Set the treesit grammars we care about.
+    (setq
+     treesit-language-source-alist
+     '((rust "https://github.com/tree-sitter/tree-sitter-rust")
+       (toml "https://github.com/tree-sitter/tree-sitter-toml")
+       (go "https://github.com/tree-sitter/tree-sitter-go")
+
+	   ;; TODO: Turn some of these on for other major modes!
+
+       ;; (json "https://github.com/tree-sitter/tree-sitter-json")
+       ;; (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+       ;; (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+       ;; (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+       ;; (c "https://github.com/tree-sitter/tree-sitter-c")
+       ;; (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+       ;; (c-sharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+       ;; (bash "https://github.com/tree-sitter/tree-sitter-bash")
+       ;; (html "https://github.com/tree-sitter/tree-sitter-html")
+       ;; (css "https://github.com/tree-sitter/tree-sitter-css")
+       ;; (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
+       ;; (typescript "https://github.com/tree-sitter/tree-sitter-typescript")
+       ;; (regex "https://github.com/tree-sitter/tree-sitter-regex")
+       ;; (make "https://github.com/alemuller/tree-sitter-make")
+       ;; (cmake "https://github.com/uyha/tree-sitter-cmake")
+       ;; (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
+       ;; (python "https://github.com/tree-sitter/tree-sitter-python")
+       )))
+  :config
+  (progn
+    (defun treesit-install-all-missing-grammars ()
+      "Install all missing treesit grammars."
+      (interactive)
+      (dolist (grammar treesit-language-source-alist)
+        (unless (treesit-language-available-p (car grammar))
+          (treesit-install-language-grammar (car grammar)))))
+
+    (defun treesit-reinstall-all-grammars ()
+      "Reinstall all treesit grammers."
+      (interactive)
+      (dolist (grammar treesit-language-source-alist)
+        (treesit-install-language-grammar (car grammar))))
+
+    ;; On startup, only install missing grammars.
+    (treesit-install-all-missing-grammars)))
 
 ;;
 ;; copilot
