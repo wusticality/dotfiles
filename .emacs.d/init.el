@@ -354,8 +354,9 @@
 
 (use-package exec-path-from-shell
   :demand t
+  :if (display-graphic-p)
   :config
-  (when (display-graphic-p)
+  (progn
     ;; Load our path from ~/.bash_profile.
     (exec-path-from-shell-initialize)))
 
