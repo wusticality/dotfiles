@@ -978,35 +978,30 @@
                     (dired-do-find-marked-files t)))))
 
 ;;
-;; dired-sidebar
+;; treemacs
 ;;
 
-(use-package dired-sidebar
+;; TODO: Customize this more.
+
+(use-package treemacs
   :demand t
-  :bind (("C-c SPC" . dired-sidebar-toggle-sidebar))
+  :bind (("C-c SPC" . treemacs))
   :init
   (progn
-    ;; Follow what file you're on.
-    (setq dired-sidebar-should-follow-file t)
-
-    ;; Don't jump to sidebar when it's opened.
-    (setq dired-sidebar-pop-to-sidebar-on-toggle-open nil)
-
-    ;; Follow files immediately.
-    (setq dired-sidebar-follow-file-idle-delay 0)
-
-    ;; Detect changes immediately.
-    (setq dired-sidebar-stale-buffer-time-idle-delay 0))
+    ;; I'm not quite sure that this does.
+    (setq treemacs-follow-after-init t))
   :config
   (progn
-    ;; Don't navigate to this window via other-window. Instead,
-    ;; use something like ace-window to navigate to it.
-    (defadvice dired-sidebar-toggle-sidebar
-        (after prevent-other-window activate)
-      (if (dired-sidebar-showing-sidebar-p)
-          (set-window-parameter
-           (get-buffer-window (dired-sidebar-buffer))
-           'no-other-window t)))))
+    ;; Enable follow mode.
+    (treemacs-follow-mode t)))
+
+(use-package treemacs-all-the-icons
+  :demand t
+  :if (or (display-graphic-p) (daemonp))
+  :after (treemacs all-the-icons)
+  :config
+  (progn
+    (treemacs-load-theme "all-the-icons")))
 
 ;;
 ;; rainbow-delimiters
