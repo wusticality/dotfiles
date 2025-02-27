@@ -144,8 +144,13 @@
     (global-subword-mode 1)
 
     ;; Shoot for an 80 character width.
-    (setq fill-column 80)
     (setq-default fill-column 80)
+
+    ;; Use a sane tab width please.
+    (setq-default tab-width 4)
+
+	;; Use spaces for indentation.
+	(setq-default indent-tabs-mode nil)
 
     ;; Make a vertical split more likely.
     (setq split-height-threshold 100)
@@ -291,7 +296,7 @@
 
     ;; Suppress revert messages.
     (setq auto-revert-verbose nil)
-    
+
     ;; Auto revert everywhere.
     (global-auto-revert-mode 1)))
 
@@ -761,25 +766,23 @@
 ;; c / c++
 ;;
 
-;; Open header files in c++ mode.
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+;; ;; Open header files in c++ mode.
+;; (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
-;; Style defaults.
-(setq-default tab-width 4)
-(setq-default indent-tabs-mode nil)
-(setq-default c-basic-offset 4)
+;; ;; Style defaults.
+;; (setq-default c-basic-offset 4)
 
-;; The style.
-(add-hook
- 'c-mode-common-hook
- (lambda ()
-   (c-set-style "k&r")
-   (setq tab-width 4)
-   (setq indent-tabs-mode nil)
-   (setq c-basic-offset 4)
-   (c-set-offset 'inline-open '0)
-   (c-set-offset 'case-label '4)
-   (electric-pair-mode 1)))
+;; ;; The style.
+;; (add-hook
+;;  'c-mode-common-hook
+;;  (lambda ()
+;;    (c-set-style "k&r")
+;;    (setq tab-width 4)
+;;    (setq indent-tabs-mode nil)
+;;    (setq c-basic-offset 4)
+;;    (c-set-offset 'inline-open '0)
+;;    (c-set-offset 'case-label '4)
+;;    (electric-pair-mode 1)))
 
 ;;
 ;; multiple-cursors
