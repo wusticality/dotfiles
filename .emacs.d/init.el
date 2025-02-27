@@ -1215,46 +1215,43 @@
 (use-package yasnippet)
 
 ;;
-;; rust
+;; rust-ts-mode
 ;;
 
-(use-package rustic
-  :demand t
-  :after yasnippet
-  :hook (rustic-mode . yas-minor-mode)
-  :bind
-  (:map
-   rustic-mode-map
-   ("M-j" . lsp-ui-imenu)
-   ("M-?" . lsp-find-references)
-   ("C-c C-c l" . flycheck-list-errors)
-   ("C-c C-c a" . lsp-execute-code-action)
-   ("C-c C-c r" . lsp-rename)
-   ("C-c C-c q" . lsp-workspace-restart)
-   ("C-c C-c Q" . lsp-workspace-shutdown)
-   ("C-c C-c s" . lsp-rust-analyzer-status))
-  :init
-  (progn
-    ;; Use nightly rust for formatting.
-    (setq rustic-rustfmt-args "+nightly")
-
-    ;; Use rustfmt on save.
-    (setq rustic-format-on-save t))
+(use-package rust-ts-mode
+  :straight (:type built-in)
+  :mode ("\\.rs\\'")
+  :hook (rust-ts-mode . lsp-deferred)
   :config
   (progn
-    ;; Use electric pair mode.
-    (electric-pair-mode 1)
+    ;; Setup new rust buffers.
+    (add-hook
+     'rust-ts-mode-hook
+     (lambda ()
+       ;; Use electric pair mode.
+       (electric-pair-local-mode 1)
 
-    ;; This fixes a bug, see below.
-    (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)))
+       ;; Prevent lsp-mode from making edits before saving.
+       (setq-local lsp-before-save-edits nil)
 
-(defun rk/rustic-mode-hook ()
-  ;; Do this so that running C-c C-c C-r works without having to
-  ;; confirm, but don't try to save rust buffers that are not file
-  ;; visiting. Once https://github.com/brotzeit/rustic/issues/253
-  ;; has been resolved this should no longer be necessary.
-  (when buffer-file-name
-    (setq-local buffer-save-without-query t)))
+       ;; Let's organize imports and format on save.
+       (add-hook 'before-save-hook 'lsp-organize-imports t t)
+       (add-hook 'before-save-hook 'lsp-format-buffer t t)
+
+       ;; Use the nightly toolchain for formatting.
+       (setq-local lsp-rust-analyzer-rustfmt-extra-args '["+nightly"])
+
+       ;; Increase the fontlock level.
+       (setq-local treesit-font-lock-level 4)
+       (treesit-font-lock-recompute-features)))))
+
+;;
+;; toml-ts-mode
+;;
+
+(use-package toml-ts-mode
+  :straight (:type built-in)
+  :mode ("\\.toml\\'"))
 
 ;;
 ;; glsl-mode
