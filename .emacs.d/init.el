@@ -383,18 +383,6 @@
     (load-theme 'wusticality t)))
 
 ;;
-;; copy / paste
-;;
-
-;; Use xclip for copy / paste when in gui emacs.
-(use-package xclip
-  :demand t
-  :if (not (display-graphic-p))
-  :config
-  (progn
-    (xclip-mode 1)))
-
-;;
 ;; projects
 ;;
 
