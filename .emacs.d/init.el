@@ -1395,8 +1395,11 @@
   :mode "\\.hs\\'"
   :config
   (progn
-    ;; Use electric pair mode.
-    (electric-pair-mode 1)))
+    ;; TODO: Fix this!
+
+    ;; ;; Use electric pair mode.
+    ;; (electric-pair-mode 1)
+    ))
 
 ;;
 ;; mise
