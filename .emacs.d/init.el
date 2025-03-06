@@ -1627,6 +1627,34 @@
 ;;     ;; Turn it on.
 ;;     (which-key-mode)))
 
+;;
+;; dap-mode
+;;
+
+;; (use-package dap-mode
+;;   :demand t
+;;   :after lsp-mode
+;;   :init
+;;   (progn
+;;     ;; Control debug output.
+;;     ;; (setq dap-print-io t)
+
+;;     ;; Control which features are enabled.
+;;     (setq dap-auto-configure-features
+;;           '(sessions locals breakpoints controls tooltip)))
+;;   :config
+;;   (progn
+;;     ;; Apply our settings above.
+;;     (dap-auto-configure-mode)
+
+;;     ;; Requirethe codelldb debugger.
+;;     (require 'dap-codelldb)
+
+;;     ;; TODO: Set this correctly per OS!
+
+;;     ;; Require the lldb debugger.
+;;     (setq dap-codelldb-debug-program "/usr/bin/codelldb")))
+
 (provide 'init)
 
 ;;; init.el ends here
