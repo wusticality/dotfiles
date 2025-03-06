@@ -195,6 +195,9 @@
     ;; Remove trailing whitespace on save.
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+    ;; Don't save credentials to ~/.authinfo!
+    (setq auth-source-save-behavior nil)
+
     ;; Make vertical dividers more visually pleasing.
     (window-divider-mode)
 
