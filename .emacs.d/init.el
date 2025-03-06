@@ -1197,6 +1197,59 @@
     (global-undo-tree-mode)))
 
 ;;
+;; gptel
+;;
+
+(use-package gptel
+  :demand t
+  :bind (("C-c RET" . gptel-send)
+         ("C-c g" . hydra-gptel/body))
+  :init
+  (progn
+    ;; Set the default mode.
+    (setq gptel-default-mode 'org-mode)
+
+    ;; Set prompts for each mode.
+    (setq gptel-prompt-prefix-alist
+          '((markdown-mode . "# ")
+            (org-mode . "* ")
+            (text-mode . "")))
+
+    ;; Use gpt-4o by default.
+    (setq gptel-model 'gpt-4o))
+  :config
+  (progn
+    ;; The hydra.
+    (defhydra hydra-gptel
+      (:columns 3)
+      "gptel"
+
+      ;; Open gptel chats.
+      ("g" gptel "gptel" :exit t)
+      ("m" gptel-menu "gptel-menu" :exit t)
+      ("k" gptel-abort "gptel-abort" :exit t)
+
+      ;; Cancel.
+      ("q" nil "quit" :exit t))
+
+    (defun get-api-key (host user)
+      "Read an API key from ~/.authinfo for HOST and USER."
+      (let ((entry (car (auth-source-search
+                         :host host
+                         :user user
+                         :require '(:secret)))))
+        (when entry
+          (let ((secret (plist-get entry :secret)))
+            (if (functionp secret)
+                (funcall secret)
+              secret)))))
+
+    ;; Setup Gemini.
+    (let ((api-key (get-api-key "gemini.googleapis.com" "apikey")))
+      (when api-key
+        (gptel-make-gemini "Gemini" :key api-key :stream t)))))
+
+;;
 ;; yasnippet
 ;;
 
