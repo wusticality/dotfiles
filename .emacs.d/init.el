@@ -345,11 +345,11 @@
   (progn
     (when is-mac
       (custom-set-faces
-       '(default ((t (:height 150 :width normal :family "IBM Plex Mono"))))))
+       '(default ((t (:height 130 :width normal :family "IBM Plex Mono"))))))
 
     (when is-gnu
       (custom-set-faces
-       `(default ((t (:height 132 :width normal :family "IBM Plex Mono"))))))))
+       `(default ((t (:height 116 :width normal :family "IBM Plex Mono"))))))))
 
 ;;
 ;; paths
