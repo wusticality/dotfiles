@@ -636,6 +636,13 @@
     (add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))))
 
 ;;
+;; yasnippet
+;;
+
+(use-package yasnippet
+  :demand t)
+
+;;
 ;; company
 ;;
 
@@ -688,6 +695,7 @@
 
 (use-package lsp-mode
   :demand t
+  :after yasnippet
   :hook (lsp-mode . lsp-enable-which-key-integration)
   :bind-keymap ("C-c k" . lsp-command-map)
   :bind (("C-c M-u" . lsp-find-references)
@@ -1248,12 +1256,6 @@
     (let ((api-key (get-api-key "gemini.googleapis.com" "apikey")))
       (when api-key
         (gptel-make-gemini "Gemini" :key api-key :stream t)))))
-
-;;
-;; yasnippet
-;;
-
-(use-package yasnippet)
 
 ;;
 ;; rust-ts-mode
