@@ -557,6 +557,13 @@
  `(copilot-overlay-face ((t (:foreground ,wusticality-gray :italic t))))
 
  ;;
+ ;; gptel
+ ;;
+
+ `(gptel-context-highlight-face ((t nil)))
+ `(gptel-context-deletion-face ((t nil)))
+
+ ;;
  ;; hl-todo
  ;;
 
