@@ -10,6 +10,7 @@
 ;; TODO: Figure out mark history ring.
 ;; TODO: Experiment with project.el.
 ;; TODO: Explore restclient.el alternatives.
+;; TODO: Enable electric-pair-local-mode more.
 
 ;;
 ;; variables
@@ -1271,6 +1272,9 @@
     (add-hook
      'rust-ts-mode-hook
      (lambda ()
+       ;; Truncate lines.
+       (setq truncate-lines t)
+
        ;; Use electric pair mode.
        (electric-pair-local-mode 1)
 
@@ -1321,6 +1325,9 @@
     (add-hook
      'go-ts-mode-hook
      (lambda ()
+       ;; Truncate lines.
+       (setq truncate-lines t)
+
        ;; Use electric pair mode.
        (electric-pair-local-mode 1)
 
