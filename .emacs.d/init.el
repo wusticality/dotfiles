@@ -697,7 +697,8 @@
 (use-package lsp-mode
   :demand t
   :after yasnippet
-  :hook (lsp-mode . lsp-enable-which-key-integration)
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+         (lsp-mode . yas-minor-mode))
   :bind-keymap ("C-c k" . lsp-command-map)
   :bind (("C-c M-u" . lsp-find-references)
          ("C-c M-y" . lsp-find-implementation)
