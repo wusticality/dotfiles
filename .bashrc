@@ -68,11 +68,6 @@ if command -v go >/dev/null 2>&1; then
     kd_add_path_tail $GOPATH/bin
 fi
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
 # Load platform-specific things.
 kd_execute "$HOME/.bashrc_prompt"
 kd_execute "$HOME/.bashrc_linux"
