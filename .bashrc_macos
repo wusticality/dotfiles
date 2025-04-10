@@ -3,3 +3,6 @@
 # Setup our path.
 kd_add_path_tail "/opt/homebrew/bin"
 kd_add_path_tail "$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+
+# You can't launch symlinked executables on macOS.
+alias emacs='open -a /opt/homebrew/opt/emacs-plus/Emacs.app'
