@@ -149,8 +149,8 @@
     ;; Use a sane tab width please.
     (setq-default tab-width 4)
 
-	;; Use spaces for indentation.
-	(setq-default indent-tabs-mode nil)
+    ;; Use spaces for indentation.
+    (setq-default indent-tabs-mode nil)
 
     ;; Make a vertical split more likely.
     (setq split-height-threshold 100)
@@ -204,8 +204,8 @@
     ;; Make vertical dividers more visually pleasing.
     (window-divider-mode)
 
-	;; Keep the warnings buffer from opening.
-	;; I don't like being interrupted by it.
+    ;; Keep the warnings buffer from opening.
+    ;; I don't like being interrupted by it.
     (setq display-buffer-alist
           '(("^\\*Warnings\\*$"
              (display-buffer-no-window)
@@ -750,28 +750,53 @@
      treesit-language-source-alist
      '((rust "https://github.com/tree-sitter/tree-sitter-rust")
        (toml "https://github.com/tree-sitter/tree-sitter-toml")
+       (glsl "https://github.com/tree-sitter-grammars/tree-sitter-glsl")
        (go "https://github.com/tree-sitter/tree-sitter-go")
+       (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+       (bash "https://github.com/tree-sitter/tree-sitter-bash")
+       (c "https://github.com/tree-sitter/tree-sitter-c")
+       (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+       (json "https://github.com/tree-sitter/tree-sitter-json")
+       (html "https://github.com/tree-sitter/tree-sitter-html")
+       (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
+       (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+       (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+       (css "https://github.com/tree-sitter/tree-sitter-css")
+       (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+       (lua "https://github.com/tree-sitter-grammars/tree-sitter-lua")
+       (c-sharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+       (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+       (python "https://github.com/tree-sitter/tree-sitter-python")
+       (java "https://github.com/tree-sitter/tree-sitter-java")
 
-	   ;; TODO: Turn some of these on for other major modes!
-
-       ;; (json "https://github.com/tree-sitter/tree-sitter-json")
-       ;; (yaml "https://github.com/ikatyang/tree-sitter-yaml")
        ;; (elisp "https://github.com/Wilfred/tree-sitter-elisp")
        ;; (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-       ;; (c "https://github.com/tree-sitter/tree-sitter-c")
-       ;; (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-       ;; (c-sharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-       ;; (bash "https://github.com/tree-sitter/tree-sitter-bash")
-       ;; (html "https://github.com/tree-sitter/tree-sitter-html")
-       ;; (css "https://github.com/tree-sitter/tree-sitter-css")
-       ;; (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
-       ;; (typescript "https://github.com/tree-sitter/tree-sitter-typescript")
        ;; (regex "https://github.com/tree-sitter/tree-sitter-regex")
        ;; (make "https://github.com/alemuller/tree-sitter-make")
-       ;; (cmake "https://github.com/uyha/tree-sitter-cmake")
        ;; (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
-       ;; (python "https://github.com/tree-sitter/tree-sitter-python")
-       )))
+       ;; (cmake "https://github.com/uyha/tree-sitter-cmake")
+       ))
+
+    ;; We need to remap a few major modes. For shell scripts and c / c++,
+    ;; let emacs figure out what kind of file it is, then simply remap.
+    ;; Also remap all other old modes to the new typescript ones.
+    (setq
+     major-mode-remap-alist
+     '((sh-mode . bash-ts-mode)
+       (c-mode . c-ts-mode)
+       (c++-mode . c++-ts-mode)
+       (html-mode . html-ts-mode)
+       (js-mode . js-ts-mode)
+       (css-mode . css-ts-mode)
+       (csharp-mode . csharp-ts-mode)
+       (python-mode . python-ts-mode)
+       (java-mode . java-ts-mode)
+       (glsl-mode . glsl-ts-mode)
+       ))
+
+    ;; cmake-ts-mode
+
+    )
   :config
   (progn
     (defun treesit-install-all-missing-grammars ()
@@ -1301,15 +1326,7 @@
   :mode ("\\.toml\\'"))
 
 ;;
-;; glsl-mode
-;;
-
-(use-package glsl-mode
-  :mode ("\\.vert\\'"
-         "\\.frag\\'"))
-
-;;
-;; go-mode
+;; go-ts-mode
 ;;
 
 (use-package go-ts-mode
@@ -1318,8 +1335,8 @@
   :hook(go-ts-mode . lsp-deferred)
   :config
   (progn
-	;; Use the correct tab width please.
-	(setq go-ts-mode-indent-offset tab-width)
+    ;; Use the correct tab width please.
+    (setq go-ts-mode-indent-offset tab-width)
 
     ;; Setup new go buffers.
     (add-hook
@@ -1343,89 +1360,95 @@
        (treesit-font-lock-recompute-features)))))
 
 ;;
+;; go-mod-ts-mode
+;;
+
+(use-package go-mod-ts-mode
+  :straight (:type built-in)
+  :mode ("go\\.mod\\'"
+         "go\\.sum\\'"
+         "go\\.work\\'"))
+
+;;
+;; json-ts-mode
+;;
+
+(use-package json-ts-mode
+  :straight (:type built-in)
+  :mode "\\.json\\'")
+
+;;
+;; js-ts-mode
+;;
+
+(use-package js-ts-mode
+  :straight (:type built-in)
+  :mode ("\\.js\\'"
+         "\\.jsx\\'"))
+
+;;
+;; typescript-ts-mode
+;;
+
+(use-package typescript-ts-mode
+  :straight (:type built-in)
+  :mode "\\.ts\\'")
+
+;;
+;; tsx-ts-mode
+;;
+
+(use-package tsx-ts-mode
+  :straight (:type built-in)
+  :mode "\\.tsx\\'")
+
+;;
+;; yaml-ts-mode
+;;
+
+(use-package yaml-ts-mode
+  :straight (:type built-in)
+  :mode ("\\.yml\\'"
+         "\\.yaml\\'"))
+
+;;
+;; lua-ts-mode
+;;
+
+(use-package lua-ts-mode
+  :straight (:type built-in)
+  :mode "\\.lua\\'")
+
+;;
+;; dockerfile-ts-mode
+;;
+
+(use-package dockerfile-ts-mode
+  :straight (:type built-in)
+  :mode ("Dockerfile\\'"
+         "Dockerfile\\..*\\'"
+         "\\.dockerfile\\'"
+         "\\.Dockerfile\\'"))
+
+;;
+;; glsl-mode
+;;
+
+(use-package glsl-mode
+  :mode ("\\.vert\\'"
+         "\\.frag\\'"
+         "\\.geom\\'"
+         "\\.comp\\'"
+         "\\.tesc\\'"
+         "\\.tese\\'"
+         "\\.glsl\\'"))
+
+;;
 ;; protobuf-mode
 ;;
 
 (use-package protobuf-mode
   :mode "\\.proto")
-
-;;
-;; yaml-mode
-;;
-
-;; The yaml language.
-(use-package yaml-mode
-  :mode "\\.yml\\'")
-
-;;
-;; restclient
-;;
-
-(use-package restclient
-  :demand t
-  :commands restclient-mode
-  :mode (("\\.http\\'" . restclient-mode)
-         ("\\.rest\\'" . restclient-mode))
-  :config
-  (progn
-    ;; Unbind C-c n, it's our M-x alternative.
-    (define-key restclient-mode-map (kbd "C-c n") nil)))
-
-;;
-;; lua-mode
-;;
-
-(use-package lua-mode
-  :mode "\\.lua\\'")
-
-;;
-;; web-mode
-;;
-
-;; For web-based languages.
-(use-package web-mode
-  :mode ("\\.jsx\\'"
-         "\\.css\\'"
-         "\\.scss\\'"
-         "\\.html\\'")
-  :init
-  (progn
-    ;; Indenting offsets.
-    (add-hook
-     'web-mode-hook
-     (lambda ()
-       (setq web-mode-markup-indent-offset 4)
-       (setq web-mode-css-indent-offset 4)
-       (setq web-mode-code-indent-offset 4)))))
-
-;;
-;; js-mode
-;;
-
-(use-package emacs
-  :straight (:type built-in)
-  :init
-  (progn
-    ;; Follow conventions please.
-    (setq js-indent-level 2)))
-
-;;
-;; js2-mode
-;;
-
-(use-package js2-mode
-  :mode "\\.js\\'"
-  :config
-  (progn
-    ;; Use 2 spaces for indentation.
-    (setq js2-basic-offset 2)))
-
-;;
-;; typescript-mode
-;;
-
-(use-package typescript-mode
-  :mode "\\.ts\\'")
 
 ;;
 ;; markdown-mode
@@ -1439,14 +1462,7 @@
 ;;
 
 (use-package haskell-mode
-  :mode "\\.hs\\'"
-  :config
-  (progn
-    ;; TODO: Fix this!
-
-    ;; ;; Use electric pair mode.
-    ;; (electric-pair-mode 1)
-    ))
+  :mode "\\.hs\\'")
 
 ;;
 ;; mise
