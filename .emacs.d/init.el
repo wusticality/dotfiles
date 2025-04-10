@@ -10,7 +10,6 @@
 ;; TODO: Figure out mark history ring.
 ;; TODO: Experiment with project.el.
 ;; TODO: Explore restclient.el alternatives.
-;; TODO: Enable electric-pair-local-mode more.
 
 ;;
 ;; variables
@@ -198,6 +197,9 @@
 
     ;; Don't save credentials to ~/.authinfo!
     (setq auth-source-save-behavior nil)
+
+    ;; Turn on electric pair mode.
+    (electric-pair-mode 1)
 
     ;; Make vertical dividers more visually pleasing.
     (window-divider-mode)
@@ -1276,9 +1278,6 @@
        ;; Truncate lines.
        (setq truncate-lines t)
 
-       ;; Use electric pair mode.
-       (electric-pair-local-mode 1)
-
        ;; Prevent lsp-mode from making edits before saving.
        (setq-local lsp-before-save-edits nil)
 
@@ -1328,9 +1327,6 @@
      (lambda ()
        ;; Truncate lines.
        (setq truncate-lines t)
-
-       ;; Use electric pair mode.
-       (electric-pair-local-mode 1)
 
        ;; Golang uses tabs, not spaces.
        (setq-default indent-tabs-mode t)
