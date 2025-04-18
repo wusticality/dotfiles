@@ -823,6 +823,11 @@
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :after company
+  :init
+  (progn
+    ;; Be a bit less aggressive so I have a chance to
+    ;; type . and ; without it stomping on me. :)
+    (setq copilot-idle-delay 0.4))
   :config
   (progn
     ;; Enable copilot for programming modes.
