@@ -786,6 +786,7 @@
        (c-mode . c-ts-mode)
        (c++-mode . c++-ts-mode)
        (html-mode . html-ts-mode)
+       (mhtml-mode . html-ts-mode)
        (js-mode . js-ts-mode)
        (css-mode . css-ts-mode)
        (csharp-mode . csharp-ts-mode)
