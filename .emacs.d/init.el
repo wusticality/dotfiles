@@ -706,7 +706,7 @@
          ("C-c M-y" . lsp-find-implementation)
          ("C-c M-." . xref-find-definitions-other-window)
          ("M-RET" . lsp-execute-code-action)
-         ("S-<f6>" . lsp-rename))
+         ("<f2>" . lsp-rename))
   :commands (lsp lsp-deferred)
   :init
   (progn
