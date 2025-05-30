@@ -49,9 +49,6 @@ alias rg="rg --color=always"
 # jq
 alias jq="jq --color-output"
 
-# fzf
-kd_execute "$HOME/.fzf.bash"
-
 # # Load our ssh key into ssh-agent.
 # if [ -z "$SSH_AUTH_SOCK" ] ; then
 #   eval "$(ssh-agent -s)"
@@ -73,6 +70,11 @@ kd_execute "$HOME/.bashrc_prompt"
 kd_execute "$HOME/.bashrc_linux"
 kd_execute "$HOME/.bashrc_macos"
 kd_execute "$HOME/.bashrc_kubectl"
+
+# fzf
+if command -v fzf >/dev/null 2>&1; then
+    eval "$(fzf --bash)"
+fi
 
 # mise
 if command -v mise >/dev/null 2>&1; then
