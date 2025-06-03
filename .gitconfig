@@ -1,6 +1,16 @@
 [user]
 name = Kevin Depue
 email = kevin.depue@kraken.com
+signingkey = 3613CD6EDEB29BD270C551CE67EDEB3EA02498CC
+
+[commit]
+gpgsign = true
+
+[tag]
+gpgsign = true
+
+[gpg]
+program = gpg
 
 [credential]
 helper = store
