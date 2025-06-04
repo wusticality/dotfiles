@@ -13,7 +13,7 @@ gpgsign = true
 program = gpg
 
 [credential]
-helper = store
+helper = osxkeychain
 
 [color]
 ui = true
@@ -51,3 +51,9 @@ insteadOf = https://github.com/
 
 [status]
 showUntrackedFiles = all
+
+[submodule]
+recurse = true
+
+[rerere]
+enabled = true
