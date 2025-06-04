@@ -13,7 +13,7 @@ gpgsign = true
 program = gpg
 
 [credential]
-helper = store
+helper = osxkeychain
 
 [color]
 ui = true
@@ -45,3 +45,9 @@ process = git-lfs filter-process
 
 [url "git@github.com:"]
 insteadOf = https://github.com/
+
+[submodule]
+recurse = true
+
+[rerere]
+enabled = true
