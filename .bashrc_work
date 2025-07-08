@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Bump the number of file descriptors.
+ulimit -S -n 8192
+
+# Bump the maximum stack size.
+ulimit -s 16352
