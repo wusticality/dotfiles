@@ -70,6 +70,7 @@ fi
 kd_execute "$HOME/.bashrc_prompt"
 kd_execute "$HOME/.bashrc_linux"
 kd_execute "$HOME/.bashrc_macos"
+kd_execute "$HOME/.bashrc_work"
 kd_execute "$HOME/.bashrc_kubectl"
 
 # fzf
