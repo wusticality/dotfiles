@@ -1229,17 +1229,6 @@
     (setq rainbow-x-colors nil)))
 
 ;;
-;; undo-tree
-;;
-
-(use-package undo-tree
-  :bind (("C-x u" . undo-tree-visualize))
-  :config
-  (progn
-    ;; Let's use this everywhere.
-    (global-undo-tree-mode)))
-
-;;
 ;; gptel
 ;;
 
