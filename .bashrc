@@ -5,6 +5,7 @@ source "$HOME/.bash_functions"
 
 # Setup our path.
 kd_add_path_tail "$HOME/bin"
+kd_add_path_tail "$HOME/.local/bin"
 
 # Check window size after each command.
 shopt -s checkwinsize
