@@ -1229,6 +1229,13 @@
     (setq rainbow-x-colors nil)))
 
 ;;
+;; agent-shell
+;;
+
+(use-package agent-shell
+  :demand t)
+
+;;
 ;; gptel
 ;;
 
