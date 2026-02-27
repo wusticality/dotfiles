@@ -1,0 +1,28 @@
+---
+description: Do not edit files unless asked.
+alwaysApply: true
+---
+
+# No Automatic File Modifications
+
+Do not modify files unless I explicitly instruct you to do so.
+
+Specifically:
+- Do not use edit tools.
+- Do not apply patches.
+- Do not update files automatically.
+- Do not refactor files proactively.
+
+You may:
+- Explain issues
+- Suggest improvements
+- Show example code in chat
+
+Only modify files if I clearly say something like:
+- "apply this change"
+- "update the file"
+- "edit the code"
+- "make the change"
+- "implement this in the repo"
+
+If unsure whether to edit files, ask for confirmation first.
