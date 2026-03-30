@@ -152,8 +152,11 @@
     ;; Use spaces for indentation.
     (setq-default indent-tabs-mode nil)
 
-    ;; Make a vertical split more likely.
-    (setq split-height-threshold 100)
+    ;; Reuse existing splits; never auto-split.
+    (setq display-buffer-base-action
+          '((display-buffer-reuse-window display-buffer-use-some-window)))
+    (setq split-height-threshold nil)
+    (setq split-width-threshold nil)
 
     ;; Save minibuffer history.
     (savehist-mode 1)
