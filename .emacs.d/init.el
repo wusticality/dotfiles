@@ -1232,6 +1232,13 @@
     (setq rainbow-x-colors nil)))
 
 ;;
+;; vterm
+;;
+
+(use-package vterm
+  :ensure t)
+
+;;
 ;; agent-shell
 ;;
 
