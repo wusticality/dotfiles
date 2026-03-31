@@ -140,6 +140,9 @@
     (setq line-number-mode t)
     (setq column-number-mode t)
 
+    ;; Add vertical space between lines.
+    (setq-default line-spacing 2)
+
     ;; Subword mode is the cat's meow.
     (global-subword-mode 1)
 
