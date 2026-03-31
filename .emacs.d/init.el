@@ -1236,7 +1236,33 @@
 ;;
 
 (use-package agent-shell
-  :demand t)
+  :demand t
+  :init
+  (progn
+    (setq agent-shell-highlight-blocks t))
+  :config
+  (progn
+	;; Syntax highlight code correctly in agent-shell chat windows.
+	;; Since we use tree-sitter, we have to provide these mappings.
+    (dolist (mapping '(("rust" . "rust-ts")
+                       ("toml" . "toml-ts")
+                       ("go" . "go-ts")
+                       ("json" . "json-ts")
+                       ("javascript" . "js-ts")
+                       ("js" . "js-ts")
+                       ("typescript" . "typescript-ts")
+                       ("tsx" . "tsx-ts")
+                       ("yaml" . "yaml-ts")
+                       ("lua" . "lua-ts")
+                       ("dockerfile" . "dockerfile-ts")
+                       ("bash" . "bash-ts")
+                       ("sh" . "bash-ts")
+                       ("c" . "c-ts")
+                       ("css" . "css-ts")
+                       ("csharp" . "csharp-ts")
+                       ("python" . "python-ts")
+                       ("java" . "java-ts")))
+      (add-to-list 'markdown-overlays-language-mapping mapping))))
 
 ;;
 ;; gptel
