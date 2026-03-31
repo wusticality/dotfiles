@@ -1239,7 +1239,10 @@
   :demand t
   :init
   (progn
-    (setq agent-shell-highlight-blocks t))
+    (setq agent-shell-highlight-blocks t)
+    (setq agent-shell-thought-process-icon (all-the-icons-fileicon "brain"))
+    ;; (setq agent-shell-permission-icon (all-the-icons-material "security"))
+    )
   :config
   (progn
 	;; Syntax highlight code correctly in agent-shell chat windows.
