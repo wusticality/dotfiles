@@ -688,7 +688,7 @@
 ;; The best git interface ever.
 (use-package magit
   :demand t
-  :bind (("C-x g" . magit-status))
+  :bind (("C-x g" . my-magit-status))
   :init
   (progn
     ;; Turn these off, they're ugly.
@@ -696,7 +696,13 @@
   :config
   (progn
     ;; Open the status buffer in the current window and select it.
-    (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)))
+    (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+
+    (defun my-magit-status ()
+      "Open magit status and show all sections at level 2."
+      (interactive)
+      (call-interactively 'magit-status)
+      (magit-section-show-level-2-all))))
 
 ;;
 ;; lsp-mode
