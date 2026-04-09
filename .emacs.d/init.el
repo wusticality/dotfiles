@@ -354,11 +354,11 @@
   (progn
     (when is-mac
       (custom-set-faces
-       '(default ((t (:height 130 :width normal :family "IBM Plex Mono"))))))
+       '(default ((t (:height 150 :width normal :family "BlexMono Nerd Font Mono"))))))
 
     (when is-gnu
       (custom-set-faces
-       `(default ((t (:height 116 :width normal :family "IBM Plex Mono"))))))))
+       `(default ((t (:height 116 :width normal :family "BlexMono Nerd Font Mono"))))))))
 
 ;;
 ;; paths
@@ -373,17 +373,14 @@
     (exec-path-from-shell-initialize)))
 
 ;;
-;; all-the-icons
+;; nerd-icons
 ;;
 
-(use-package all-the-icons
+(use-package nerd-icons
   :demand t
-  :if (or (display-graphic-p) (daemonp))
   :config
   (progn
-    ;; Install the fonts if not present.
-    (unless (or (daemonp) (member "all-the-icons" (font-family-list)))
-      (all-the-icons-install-fonts))))
+    (setq nerd-icons-font-family "Symbols Nerd Font Mono")))
 
 ;;
 ;; theme
@@ -1054,13 +1051,12 @@
     ;; Enable follow mode.
     (treemacs-follow-mode t)))
 
-(use-package treemacs-all-the-icons
+(use-package treemacs-nerd-icons
   :demand t
-  :if (or (display-graphic-p) (daemonp))
-  :after (treemacs all-the-icons)
+  :after (treemacs nerd-icons)
   :config
   (progn
-    (treemacs-load-theme "all-the-icons")))
+    (treemacs-load-theme "nerd-icons")))
 
 ;;
 ;; rainbow-delimiters
