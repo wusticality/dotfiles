@@ -833,6 +833,7 @@
 ;;
 
 (use-package copilot
+  :disabled
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :after company
   :init
