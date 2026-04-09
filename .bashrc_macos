@@ -4,5 +4,7 @@
 kd_add_path_tail "/opt/homebrew/bin"
 kd_add_path_tail "$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
-# You can't launch symlinked executables on macOS.
-alias emacs='open -a /opt/homebrew/opt/emacs-plus/Emacs.app'
+# Make `emacs` connect to the daemon on the terminal, and `gemacs`
+# spawn the gui version of emacs, also connecting to the daemon.
+alias emacs='emacsclient -t -a ""'
+alias gemacs='open -a /opt/homebrew/opt/emacs-plus/Emacs\ Client.app'
