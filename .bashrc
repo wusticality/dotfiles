@@ -10,6 +10,9 @@ kd_add_path_tail "$HOME/.local/bin"
 # Check window size after each command.
 shopt -s checkwinsize
 
+# Editor.
+export EDITOR='emacsclient -t -a ""'
+
 # History settings.
 export HISTFILE=$HOME/.history
 export HISTCONTROL=ignoredups:erasedups

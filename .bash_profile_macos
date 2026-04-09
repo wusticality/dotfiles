@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Start emacs daemon in background.
+emacs --daemon &>/dev/null &

@@ -382,7 +382,7 @@
   :config
   (progn
     ;; Install the fonts if not present.
-    (unless (member "all-the-icons" (font-family-list))
+    (unless (or (daemonp) (member "all-the-icons" (font-family-list)))
       (all-the-icons-install-fonts))))
 
 ;;
