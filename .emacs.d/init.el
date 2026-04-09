@@ -1249,6 +1249,7 @@
 ;;
 
 (use-package agent-shell
+  :disabled t
   :demand t
   :init
   (progn
