@@ -432,6 +432,7 @@
   :after ivy
   :bind
   (("C-s" . swiper-isearch)
+   ("C-r" . swiper-isearch-backward)
    ("M-x" . counsel-M-x)
    ("C-c n" . counsel-M-x)
    ("C-c b" . counsel-recentf)
@@ -466,6 +467,9 @@
   (setq ivy-re-builders-alist
         '((t . ivy--regex-ignore-order)))
   :config
+
+  ;; Make C-r go to previous match in swiper instead of history search.
+  (define-key swiper-map (kbd "C-r") #'ivy-previous-line)
 
   ;; Enable everywhere.
   (ivy-mode 1))
@@ -711,9 +715,7 @@
   :hook ((lsp-mode . lsp-enable-which-key-integration)
          (lsp-mode . yas-minor-mode))
   :bind-keymap ("C-c k" . lsp-command-map)
-  :bind (("C-c M-u" . lsp-find-references)
-         ("C-c M-y" . lsp-find-implementation)
-         ("C-c M-." . xref-find-definitions-other-window)
+  :bind (("C-c M-." . xref-find-definitions-other-window)
          ("M-RET" . lsp-execute-code-action)
          ("<f2>" . lsp-rename))
   :commands (lsp lsp-deferred)
@@ -745,6 +747,28 @@
 
     ;; Don't enable code lens.
     (setq lsp-lens-enable nil)))
+
+;;
+;; jump hydra
+;;
+
+(defhydra hydra-jump
+  (:columns 3 :exit t)
+  "jump"
+
+  ;; LSP.
+  ("r" lsp-find-references "references")
+  ("i" lsp-find-implementation "implementation")
+  ("s" lsp-ivy-workspace-symbol "workspace symbol")
+
+  ;; Project.
+  ("g" counsel-git-grep "git grep")
+  ("f" counsel-git "git file")
+
+  ;; Cancel.
+  ("q" nil "quit" :exit t))
+
+(global-set-key (kbd "C-c j") 'hydra-jump/body)
 
 ;;
 ;; treesit
@@ -1175,7 +1199,7 @@
     (define-key paredit-mode-map (kbd "C-c C-M-l") nil)
 
     ;; Bind when paredit is active.
-    (define-key paredit-mode-map (kbd "C-c j") 'hydra-paredit/body)))
+    (define-key paredit-mode-map (kbd "C-c )") 'hydra-paredit/body)))
 
 (defun inside-sexp-p ()
   "Return non-nil if point is on a sexp."
@@ -1682,36 +1706,6 @@
 ;;   (progn
 ;;     ;; Save modified buffers when you exit.
 ;;     (setq wgrep-auto-save-buffer t)))
-
-;;
-;; which-key
-;;
-
-;; ;; The replacement for guide-key. Given a key
-;; ;; sequence, shows what commands are available.
-;; (use-package which-key
-;;   :disabled
-;;   :config
-;;   (progn
-;;     ;; No delay please.
-;;     (setq which-key-idle-delay 0)
-
-;;     ;; Settings to make which-key opt-in.
-;;     ;; (setq which-key-show-early-on-C-h t)
-;;     ;; (setq which-key-idle-delay 10000)
-;;     ;; (setq which-key-idle-secondary-delay 0)
-
-;;     ;; Show count / total on the modeline.
-;;     (setq which-key-show-remaining-keys t)
-
-;;     ;; Allow 50% of the frame to display keys.
-;;     (setq which-key-side-window-max-height 0.5)
-
-;;     ;; Open it at the bottom.
-;;     (which-key-setup-side-window-bottom)
-
-;;     ;; Turn it on.
-;;     (which-key-mode)))
 
 ;;
 ;; dap-mode
