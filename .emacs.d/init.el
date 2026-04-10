@@ -1037,19 +1037,37 @@
 ;; treemacs
 ;;
 
-;; TODO: Customize this more.
-
 (use-package treemacs
   :demand t
-  :bind (("C-c SPC" . treemacs))
+  :bind (("C-c SPC" . treemacs-toggle-no-focus)
+         ("C-c C-SPC" . treemacs-select-window))
   :init
   (progn
-    ;; I'm not quite sure that this does.
-    (setq treemacs-follow-after-init t))
+    ;; Follow the current file on init.
+    (setq treemacs-follow-after-init t)
+
+    ;; Remove other projects when following to a new one.
+    (setq treemacs-project-follow-cleanup t)
+
+    ;; Change the treemacs buffer instantly.
+    (setq treemacs--project-follow-delay 0)
+
+    ;; Allow following into the home directory.
+    (setq treemacs-project-follow-into-home t)
+
+    ;; Prevent C-x o from landing on treemacs.
+    (setq treemacs-is-never-other-window t))
   :config
   (progn
-    ;; Enable follow mode.
-    (treemacs-follow-mode t)))
+    ;; Toggle treemacs without focusing it.
+    (defun treemacs-toggle-no-focus ()
+      (interactive)
+      (pcase (treemacs-current-visibility)
+        ('visible (delete-window (treemacs-get-local-window)))
+        (_ (save-selected-window (treemacs-select-window)))))
+
+    (treemacs-follow-mode t)
+    (treemacs-project-follow-mode t)))
 
 (use-package treemacs-nerd-icons
   :demand t
