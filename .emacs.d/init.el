@@ -700,9 +700,15 @@
     (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
 
     (defun my-magit-status ()
-      "Open magit status and show all sections at level 2."
+      "Open magit status. With C-u, pick from known repos. With C-u C-u, browse."
       (interactive)
-      (call-interactively 'magit-status)
+      (cond
+       ((equal current-prefix-arg '(16))
+        (magit-status (read-directory-name "repo: ")))
+       ((equal current-prefix-arg '(4))
+        (magit-status (ivy-read "repo: " (project-known-project-roots))))
+       (t
+        (call-interactively 'magit-status)))
       (magit-section-show-level-2-all))))
 
 ;;
