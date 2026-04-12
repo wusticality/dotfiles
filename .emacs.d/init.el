@@ -1290,7 +1290,16 @@
 ;;
 
 (use-package vterm
-  :ensure t)
+  :ensure t
+  :custom-face
+  (vterm-color-black   ((t (:foreground "#282c34" :background "#282c34"))))
+  (vterm-color-red     ((t (:foreground "#ef596f" :background "#ef596f"))))
+  (vterm-color-green   ((t (:foreground "#89ca78" :background "#89ca78"))))
+  (vterm-color-yellow  ((t (:foreground "#e5c07b" :background "#e5c07b"))))
+  (vterm-color-blue    ((t (:foreground "#61afef" :background "#61afef"))))
+  (vterm-color-magenta ((t (:foreground "#d55fde" :background "#d55fde"))))
+  (vterm-color-cyan    ((t (:foreground "#2bbac5" :background "#2bbac5"))))
+  (vterm-color-white   ((t (:foreground "#abb2bf" :background "#abb2bf")))))
 
 ;;
 ;; agent-shell
