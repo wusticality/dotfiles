@@ -354,7 +354,7 @@
   (progn
     (when is-mac
       (custom-set-faces
-       '(default ((t (:height 150 :width normal :family "BlexMono Nerd Font Mono"))))))
+       '(default ((t (:height 145 :width normal :family "BlexMono Nerd Font Mono"))))))
 
     (when is-gnu
       (custom-set-faces
