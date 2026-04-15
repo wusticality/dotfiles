@@ -5,3 +5,8 @@ ulimit -S -n 8192
 
 # Bump the maximum stack size.
 ulimit -s 16352
+
+# Nomad aliases.
+alias nomad-dev='kstack -c dev nomad -- ui -authenticate'
+alias nomad-uat='kstack -c dc3a-uat nomad -- ui -authenticate'
+alias nomad-prod='kstack -c prod.dc3a nomad -- ui -authenticate'
