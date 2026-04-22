@@ -10,3 +10,7 @@ ulimit -s 16352
 alias nomad-dev='kstack -c dev nomad -- ui -authenticate'
 alias nomad-uat='kstack -c dc3a-uat nomad -- ui -authenticate'
 alias nomad-prod='kstack -c prod.dc3a nomad -- ui -authenticate'
+
+# Pin glab to the Kraken GitLab. Without this, glab walks up to ~/.git
+# (dotfiles → github.com) and tries to auth against github.com.
+export GITLAB_HOST=kakarot.chorse.space
