@@ -130,6 +130,14 @@
     ;; Highlight the line that point is on.
     (global-hl-line-mode t)
 
+    ;; Suppress hl-line while a region is active so the selection is
+    ;; the only dark band visible — region and hl-line share the same
+    ;; color, and otherwise hl-line leaks past the selection edges.
+    (setq hl-line-range-function
+          (lambda ()
+            (unless (use-region-p)
+              (cons (line-beginning-position) (line-beginning-position 2)))))
+
     ;; Answering 'y' or 'n' will do.
     (defalias 'yes-or-no-p 'y-or-n-p)
 
