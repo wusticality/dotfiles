@@ -468,7 +468,7 @@
    ("C-h b" . counsel-descbinds)
    ("M-i" . swiper)
    ("C-c M-i" . counsel-git-grep)
-   ("C-x p" . counsel-git))
+   ("C-x p" . my-counsel-git))
   :init
   ;; Show the count format.
   (setq ivy-count-format "(%d/%d) ")
@@ -493,6 +493,20 @@
 
   ;; Make C-r go to previous match in swiper instead of history search.
   (define-key swiper-map (kbd "C-r") #'ivy-previous-line)
+
+  (defun my-counsel-git ()
+    "Find a file in a git project.
+With C-u, pick from known projects. With C-u C-u, pick a directory."
+    (interactive)
+    (let ((default-directory
+           (cond
+            ((equal current-prefix-arg '(16))
+             (read-directory-name "repo: "))
+            ((equal current-prefix-arg '(4))
+             (ivy-read "repo: " (project-known-project-roots)))
+            (t default-directory)))
+          (current-prefix-arg nil))
+      (call-interactively #'counsel-git)))
 
   ;; Enable everywhere.
   (ivy-mode 1))
