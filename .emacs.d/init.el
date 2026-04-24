@@ -107,6 +107,12 @@
     (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
     (if (fboundp 'fringe-mode) (fringe-mode 0))
 
+    ;; Remove the internal border (the couple-pixel stripe between
+    ;; the OS frame edge and the first window). Apply to both new
+    ;; frames and the current one.
+    (add-to-list 'default-frame-alist '(internal-border-width . 0))
+    (set-frame-parameter nil 'internal-border-width 0)
+
     ;; Move as far as possible when scrolling.
     (setq  scroll-error-top-bottom t)
 
