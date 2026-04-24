@@ -1383,6 +1383,51 @@
     (setq rainbow-x-colors nil)))
 
 ;;
+;; auto-dim-other-buffers
+;;
+
+;; Tmux-like per-window backgrounds: selected window keeps the theme
+;; default, non-selected windows get lifted to wusticality-slate.
+;; Uses Emacs 27's :filtered face spec under the hood, so rendering
+;; is truly per-window (same buffer in two windows still differs).
+(use-package auto-dim-other-buffers
+  :demand t
+  :init
+  (progn
+    ;; Keep the selected window highlighted even when Emacs loses
+    ;; focus (e.g. on alt-tab). Without this, adob dims everything
+    ;; on focus-out and you lose track of where point was.
+    (setq auto-dim-other-buffers-dim-on-focus-out nil))
+  :config
+  (progn
+    (auto-dim-other-buffers-mode 1)
+
+    ;; Rebind adob to real window selection changes.
+    ;;
+    ;; adob out-of-the-box tracks the "selected window" via
+    ;; buffer-list-update-hook. That hook fires on any buffer
+    ;; mutation, including those that happen inside
+    ;; (with-selected-window W ...) — and many packages use that
+    ;; idiom to transiently select a window (to move point, render,
+    ;; etc.) without intending to truly change focus. dirvish's
+    ;; follow-mode is one such offender, but completion previews,
+    ;; helm/ivy, tooltips and more do it too. Each transient
+    ;; selection confuses adob into flipping its dim state, leaving
+    ;; the wrong window looking "selected" until the next real
+    ;; selection change.
+    ;;
+    ;; window-selection-change-functions (Emacs 27+) is the correct
+    ;; hook: it fires only on REAL selection changes, not during
+    ;; save-selected-window / with-selected-window. Swap adob onto
+    ;; that.
+    (remove-hook 'buffer-list-update-hook
+                 #'adob--buffer-list-update-hook)
+    (add-hook 'window-selection-change-functions
+              (lambda (frame)
+                (with-selected-frame frame
+                  (adob--update))))))
+
+;;
 ;; vterm
 ;;
 
