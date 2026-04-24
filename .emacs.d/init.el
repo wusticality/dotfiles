@@ -400,7 +400,16 @@
     (setq custom-theme-directory (f-join user-emacs-directory "themes"))
 
     ;; Load our theme.
-    (load-theme 'wusticality t)))
+    (load-theme 'wusticality t)
+
+    ;; Re-apply the theme after init finishes. The first load above
+    ;; runs before most use-package forms, so packages whose faces
+    ;; the theme targets (auto-dim-other-buffers, dirvish, ivy, ...)
+    ;; haven't been loaded yet and their defface defaults clobber the
+    ;; theme's spec. Re-loading at after-init-hook binds the spec to
+    ;; the now-existing faces — equivalent to hitting F12.
+    (add-hook 'after-init-hook
+              (lambda () (load-theme 'wusticality t)))))
 
 ;;
 ;; projects
