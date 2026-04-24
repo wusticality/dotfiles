@@ -734,7 +734,14 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
   :config
   (progn
     ;; Open the status buffer in the current window and select it.
-    (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+    ;; If a magit-status buffer is already visible somewhere, jump to
+    ;; that window instead of opening a duplicate.
+    (setq magit-display-buffer-function
+          (lambda (buffer)
+            (or (and (eq (buffer-local-value 'major-mode buffer)
+                         'magit-status-mode)
+                     (get-buffer-window buffer))
+                (magit-display-buffer-same-window-except-diff-v1 buffer))))
 
     (defun my-magit-status ()
       "Open magit status. With C-u, pick from known repos. With C-u C-u, browse."
