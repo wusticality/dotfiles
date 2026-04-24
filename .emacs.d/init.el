@@ -1087,47 +1087,121 @@
                     (dired-do-find-marked-files t)))))
 
 ;;
-;; treemacs
+;; dirvish
 ;;
 
-(use-package treemacs
+(use-package dirvish
   :demand t
-  :bind (("C-c SPC" . treemacs-toggle-no-focus)
-         ("C-c C-SPC" . treemacs-select-window))
+  :bind (("C-c SPC" . dirvish-side-toggle-no-focus)
+         ("C-c C-SPC" . dirvish-side))
   :init
   (progn
-    ;; Follow the current file on init.
-    (setq treemacs-follow-after-init t)
+    ;; Sidebar width.
+    (setq dirvish-side-width 35)
 
-    ;; Remove other projects when following to a new one.
-    (setq treemacs-project-follow-cleanup t)
+    ;; Auto-expand the sidebar to reveal the current file.
+    (setq dirvish-side-auto-expand t)
 
-    ;; Change the treemacs buffer instantly.
-    (setq treemacs--project-follow-delay 0)
+    ;; What columns to show in the sidebar. Experiment with these later.
+    ;; - vc-state
+    ;; - nerd-icons
+    ;; - collapse
+    ;; - file-size
+    ;; - file-time
+    ;; - file-modes
+    ;; - file-user
+    ;; - file-group
+    ;; - subtree-state
+    ;; - symlink-target
+    ;; - git-msg
+    (setq dirvish-side-attributes
+          '(vc-state nerd-icons collapse))
 
-    ;; Allow following into the home directory.
-    (setq treemacs-project-follow-into-home t)
-
-    ;; Prevent C-x o from landing on treemacs.
-    (setq treemacs-is-never-other-window t))
+    ;; Don't pad the mode-line with a taller-than-text bar image;
+    ;; let it use the natural text height so it matches the other
+    ;; windows' mode-lines.
+    (setq dirvish-mode-line-bar-image-width nil))
   :config
   (progn
-    ;; Toggle treemacs without focusing it.
-    (defun treemacs-toggle-no-focus ()
+    ;; Apply dirvish rendering ONLY inside side sessions. Vanilla
+    ;; dired (M-x dired, C-x d) stays completely untouched.
+    ;;
+    ;; dirvish-override-dired-mode is the usual way to globally swap
+    ;; dired for dirvish, but it adds ~7 advices and reshapes every
+    ;; dired buffer. For a sidebar-only workflow we just need the
+    ;; dired-noselect :around advice, conditionally gated on the
+    ;; caller already being inside a 'side session (which means the
+    ;; current buffer has :dv prop set to a side dv).
+    (define-advice dired-noselect
+        (:around (fn &rest args) dirvish-side-only)
+      (if (and (fboundp 'dirvish-curr)
+               (dirvish-curr)
+               (eq (dv-type (dirvish-curr)) 'side))
+          (apply #'dirvish-dired-noselect-a fn args)
+        (apply fn args)))
+
+    ;; Sidebar auto-follows the current file (buffer-list-update-hook).
+    (dirvish-side-follow-mode 1)
+
+    ;; Toggle sidebar visibility WITHOUT stealing focus.
+    ;;
+    ;; dirvish-side itself is a cycle (hide if focused, focus if
+    ;; visible-unfocused, show if hidden) — not a pure toggle. This
+    ;; wrapper makes it: hidden -> show-no-focus, visible -> hide.
+    (defun dirvish-side-toggle-no-focus ()
+      "Toggle `dirvish-side' visibility without stealing focus."
       (interactive)
-      (pcase (treemacs-current-visibility)
-        ('visible (delete-window (treemacs-get-local-window)))
-        (_ (save-selected-window (treemacs-select-window)))))
+      (if-let ((win (dirvish-side--session-visible-p)))
+          (delete-window win)
+        (save-selected-window (dirvish-side))))
 
-    (treemacs-follow-mode t)
-    (treemacs-project-follow-mode t)))
+    ;; Make RET in the SIDEBAR toggle subtree on directories and open
+    ;; files through the side session's file handler (which routes to
+    ;; the main window). Default dired behavior replaces the buffer
+    ;; in place, which is wrong for a persistent sidebar.
+    ;;
+    ;; Regular dired/dirvish buffers (e.g. M-x dired) fall through to
+    ;; the default dired-find-file.
+    (defun dirvish-side-ret ()
+      "RET handler: sidebar-aware, otherwise default dired-find-file."
+      (interactive)
+      (let ((dv (dirvish-curr)))
+        (if (and dv (eq (dv-type dv) 'side))
+            (when-let* ((entry (dired-get-filename nil t)))
+              (if (file-directory-p entry)
+                  (dirvish-subtree-toggle)
+                (dirvish--find-entry 'find-file entry)))
+          (call-interactively #'dired-find-file))))
+    (define-key dirvish-mode-map (kbd "RET") #'dirvish-side-ret)
 
-(use-package treemacs-nerd-icons
-  :demand t
-  :after (treemacs nerd-icons)
-  :config
-  (progn
-    (treemacs-load-theme "nerd-icons")))
+    ;; Re-root the sidebar on project switch.
+    ;;
+    ;; By default dirvish-side--auto-jump navigates to the deepest
+    ;; existing prefix of the target file in `dired-subdir-alist',
+    ;; which means: if the sidebar is rooted at ~/ and you open a
+    ;; file in ~/repos/loyalty/..., the sidebar stays rooted at ~
+    ;; and just moves into the subdir. The "Project:" header still
+    ;; reads the sidebar's root, so it looks wrong and you can't
+    ;; see the repo top-level.
+    ;;
+    ;; This advice runs before auto-jump: if the sidebar's root
+    ;; differs from the current file's VC root, replace the side
+    ;; session's dired buffer with one rooted at the file's VC
+    ;; root. The original auto-jump then navigates+expands normally
+    ;; against the fresh root.
+    (define-advice dirvish-side--auto-jump
+        (:before () reroot-on-project-change)
+      (when-let* ((file buffer-file-name)
+                  (file-root (dirvish--vc-root-dir))
+                  (win (dirvish-side--session-visible-p))
+                  (sidebar-root
+                   (with-current-buffer (window-buffer win)
+                     (expand-file-name default-directory))))
+        (unless (string= (expand-file-name file-root) sidebar-root)
+          (with-selected-window win
+            (let (buffer-list-update-hook
+                  window-buffer-change-functions)
+              (dirvish--find-entry 'find-alternate-file file-root))))))))
 
 ;;
 ;; rainbow-delimiters
