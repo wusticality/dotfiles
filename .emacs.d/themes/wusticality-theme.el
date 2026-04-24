@@ -23,6 +23,7 @@
 (defvar wusticality-green "#89ca78")
 (defvar wusticality-orange "#ff8c00")
 (defvar wusticality-red "#be5046")
+(defvar wusticality-slate "#31353d")
 
 ;; (defvar wusticality-purple "#af87ff")
 ;; (defvar wusticality-cyan "#2bbac5")
@@ -95,12 +96,12 @@
  ;; link
  ;; link-visited
  `(cursor ((t (:background ,wusticality-red))))
- ;; fringe
- `(region ((t (:background ,wusticality-border))))
+ `(fringe ((t (:background ,wusticality-background))))
+ `(region ((t (:background ,wusticality-hline))))
  `(highlight ((t (:background ,wusticality-border))))
  `(hl-line ((t (:background ,wusticality-hline))))
- ;; `(header-line ((t (:background ,c-light-gray :foreground ,wusticality-foreground :bold t))))
- `(vertical-border ((t (:foreground ,wusticality-border))))
+ `(header-line ((t (:background ,wusticality-hline :foreground ,wusticality-foreground :box nil))))
+ `(vertical-border ((t (:foreground ,wusticality-background))))
  ;; secondary-selection
  ;; `(query-replace ((t (:background ,wusticality-black))))
  `(minibuffer-prompt ((t (:foreground ,wusticality-blue))))
@@ -119,15 +120,29 @@
  ;; mode-line-buffer-id
  ;; mode-line-emphasis
  ;; mode-line-highlight
- `(mode-line-inactive ((t (:background ,wusticality-border :foreground ,wusticality-foreground :bold t :box nil))))
+ `(mode-line-inactive ((t (:background ,wusticality-hline :foreground ,wusticality-foreground :bold t :box nil))))
 
  ;;
  ;; window-divider
  ;;
 
- `(window-divider ((t (:foreground ,wusticality-border))))
- `(window-divider-first-pixel ((t (:foreground ,wusticality-border))))
- `(window-divider-last-pixel ((t (:foreground ,wusticality-border))))
+ `(window-divider ((t (:foreground ,wusticality-hline))))
+ `(window-divider-first-pixel ((t (:foreground ,wusticality-hline))))
+ `(window-divider-last-pixel ((t (:foreground ,wusticality-hline))))
+
+ ;;
+ ;; auto-dim-other-buffers
+ ;;
+
+ `(auto-dim-other-buffers-face ((t (:background ,wusticality-slate))))
+ `(auto-dim-other-buffers-hide ((t (:foreground ,wusticality-slate :background ,wusticality-slate))))
+
+ ;;
+ ;; dirvish
+ ;;
+
+ `(dirvish-hl-line ((t (:background ,wusticality-hline :extend t))))
+ `(dirvish-hl-line-inactive ((t (:background ,wusticality-hline :extend t))))
 
  ;;
  ;; font lock
