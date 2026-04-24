@@ -760,8 +760,8 @@
     ;; Disable lsp logging.
     (setq lsp-log-io nil)
 
-    ;; Don't use breadcrumbs please.
-    ;; (setq lsp-headerline-breadcrumb-enable nil)
+    ;; We use our own header, so don't use lsp's.
+    (setq lsp-headerline-breadcrumb-enable nil)
 
     ;; Turn on highlighting please.
     (setq lsp-semantic-tokens-enable t)
