@@ -1,0 +1,30 @@
+# Custom terminfo entries that extend the standard 256-color entries
+# with setf24/setb24 capabilities so emacs renders 24-bit color in TTY
+# frames. Emacs consults terminfo strictly: without these capabilities
+# it falls back to ANSI 16-color approximation (everything looks dim
+# and wrong, especially with custom theme palettes).
+#
+# Two entries:
+#   tmux-emacs   — for emacs running inside tmux  (TERM=tmux-256color base)
+#   xterm-emacs  — for emacs running in plain xterm-compatible terminals
+#                  outside tmux  (TERM=xterm-256color base)
+#
+# Pick the right TERM at launch via shell wrapper based on $TMUX.
+#
+# Install (no root needed): tic -x ~/.emacs.terminfo
+# This compiles to ~/.terminfo/.../tmux-emacs and ~/.terminfo/.../xterm-emacs.
+#
+# References:
+#   https://www.gnu.org/software/emacs/manual/html_node/efaq/Colors-on-a-TTY.html
+#   https://debbugs.gnu.org/cgi/bugreport.cgi?bug=70941
+#   https://chadaustin.me/2024/01/truecolor-terminal-emacs/
+#
+tmux-emacs|tmux-256color extended with Emacs 24-bit direct-color,
+        use=tmux-256color,
+        setf24=\E[38;2;%p1%{65536}%/%d;%p1%{256}%/%{255}%&%d;%p1%{255}%&%dm,
+        setb24=\E[48;2;%p1%{65536}%/%d;%p1%{256}%/%{255}%&%d;%p1%{255}%&%dm,
+
+xterm-emacs|xterm-256color extended with Emacs 24-bit direct-color,
+        use=xterm-256color,
+        setf24=\E[38;2;%p1%{65536}%/%d;%p1%{256}%/%{255}%&%d;%p1%{255}%&%dm,
+        setb24=\E[48;2;%p1%{65536}%/%d;%p1%{256}%/%{255}%&%d;%p1%{255}%&%dm,
