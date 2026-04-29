@@ -293,6 +293,34 @@
     (global-set-key (kbd "C-c y") 'rotate-buffers)))
 
 ;;
+;; clipboard
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    ;; Bridge emacs's kill-ring with the macOS clipboard for TTY
+    ;; frames. GUI emacs handles this natively via the window system;
+    ;; in a terminal frame we shell out to pbcopy/pbpaste so M-w
+    ;; (kill-ring-save) writes to the system clipboard and C-y
+    ;; (yank) pulls from it. Setting these globally is harmless for
+    ;; GUI frames since they use different code paths.
+    (when (and is-mac
+               (executable-find "pbcopy")
+               (executable-find "pbpaste"))
+      (setq interprogram-cut-function
+            (lambda (text)
+              (with-temp-buffer
+                (insert text)
+                (call-process-region (point-min) (point-max) "pbcopy"))))
+      (setq interprogram-paste-function
+            (lambda ()
+              (with-temp-buffer
+                (call-process "pbpaste" nil t nil)
+                (buffer-string)))))))
+
+;;
 ;; backups
 ;;
 
