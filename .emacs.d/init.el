@@ -730,7 +730,7 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
   :init
   (progn
     ;; Turn these off, they're ugly.
-    (setq magit-section-visibility-indicator nil))
+    (setq magit-section-visibility-indicators nil))
   :config
   (progn
     ;; Open the status buffer in the current window and select it.
