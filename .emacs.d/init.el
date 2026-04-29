@@ -1414,8 +1414,7 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
 ;;
 
 (use-package avy
-  :demand t
-  :bind (("C-;" . avy-goto-char)))
+  :demand t)
 
 ;;
 ;; rainbow-mode
