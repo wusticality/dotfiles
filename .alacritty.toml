@@ -59,6 +59,10 @@ key = "Semicolon"
 mods = "Control"
 chars = "\u001B[59;5u"
 
+[cursor.style]
+shape = "Block"
+blinking = "Never"
+
 [scrolling]
 history = 10000
 
