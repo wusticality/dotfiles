@@ -277,6 +277,11 @@
     ;; This keybinding is annoying as hell.
     (global-unset-key (kbd "C-x C-b"))
 
+    ;; Reserved for tmux's capture-mode toggle. bind-key* installs
+    ;; this in `override-global-mode-map' so it beats minor-mode
+    ;; bindings (paredit, hydra, etc.) that might otherwise grab C-;.
+    (bind-key* "C-;" #'ignore)
+
     ;; Bind other-frame to a useful hotkey.
     (global-set-key (kbd "C-c o") 'other-frame)
 

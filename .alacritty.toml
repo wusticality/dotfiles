@@ -49,6 +49,16 @@ key = "Return"
 mods = "Shift"
 chars = "\u001B\r"
 
+# Send a CSI u sequence for Ctrl+; so terminal apps (tmux, emacs)
+# can receive it as a distinct key. Plain ASCII has no encoding for
+# C-;, but the fixterms / Kitty keyboard CSI u protocol does:
+# format is `ESC [ <ascii> ; <modifier> u`. Semicolon is ASCII 59,
+# Ctrl is modifier 5.
+[[keyboard.bindings]]
+key = "Semicolon"
+mods = "Control"
+chars = "\u001B[59;5u"
+
 [scrolling]
 history = 10000
 
