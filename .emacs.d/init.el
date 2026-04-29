@@ -113,6 +113,35 @@
     (add-to-list 'default-frame-alist '(internal-border-width . 0))
     (set-frame-parameter nil 'internal-border-width 0)
 
+    ;; Suppress menu/tool bars on every new frame (TTY frames spawned
+    ;; via emacsclient -t otherwise inherit a menu bar from the
+    ;; daemon's frame defaults).
+    (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+    (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+
+    ;; Defensive: any newly-created frame (daemon + emacsclient + GUI
+    ;; frame creation can flip global menu-bar-mode back on under
+    ;; macOS) gets its menu/tool bars zeroed out at creation time.
+    (defun my/zero-tty-bars (&rest _)
+      "Force menu/tool bars off on every TTY frame."
+      (dolist (frame (frame-list))
+        (unless (display-graphic-p frame)
+          (set-frame-parameter frame 'menu-bar-lines 0)
+          (set-frame-parameter frame 'tool-bar-lines 0))))
+
+    (add-hook 'after-make-frame-functions
+              (lambda (_frame) (my/zero-tty-bars)))
+
+    ;; emacs-plus's GUI frame creation flips menu-bar-mode back on
+    ;; globally; the TTY frame inherits the menu bar after that.
+    ;; Re-zero TTY frames whenever frame focus changes.
+    (when (boundp 'after-focus-change-function)
+      (add-function :after after-focus-change-function #'my/zero-tty-bars))
+
+    ;; Belt-and-suspenders: any explicit (menu-bar-mode 1) call —
+    ;; from anywhere — gets followed by re-zeroing TTY frames.
+    (advice-add 'menu-bar-mode :after #'my/zero-tty-bars)
+
     ;; Move as far as possible when scrolling.
     (setq  scroll-error-top-bottom t)
 
