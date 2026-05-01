@@ -459,6 +459,70 @@
     (setq nerd-icons-font-family "Symbols Nerd Font Mono")))
 
 ;;
+;; modeline
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    (defface wusticality-modeline-modified    '((t (:weight bold))) "Modified indicator.")
+    (defface wusticality-modeline-buffer-name '((t (:weight bold))) "Buffer name.")
+    (defface wusticality-modeline-position    '((t (:weight bold))) "Buffer % position.")
+    (defface wusticality-modeline-line-column '((t (:weight bold))) "Line/column.")
+    (defface wusticality-modeline-major-mode  '((t (:weight bold))) "Major mode.")
+    (defface wusticality-modeline-git-icon    '((t (:weight bold))) "Git branch icon.")
+    (defface wusticality-modeline-git-branch  '((t (:weight bold))) "Git branch name.")
+
+    (defun wusticality-modeline-icon (icon-fn icon face &optional height)
+      "Return a propertized nerd-icons ICON via ICON-FN inheriting FACE.
+Optional HEIGHT defaults to 0.85."
+      (when (featurep 'nerd-icons)
+        (funcall icon-fn icon :face face :v-adjust 0.2 :height (or height 0.85))))
+
+    (setq-default
+     mode-line-format
+     '(;; Modified indicator.
+       (:eval (propertize "%* " 'face 'wusticality-modeline-modified))
+
+       ;; Buffer name.
+       (:eval (propertize "%b " 'face 'wusticality-modeline-buffer-name))
+
+       ;; Percentage through the buffer.
+       (:eval (propertize (concat
+                           (format "%s"
+                                   (round
+                                    (* 100.0
+                                       (/ (float (1- (point)))
+                                          (float (1- (point-max)))))))
+                           "%% ")
+                          'face 'wusticality-modeline-position))
+
+       ;; Line and column.
+       (:eval (propertize "(%l, %c) " 'face 'wusticality-modeline-line-column))
+
+       ;; Major mode.
+       (:eval (concat
+               (wusticality-modeline-icon #'nerd-icons-faicon
+                                          "nf-fa-gear"
+                                          'wusticality-modeline-major-mode
+                                          0.75)
+               " "
+               (propertize
+                (format "%s " (s-trim (s-downcase (format "%s" major-mode))))
+                'face 'wusticality-modeline-major-mode)))
+
+       ;; Git branch, if any.
+       (:eval (when vc-mode
+                (concat
+                 (wusticality-modeline-icon #'nerd-icons-devicon
+                                            "nf-dev-git_branch"
+                                            'wusticality-modeline-git-icon)
+                 " "
+                 (propertize (car (vc-git-branches))
+                             'face 'wusticality-modeline-git-branch))))))))
+
+;;
 ;; theme
 ;;
 

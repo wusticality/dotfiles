@@ -32,55 +32,6 @@
 ;; (defvar wusticality-dark-blue "#005faf")
 ;; (defvar wusticality-black "#080808")
 
-;; Generates a propertized icon section.
-(defun wusticality-hline-icon (icon)
-  (when (and (featurep 'all-the-icons)
-             (display-graphic-p))
-    (propertize
-     (all-the-icons-octicon icon)
-     'face
-     `(:family ,(all-the-icons-octicon-family) :foreground ,wusticality-green)
-     'display '(raise 0.0))))
-
-;; Set the modeline.
-(setq-default
- mode-line-format
- `(;; Whether or not the buffer is modified.
-   (:eval (propertize "%* " 'face '(:foreground ,wusticality-green :weight bold)))
-
-   ;; The current buffer name.
-   (:eval (propertize "%b " 'face '(:foreground ,wusticality-magenta :weight bold)))
-
-   ;; Where we are in the file.
-   (:eval (propertize (concat
-                       (format "%s"
-                               (round
-                                (* 100.0
-                                   (/ (float (1- (point)))
-                                      (float (1- (point-max)))))))
-                       "%% ")
-                      'face '(:foreground ,wusticality-green :weight bold)))
-
-   ;; Our current line and column number.
-   (:eval (propertize "(%l, %c) " 'face '(:foreground ,wusticality-brown :weight bold)))
-
-   ;; The current major mode.
-   (:eval
-    (propertize
-     (format "%s " (s-trim (s-downcase (format "%s" major-mode))))
-     'face '(:foreground ,wusticality-blue :weight bold)))
-
-   ;; Our current git branch, if any.
-   (:eval
-    (when vc-mode
-      (concat
-       (wusticality-hline-icon "git-branch")
-       (propertize
-        (car (vc-git-branches))
-        'face
-        '(:foreground ,wusticality-green :weight bold)))))
-   ))
-
 ;; Declare the theme.
 (custom-theme-set-faces
  'wusticality
@@ -121,6 +72,13 @@
  ;; mode-line-emphasis
  ;; mode-line-highlight
  `(mode-line-inactive ((t (:background ,wusticality-hline :foreground ,wusticality-foreground :bold t :box nil))))
+ `(wusticality-modeline-modified    ((t (:foreground ,wusticality-green   :weight bold))))
+ `(wusticality-modeline-buffer-name ((t (:foreground ,wusticality-magenta :weight bold))))
+ `(wusticality-modeline-position    ((t (:foreground ,wusticality-green   :weight bold))))
+ `(wusticality-modeline-line-column ((t (:foreground ,wusticality-brown   :weight bold))))
+ `(wusticality-modeline-major-mode  ((t (:foreground ,wusticality-blue    :weight bold))))
+ `(wusticality-modeline-git-icon    ((t (:foreground ,wusticality-green   :weight bold))))
+ `(wusticality-modeline-git-branch  ((t (:foreground ,wusticality-green   :weight bold))))
 
  ;;
  ;; window-divider
