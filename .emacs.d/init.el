@@ -523,6 +523,67 @@ Optional HEIGHT defaults to 0.85."
                              'face 'wusticality-modeline-git-branch))))))))
 
 ;;
+;; header-line
+;;
+
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    (defface wusticality-header-modified '((t (:weight bold))) "Header modified indicator.")
+    (defface wusticality-header-file     '((t (:weight bold))) "Header file path.")
+
+    (defun wusticality-header-truncate-path (path budget)
+      "Truncate PATH from the left at component boundaries to fit BUDGET columns.
+Preserves the leading `~/' or `/' root marker, with `.../' between the
+marker and the kept suffix to signal omitted intermediate components.
+Falls back to the bare filename if even that won't fit alongside the
+marker."
+      (if (<= (length path) budget)
+          path
+        (let* ((home-rooted (string-prefix-p "~/" path))
+               (abs-rooted (and (not home-rooted) (string-prefix-p "/" path)))
+               (prefix (cond (home-rooted "~/.../")
+                             (abs-rooted "/.../")
+                             (t ".../")))
+               (rest (cond (home-rooted (substring path 2))
+                           (abs-rooted (substring path 1))
+                           (t path)))
+               (components (split-string rest "/"))
+               (avail (- budget (length prefix)))
+               (kept '())
+               (used 0)
+               (done nil))
+          (dolist (comp (reverse components))
+            (unless done
+              (let* ((sep (if kept 1 0))
+                     (cost (+ (length comp) sep)))
+                (if (<= (+ used cost) avail)
+                    (progn (push comp kept)
+                           (setq used (+ used cost)))
+                  (setq done t)))))
+          (if kept
+              (concat prefix (mapconcat #'identity kept "/"))
+            (or (car (last components)) path)))))
+
+    (defun wusticality-enable-header-line ()
+      "Configure `header-line-format' for file-backed buffers."
+      (when buffer-file-name
+        (setq header-line-format
+              '(;; Modified indicator.
+                (:eval (propertize "%* " 'face 'wusticality-header-modified))
+
+                ;; File path, abbreviated to ~ if under home, then
+                ;; truncated from the left to fit window width.
+                (:eval (propertize
+                        (wusticality-header-truncate-path
+                         (abbreviate-file-name buffer-file-name)
+                         (- (window-width) 4))
+                        'face 'wusticality-header-file))))))
+
+    (add-hook 'find-file-hook #'wusticality-enable-header-line)))
+
+;;
 ;; theme
 ;;
 

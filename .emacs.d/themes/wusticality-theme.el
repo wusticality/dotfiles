@@ -81,6 +81,13 @@
  `(wusticality-modeline-git-branch  ((t (:foreground ,wusticality-green   :weight bold))))
 
  ;;
+ ;; header-line
+ ;;
+
+ `(wusticality-header-modified ((t (:foreground ,wusticality-green   :weight bold))))
+ `(wusticality-header-file     ((t (:foreground ,wusticality-magenta :weight bold))))
+
+ ;;
  ;; window-divider
  ;;
 
