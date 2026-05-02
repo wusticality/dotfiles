@@ -664,12 +664,6 @@
  ;; yas-field-highlight-face
 
  ;;
- ;; copilot
- ;;
-
- `(copilot-overlay-face ((t (:foreground ,wusticality-gray :italic t))))
-
- ;;
  ;; gptel
  ;;
 

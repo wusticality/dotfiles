@@ -1096,39 +1096,6 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
     (treesit-install-all-missing-grammars)))
 
 ;;
-;; copilot
-;;
-
-(use-package copilot
-  :disabled
-  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-  :after company
-  :init
-  (progn
-    ;; Be a bit less aggressive so I have a chance to
-    ;; type . and ; without it stomping on me. :)
-    (setq copilot-idle-delay 0.4))
-  :config
-  (progn
-    ;; Enable copilot for programming modes.
-    (add-hook 'prog-mode-hook 'copilot-mode)
-    (add-hook 'text-mode-hook 'copilot-mode)
-
-    ;; When to show / hide predicates.
-    (add-to-list 'copilot-disable-predicates #'company--active-p)
-    (add-to-list 'copilot-disable-display-predicates #'company--active-p)
-
-    ;; Complete using the tab key.
-    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-
-    ;; Setup indentation settings.
-    (add-to-list 'copilot-indentation-alist '(prog-mode 4))
-    (add-to-list 'copilot-indentation-alist '(org-mode 2))
-    (add-to-list 'copilot-indentation-alist '(text-mode 2))
-    (add-to-list 'copilot-indentation-alist '(closure-mode 2))
-    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))))
-
-;;
 ;; flycheck
 ;;
 
