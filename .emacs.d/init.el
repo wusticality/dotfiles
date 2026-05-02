@@ -145,6 +145,15 @@
     ;; Move as far as possible when scrolling.
     (setq  scroll-error-top-bottom t)
 
+    ;; Optimize redisplay under fast key-repeat. Without these,
+    ;; holding C-n/C-p jumps and skips lines because pixel-precise
+    ;; vscroll, font cache compaction, and per-keystroke
+    ;; fontification can't keep up with a fast input queue.
+    (setq auto-window-vscroll nil)
+    (setq fast-but-imprecise-scrolling t)
+    (setq redisplay-skip-fontification-on-input t)
+    (setq inhibit-compacting-font-caches t)
+
     ;; No splash screen / startup message.
     (setq inhibit-splash-screen t)
     (setq inhibit-startup-message t)
