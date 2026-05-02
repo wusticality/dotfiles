@@ -232,8 +232,10 @@
     ;; any way, navigate to it.
     (setq help-window-select t)
 
-    ;; Show matching delimiters instantly.
+    ;; Show matching delimiters instantly, and also
+    ;; light them up when point is inside the pair.
     (setq show-paren-delay 0)
+    (setq show-paren-when-point-inside-paren t)
     (show-paren-mode 1)
 
     ;; Don't automatically debug on error.

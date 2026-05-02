@@ -24,11 +24,12 @@
 (defvar wusticality-red "#be5046")
 (defvar wusticality-slate "#31353d")
 
+(defvar wusticality-dark-blue "#005faf")
 ;; (defvar wusticality-purple "#af87ff")
 ;; (defvar wusticality-cyan "#2bbac5")
 ;; (defvar wusticality-yellow "#ffff87")
 ;; (defvar wusticality-dark-red "#870000")
-;; (defvar wusticality-dark-blue "#005faf")
+
 ;; (defvar wusticality-black "#080808")
 
 ;; Declare the theme.
@@ -61,12 +62,12 @@
  `(region ((t (:background ,wusticality-hline))))
  `(highlight ((t (:background ,wusticality-hline))))
  `(hl-line ((t (:background ,wusticality-hline))))
+ `(show-paren-match ((t (:background ,wusticality-dark-blue))))
+ `(show-paren-mismatch ((t (:background ,wusticality-red))))
  ;; secondary-selection
  ;; `(query-replace ((t (:background ,wusticality-black))))
  ;; `(lazy-highlight ((t (:background ,c-dark-blue))))
  ;; `(isearch ((t (:background ,wusticality-black))))
- ;; `(show-paren-match ((t (:background ,wusticality-dark-blue))))
- ;; `(show-paren-mismatch ((t (:background ,wusticality-dark-blue))))
 
  ;;
  ;; minibuffer
