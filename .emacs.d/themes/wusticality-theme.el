@@ -36,31 +36,43 @@
  'wusticality
 
  ;;
- ;; defaults
+ ;; basics
  ;;
 
  `(default ((t (:background ,wusticality-background :foreground ,wusticality-foreground))))
- ;; success
- ;; warning
- ;; error
- ;; link
- ;; link-visited
  `(cursor ((t (:background ,wusticality-red))))
  `(fringe ((t (:background ,wusticality-background))))
+ `(vertical-border ((t (:foreground ,wusticality-background))))
+
+ ;;
+ ;; status
+ ;;
+
+ `(success ((t (:foreground ,wusticality-green))))
+ `(warning ((t (:foreground ,wusticality-orange))))
+ `(error ((t (:foreground ,wusticality-red))))
+ `(link ((t (:foreground ,wusticality-blue :underline t))))
+ `(link-visited ((t (:foreground ,wusticality-blue :underline t))))
+
+ ;;
+ ;; selection
+ ;;
+
  `(region ((t (:background ,wusticality-hline))))
  `(highlight ((t (:background ,wusticality-hline))))
  `(hl-line ((t (:background ,wusticality-hline))))
- `(header-line ((t (:background ,wusticality-hline :foreground ,wusticality-foreground :box nil))))
- `(vertical-border ((t (:foreground ,wusticality-background))))
  ;; secondary-selection
  ;; `(query-replace ((t (:background ,wusticality-black))))
- `(minibuffer-prompt ((t (:foreground ,wusticality-blue))))
- ;; tooltip
- ;; `(trailing-whitespace ((t (:background ,wusticality-background :foreground ,wusticality-foreground))))
  ;; `(lazy-highlight ((t (:background ,c-dark-blue))))
  ;; `(isearch ((t (:background ,wusticality-black))))
  ;; `(show-paren-match ((t (:background ,wusticality-dark-blue))))
  ;; `(show-paren-mismatch ((t (:background ,wusticality-dark-blue))))
+
+ ;;
+ ;; minibuffer
+ ;;
+
+ `(minibuffer-prompt ((t (:foreground ,wusticality-blue))))
 
  ;;
  ;; modeline
@@ -71,20 +83,21 @@
  ;; mode-line-emphasis
  ;; mode-line-highlight
  `(mode-line-inactive ((t (:background ,wusticality-hline :foreground ,wusticality-foreground :bold t :box nil))))
- `(wusticality-modeline-modified    ((t (:foreground ,wusticality-green   :weight bold))))
+ `(wusticality-modeline-modified ((t (:foreground ,wusticality-green :weight bold))))
  `(wusticality-modeline-buffer-name ((t (:foreground ,wusticality-magenta :weight bold))))
- `(wusticality-modeline-position    ((t (:foreground ,wusticality-green   :weight bold))))
- `(wusticality-modeline-line-column ((t (:foreground ,wusticality-brown   :weight bold))))
- `(wusticality-modeline-major-mode  ((t (:foreground ,wusticality-blue    :weight bold))))
- `(wusticality-modeline-git-icon    ((t (:foreground ,wusticality-green   :weight bold))))
- `(wusticality-modeline-git-branch  ((t (:foreground ,wusticality-green   :weight bold))))
+ `(wusticality-modeline-position ((t (:foreground ,wusticality-green :weight bold))))
+ `(wusticality-modeline-line-column ((t (:foreground ,wusticality-brown :weight bold))))
+ `(wusticality-modeline-major-mode ((t (:foreground ,wusticality-blue :weight bold))))
+ `(wusticality-modeline-git-icon ((t (:foreground ,wusticality-green :weight bold))))
+ `(wusticality-modeline-git-branch ((t (:foreground ,wusticality-green :weight bold))))
 
  ;;
  ;; header-line
  ;;
 
- `(wusticality-header-modified ((t (:foreground ,wusticality-green   :weight bold))))
- `(wusticality-header-file     ((t (:foreground ,wusticality-magenta :weight bold))))
+ `(header-line ((t (:background ,wusticality-hline :foreground ,wusticality-foreground :box nil))))
+ `(wusticality-header-modified ((t (:foreground ,wusticality-green :weight bold))))
+ `(wusticality-header-file ((t (:foreground ,wusticality-magenta :weight bold))))
 
  ;;
  ;; window-divider
@@ -93,37 +106,6 @@
  `(window-divider ((t (:foreground ,wusticality-hline))))
  `(window-divider-first-pixel ((t (:foreground ,wusticality-hline))))
  `(window-divider-last-pixel ((t (:foreground ,wusticality-hline))))
-
- ;;
- ;; auto-dim-other-buffers
- ;;
-
- ;; adob--hack
- ;; auto-dim-other-buffers
- `(auto-dim-other-buffers-face ((t (:background ,wusticality-slate))))
- `(auto-dim-other-buffers-hide ((t (:foreground ,wusticality-slate :background ,wusticality-slate))))
-
- ;;
- ;; dirvish
- ;;
-
- ;; dirvish-file-device-number
- ;; dirvish-file-group-id
- ;; dirvish-file-inode-number
- ;; dirvish-file-link-number
- ;; dirvish-file-modes
- ;; dirvish-file-size
- ;; dirvish-file-time
- ;; dirvish-file-user-id
- ;; dirvish-free-space
- `(dirvish-hl-line ((t (:background ,wusticality-hline :extend t))))
- `(dirvish-hl-line-inactive ((t (:background ,wusticality-hline :extend t))))
- ;; dirvish-inactive
- ;; dirvish-media-info-heading
- ;; dirvish-media-info-property-key
- ;; dirvish-proc-failed
- ;; dirvish-proc-finished
- ;; dirvish-proc-running
 
  ;;
  ;; font lock
@@ -144,7 +126,68 @@
  `(font-lock-string-face ((t (:foreground ,wusticality-green))))
  `(font-lock-type-face ((t (:foreground ,wusticality-tan))))
  `(font-lock-variable-name-face ((t (:foreground ,wusticality-pink))))
- `(warning ((t (:foreground ,wusticality-orange))))
+
+ ;;
+ ;; ivy
+ ;;
+
+ ;; ivy-action
+ ;; ivy-completions-annotations
+ ;; ivy-confirm-face
+ `(ivy-current-match ((t (:background ,wusticality-hline))))
+ ;; ivy-cursor
+ ;; ivy-grep-info
+ ;; ivy-grep-line-number
+ ;; ivy-highlight-face
+ ;; ivy-match-required-face
+ ;; ivy-minibuffer-match-face-1
+ ;; ivy-minibuffer-match-face-2
+ ;; ivy-minibuffer-match-face-3
+ ;; ivy-minibuffer-match-face-4
+ ;; ivy-minibuffer-match-highlight
+ ;; ivy-modified-buffer
+ ;; ivy-modified-outside-buffer
+ ;; ivy-org
+ ;; ivy-prompt-match
+ ;; ivy-remote
+ ;; ivy-separator
+ ;; ivy-subdir
+ ;; ivy-virtual
+ ;; ivy-yanked-word
+
+ ;;
+ ;; swiper
+ ;;
+
+ ;; swiper-background-match-face-1
+ ;; swiper-background-match-face-2
+ ;; swiper-background-match-face-3
+ ;; swiper-background-match-face-4
+ ;; swiper-line-face
+ ;; swiper-match-face-1
+ ;; swiper-match-face-2
+ ;; swiper-match-face-3
+ ;; swiper-match-face-4
+
+ ;;
+ ;; counsel
+ ;;
+
+ ;; counsel--mark-ring-highlight
+ ;; counsel-active-mode
+ ;; counsel-application-name
+ ;; counsel-evil-register-face
+ ;; counsel-key-binding
+ ;; counsel-outline-1
+ ;; counsel-outline-2
+ ;; counsel-outline-3
+ ;; counsel-outline-4
+ ;; counsel-outline-5
+ ;; counsel-outline-6
+ ;; counsel-outline-7
+ ;; counsel-outline-8
+ ;; counsel-outline-default
+ ;; counsel-variable-documentation
 
  ;;
  ;; lsp
@@ -250,66 +293,35 @@
  ;; lsp-signature-posframe
 
  ;;
- ;; ivy
+ ;; auto-dim-other-buffers
  ;;
 
- ;; ivy-action
- ;; ivy-completions-annotations
- ;; ivy-confirm-face
- `(ivy-current-match ((t (:background ,wusticality-hline))))
- ;; ivy-cursor
- ;; ivy-grep-info
- ;; ivy-grep-line-number
- ;; ivy-highlight-face
- ;; ivy-match-required-face
- ;; ivy-minibuffer-match-face-1
- ;; ivy-minibuffer-match-face-2
- ;; ivy-minibuffer-match-face-3
- ;; ivy-minibuffer-match-face-4
- ;; ivy-minibuffer-match-highlight
- ;; ivy-modified-buffer
- ;; ivy-modified-outside-buffer
- ;; ivy-org
- ;; ivy-prompt-match
- ;; ivy-remote
- ;; ivy-separator
- ;; ivy-subdir
- ;; ivy-virtual
- ;; ivy-yanked-word
+ ;; adob--hack
+ ;; auto-dim-other-buffers
+ `(auto-dim-other-buffers-face ((t (:background ,wusticality-slate))))
+ `(auto-dim-other-buffers-hide ((t (:foreground ,wusticality-slate :background ,wusticality-slate))))
 
  ;;
- ;; swiper
+ ;; dirvish
  ;;
 
- ;; swiper-background-match-face-1
- ;; swiper-background-match-face-2
- ;; swiper-background-match-face-3
- ;; swiper-background-match-face-4
- ;; swiper-line-face
- ;; swiper-match-face-1
- ;; swiper-match-face-2
- ;; swiper-match-face-3
- ;; swiper-match-face-4
-
- ;;
- ;; counsel
- ;;
-
- ;; counsel--mark-ring-highlight
- ;; counsel-active-mode
- ;; counsel-application-name
- ;; counsel-evil-register-face
- ;; counsel-key-binding
- ;; counsel-outline-1
- ;; counsel-outline-2
- ;; counsel-outline-3
- ;; counsel-outline-4
- ;; counsel-outline-5
- ;; counsel-outline-6
- ;; counsel-outline-7
- ;; counsel-outline-8
- ;; counsel-outline-default
- ;; counsel-variable-documentation
+ ;; dirvish-file-device-number
+ ;; dirvish-file-group-id
+ ;; dirvish-file-inode-number
+ ;; dirvish-file-link-number
+ ;; dirvish-file-modes
+ ;; dirvish-file-size
+ ;; dirvish-file-time
+ ;; dirvish-file-user-id
+ ;; dirvish-free-space
+ `(dirvish-hl-line ((t (:background ,wusticality-hline :extend t))))
+ `(dirvish-hl-line-inactive ((t (:background ,wusticality-hline :extend t))))
+ ;; dirvish-inactive
+ ;; dirvish-media-info-heading
+ ;; dirvish-media-info-property-key
+ ;; dirvish-proc-failed
+ ;; dirvish-proc-finished
+ ;; dirvish-proc-running
 
  ;;
  ;; marginalia

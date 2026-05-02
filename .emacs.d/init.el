@@ -270,7 +270,11 @@
              (allow-no-window . t))))
 
     ;; All focus to follow the mouse.
-    (setq mouse-autoselect-window t)))
+    (setq mouse-autoselect-window t)
+
+    ;; Disable GUI tooltip popups; help-echo still
+    ;; renders in the echo area, matching TTY behavior.
+    (tooltip-mode -1)))
 
 ;;
 ;; global keybindings
