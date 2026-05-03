@@ -23,13 +23,12 @@
 (defvar wusticality-orange "#ff8c00")
 (defvar wusticality-red "#be5046")
 (defvar wusticality-slate "#31353d")
-
 (defvar wusticality-dark-blue "#005faf")
-;; (defvar wusticality-purple "#af87ff")
+(defvar wusticality-purple "#af87ff")
+
 ;; (defvar wusticality-cyan "#2bbac5")
 ;; (defvar wusticality-yellow "#ffff87")
 ;; (defvar wusticality-dark-red "#870000")
-
 ;; (defvar wusticality-black "#080808")
 
 ;; Declare the theme.
@@ -64,10 +63,8 @@
  `(hl-line ((t (:background ,wusticality-hline))))
  `(show-paren-match ((t (:background ,wusticality-dark-blue))))
  `(show-paren-mismatch ((t (:background ,wusticality-red))))
- ;; secondary-selection
- ;; `(query-replace ((t (:background ,wusticality-black))))
- ;; `(lazy-highlight ((t (:background ,c-dark-blue))))
- ;; `(isearch ((t (:background ,wusticality-black))))
+ `(lazy-highlight ((t (:background ,wusticality-slate))))
+ `(isearch ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
 
  ;;
  ;; minibuffer
@@ -135,16 +132,17 @@
  ;; ivy-action
  ;; ivy-completions-annotations
  ;; ivy-confirm-face
- `(ivy-current-match ((t (:background ,wusticality-hline))))
+ `(ivy-current-match ((t (:background ,wusticality-hline :extend t))))
+ `(wusticality-ivy-selected-match ((t (:background ,wusticality-orange :foreground ,wusticality-hline :weight bold))))
  ;; ivy-cursor
  ;; ivy-grep-info
  ;; ivy-grep-line-number
  ;; ivy-highlight-face
  ;; ivy-match-required-face
  ;; ivy-minibuffer-match-face-1
- ;; ivy-minibuffer-match-face-2
- ;; ivy-minibuffer-match-face-3
- ;; ivy-minibuffer-match-face-4
+ `(ivy-minibuffer-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
+ `(ivy-minibuffer-match-face-3 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
+ `(ivy-minibuffer-match-face-4 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
  ;; ivy-minibuffer-match-highlight
  ;; ivy-modified-buffer
  ;; ivy-modified-outside-buffer
@@ -160,15 +158,15 @@
  ;; swiper
  ;;
 
- ;; swiper-background-match-face-1
- ;; swiper-background-match-face-2
- ;; swiper-background-match-face-3
- ;; swiper-background-match-face-4
- ;; swiper-line-face
- ;; swiper-match-face-1
- ;; swiper-match-face-2
+ `(swiper-match-face-1 ((t (:background ,wusticality-orange :foreground ,wusticality-hline :weight bold))))
+ `(swiper-match-face-2 ((t (:background ,wusticality-orange :foreground ,wusticality-hline :weight bold))))
  ;; swiper-match-face-3
  ;; swiper-match-face-4
+ `(swiper-background-match-face-1 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
+ `(swiper-background-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
+ ;; swiper-background-match-face-3
+ ;; swiper-background-match-face-4
+ `(swiper-line-face ((t (:background ,wusticality-hline :extend t))))
 
  ;;
  ;; counsel

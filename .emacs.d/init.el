@@ -612,14 +612,19 @@ marker."
     ;; Load our theme.
     (load-theme 'wusticality t)
 
-    ;; Re-apply the theme after init finishes. The first load above
-    ;; runs before most use-package forms, so packages whose faces
-    ;; the theme targets (auto-dim-other-buffers, dirvish, ivy, ...)
-    ;; haven't been loaded yet and their defface defaults clobber the
-    ;; theme's spec. Re-loading at after-init-hook binds the spec to
-    ;; the now-existing faces — equivalent to hitting F12.
-    (add-hook 'after-init-hook
-              (lambda () (load-theme 'wusticality t)))))
+    ;; Re-apply the theme once everything has loaded. The first load
+    ;; above runs before most use-package forms, so packages whose
+    ;; faces the theme targets (auto-dim-other-buffers, dirvish, ivy,
+    ;; swiper, ...) haven't defined their defface specs yet and the
+    ;; theme has nothing to bind to. emacs-startup-hook runs strictly
+    ;; after after-init-hook so all :demand t packages are guaranteed
+    ;; loaded; an idle-timer fallback covers any deferred loads.
+    (defun wusticality--reload-theme ()
+      (load-theme 'wusticality t))
+    (defun wusticality--reload-theme-deferred ()
+      (load-theme 'wusticality t)
+      (run-with-idle-timer 0.1 nil #'wusticality--reload-theme))
+    (add-hook 'emacs-startup-hook #'wusticality--reload-theme-deferred)))
 
 ;;
 ;; projects
@@ -678,6 +683,12 @@ marker."
   ;; Make highlight extend all the way to the right.
   (setq ivy-format-function 'ivy-format-function-line)
 
+  ;; Theme-side faces for the recolored match in the selected
+  ;; swiper candidate (see custom format function below).
+  (defface wusticality-ivy-selected-match
+    '((t :inherit highlight :weight bold))
+    "Face for matches inside the selected swiper candidate.")
+
   ;; Increase the height.
   (setq ivy-height 18)
 
@@ -695,6 +706,112 @@ marker."
 
   ;; Make C-r go to previous match in swiper instead of history search.
   (define-key swiper-map (kbd "C-r") #'ivy-previous-line)
+
+  ;; Suspend hl-line during swiper sessions. Without this, the
+  ;; original cursor line keeps its hl-line band while swiper
+  ;; previews a different line, leaving two highlighted lines.
+  (defun wusticality--swiper-without-hl-line (orig-fn &rest args)
+    (let ((was-on global-hl-line-mode))
+      (when was-on
+        (global-hl-line-mode -1)
+        (global-hl-line-unhighlight-all))
+      (unwind-protect (apply orig-fn args)
+        (when was-on (global-hl-line-mode 1)))))
+  (advice-add 'swiper :around #'wusticality--swiper-without-hl-line)
+  (advice-add 'swiper-isearch :around #'wusticality--swiper-without-hl-line)
+  (advice-add 'swiper-isearch-backward :around #'wusticality--swiper-without-hl-line)
+
+  ;; Skip the swiper-line-face line marker when there's no input
+  ;; yet, so the original cursor line isn't highlighted before the
+  ;; user types anything. Once a query is entered, normal preview
+  ;; behavior resumes.
+  (defun wusticality--swiper-skip-empty-line-overlay (&rest _)
+    (not (string-empty-p (or ivy-text ""))))
+  (advice-add 'swiper--add-line-overlay :before-while
+              #'wusticality--swiper-skip-empty-line-overlay)
+
+  ;; For backward swiper-isearch, point lands at match-beginning.
+  ;; swiper--add-overlays only paints the orange "current" face when
+  ;; (= (match-end 0) pt), so backward never gets the highlight.
+  ;; After the action runs, nudge point to match-end and rebuild
+  ;; overlays so backward looks the same as forward.
+  (defun wusticality--swiper-isearch-backward-fixup (orig-fn x)
+    (let ((result (funcall orig-fn x)))
+      (ignore-errors
+        (when (and (bound-and-true-p swiper--isearch-backward)
+                   (not (eq ivy-exit 'done))
+                   ivy-regex)
+          (with-ivy-window
+            (save-match-data
+              (let ((re (ivy-re-to-str ivy-regex)))
+                (when (and (stringp re) (looking-at re))
+                  (goto-char (match-end 0))
+                  (swiper--cleanup)
+                  (swiper--delayed-add-overlays)))))))
+      result))
+  (advice-add 'swiper-isearch-action :around
+              #'wusticality--swiper-isearch-backward-fixup)
+
+  ;; Custom ivy format function for swiper that re-paints match
+  ;; spans in the selected candidate using
+  ;; `wusticality-ivy-selected-match', so the selected line's match
+  ;; pops orange instead of blending into purple under
+  ;; `ivy-current-match'.
+  (defun wusticality-ivy-format-line (cands)
+    (ivy--format-function-generic
+     (lambda (str)
+       (let* ((s (concat str "\n"))
+              (len (length s))
+              (pos 0)
+              (match-faces '(ivy-minibuffer-match-face-1
+                             ivy-minibuffer-match-face-2
+                             ivy-minibuffer-match-face-3
+                             ivy-minibuffer-match-face-4))
+              (spans nil))
+         ;; Collect match spans up front, before ivy--add-face mutates
+         ;; the face structure into a blended cons form.
+         (while (< pos len)
+           (let* ((next (or (next-single-property-change pos 'face s) len))
+                  (face (get-text-property pos 'face s)))
+             (when (or (memq face match-faces)
+                       (and (listp face) (seq-intersection face match-faces)))
+               (push (cons pos next) spans))
+             (setq pos next)))
+         (ivy--add-face s 'ivy-current-match)
+         (dolist (span spans)
+           (put-text-property (car span) (cdr span) 'face
+                              'wusticality-ivy-selected-match s))
+         s))
+     (lambda (str) (concat str "\n"))
+     cands
+     ""))
+  (setf (alist-get t ivy-format-functions-alist)
+        #'wusticality-ivy-format-line)
+
+  ;; counsel-yank-pop ships its own :format-fn — point it at ours so
+  ;; kill-ring matches get the same purple/orange treatment as
+  ;; everywhere else. We drop the dashed separator and just rely on
+  ;; the standard line-by-line layout.
+  (ivy-configure 'counsel-yank-pop
+    :format-fn #'wusticality-ivy-format-line)
+
+  ;; For dynamic collections (counsel-git-grep, counsel-rg, ...) ivy
+  ;; sets `ivy--old-re' to nil, so `ivy--highlight-ignore-order'
+  ;; (our re-builder's highlighter) skips painting matches in
+  ;; candidates. Fall back to deriving the regex list from ivy-text
+  ;; for the duration of the call so grep candidates get the same
+  ;; purple/orange match treatment as static collections.
+  (defun wusticality--ivy-highlight-fallback (orig-fn str)
+    (let ((ivy--old-re
+           (if (consp ivy--old-re)
+               ivy--old-re
+             (when (and (stringp ivy-text)
+                        (> (length ivy-text) 0))
+               (mapcar (lambda (s) (cons s t))
+                       (split-string ivy-text " " t))))))
+      (funcall orig-fn str)))
+  (advice-add 'ivy--highlight-ignore-order :around
+              #'wusticality--ivy-highlight-fallback)
 
   (defun my-counsel-git ()
     "Find a file in a git project.
@@ -730,8 +847,11 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
      (ivy-rich-switch-buffer-major-mode (:width 0.12 :face font-lock-type-face))
      (ivy-rich-switch-buffer-project (:width 0.12 :face font-lock-string-face))))
 
-  ;; Highlight the entire line in the minibuffer.
-  (setcdr (assoc t ivy-format-functions-alist) #'ivy-format-function-line))
+  ;; Highlight the entire line in the minibuffer. Use our custom
+  ;; format function (defined in the counsel block) so the selected
+  ;; candidate's match still pops orange instead of being dimmed by
+  ;; ivy-current-match's bg blend.
+  (setcdr (assoc t ivy-format-functions-alist) #'wusticality-ivy-format-line))
 
 (use-package ivy-hydra
   :demand t
