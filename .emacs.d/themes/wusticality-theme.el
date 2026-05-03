@@ -25,8 +25,8 @@
 (defvar wusticality-slate "#31353d")
 (defvar wusticality-dark-blue "#005faf")
 (defvar wusticality-purple "#af87ff")
+(defvar wusticality-cyan "#2bbac5")
 
-;; (defvar wusticality-cyan "#2bbac5")
 ;; (defvar wusticality-yellow "#ffff87")
 ;; (defvar wusticality-dark-red "#870000")
 ;; (defvar wusticality-black "#080808")
@@ -109,21 +109,34 @@
  ;; font lock
  ;;
 
+ `(font-lock-bracket-face ((t (:foreground ,wusticality-tan))))
  `(font-lock-builtin-face ((t (:foreground ,wusticality-blue))))
  `(font-lock-comment-delimiter-face ((t (:foreground ,wusticality-gray :italic t))))
  `(font-lock-comment-face ((t (:foreground ,wusticality-gray :italic t))))
  `(font-lock-constant-face ((t (:foreground ,wusticality-brown))))
+ `(font-lock-delimiter-face ((t (:foreground ,wusticality-foreground))))
  `(font-lock-doc-face ((t (:foreground ,wusticality-gray :italic t))))
  `(font-lock-doc-markup-face ((t (:foreground ,wusticality-gray :italic t))))
+ `(font-lock-escape-face ((t (:foreground ,wusticality-cyan))))
+ `(font-lock-function-call-face ((t (:foreground ,wusticality-blue))))
  `(font-lock-function-name-face ((t (:foreground ,wusticality-blue))))
  `(font-lock-keyword-face ((t (:foreground ,wusticality-magenta :italic t))))
- ;; font-lock-negation-char-face
+ `(font-lock-misc-punctuation-face ((t (:foreground ,wusticality-foreground))))
+ `(font-lock-negation-char-face ((t (:inherit font-lock-operator-face))))
+ `(font-lock-number-face ((t (:foreground ,wusticality-tan))))
+ `(font-lock-operator-face ((t (:foreground ,wusticality-magenta))))
  `(font-lock-preprocessor-face ((t (:foreground ,wusticality-tan :italic t))))
- ;; font-lock-regexp-grouping-backslash
- ;; font-lock-regexp-grouping-construct
+ `(font-lock-property-name-face ((t (:foreground ,wusticality-foreground))))
+ `(font-lock-property-use-face ((t (:foreground ,wusticality-foreground))))
+ `(font-lock-punctuation-face ((t (:foreground ,wusticality-foreground))))
+ `(font-lock-regexp-face ((t (:foreground ,wusticality-green))))
+ `(font-lock-regexp-grouping-backslash ((t (:inherit font-lock-escape-face))))
+ `(font-lock-regexp-grouping-construct ((t (:inherit font-lock-escape-face))))
  `(font-lock-string-face ((t (:foreground ,wusticality-green))))
- `(font-lock-type-face ((t (:foreground ,wusticality-tan))))
+ `(font-lock-type-face ((t (:foreground ,wusticality-cyan))))
  `(font-lock-variable-name-face ((t (:foreground ,wusticality-pink))))
+ `(font-lock-variable-use-face ((t (:inherit font-lock-variable-name-face))))
+ `(font-lock-warning-face ((t (:weight bold :foreground ,wusticality-orange))))
 
  ;;
  ;; ivy
