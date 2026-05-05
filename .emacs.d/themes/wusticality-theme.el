@@ -42,7 +42,7 @@
  `(default ((t (:background ,wusticality-background :foreground ,wusticality-foreground))))
  `(cursor ((t (:background ,wusticality-red))))
  `(fringe ((t (:background ,wusticality-background))))
- `(vertical-border ((t (:foreground ,wusticality-background))))
+ `(vertical-border ((t (:background ,wusticality-hline :foreground ,wusticality-hline))))
 
  ;;
  ;; status
