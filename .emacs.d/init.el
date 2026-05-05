@@ -1701,12 +1701,6 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
 ;; is truly per-window (same buffer in two windows still differs).
 (use-package auto-dim-other-buffers
   :demand t
-  :init
-  (progn
-    ;; Keep the selected window highlighted even when Emacs loses
-    ;; focus (e.g. on alt-tab). Without this, adob dims everything
-    ;; on focus-out and you lose track of where point was.
-    (setq auto-dim-other-buffers-dim-on-focus-out nil))
   :config
   (progn
     (auto-dim-other-buffers-mode 1)
