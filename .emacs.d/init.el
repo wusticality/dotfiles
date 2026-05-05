@@ -506,10 +506,12 @@ Optional HEIGHT defaults to 0.85."
        ;; Percentage through the buffer.
        (:eval (propertize (concat
                            (format "%s"
-                                   (round
-                                    (* 100.0
-                                       (/ (float (1- (point)))
-                                          (float (1- (point-max)))))))
+                                   (if (<= (point-max) 1)
+                                       0
+                                     (round
+                                      (* 100.0
+                                         (/ (float (1- (point)))
+                                            (float (1- (point-max))))))))
                            "%% ")
                           'face 'wusticality-modeline-position))
 
@@ -801,6 +803,27 @@ marker."
   ;; candidates. Fall back to deriving the regex list from ivy-text
   ;; for the duration of the call so grep candidates get the same
   ;; purple/orange match treatment as static collections.
+  ;; Workaround for an ivy 0.15.1 bug: when `completing-read' is
+  ;; passed a *function* as REQUIRE-MATCH (a per-input validator,
+  ;; legal per the `completing-read' spec — magit uses it to reject
+  ;; branch names that conflict with existing branches), ivy.el
+  ;; line 756 does `(funcall require-match)' with zero args instead
+  ;; of passing the candidate. Magit's 1-arg lambda then errors
+  ;; with `Wrong number of arguments: (1 . 1), 0' on RET.
+  ;;
+  ;; Drop the function-form require-match before it reaches ivy.
+  ;; The user loses magit's pre-RET validation but git itself still
+  ;; rejects bad refnames, so the worst case is a deferred error.
+  (defun wusticality--ivy-strip-fn-require-match (orig-fn prompt collection
+                                                          &optional predicate
+                                                          require-match
+                                                          &rest rest)
+    (apply orig-fn prompt collection predicate
+           (and (not (functionp require-match)) require-match)
+           rest))
+  (advice-add 'ivy-completing-read :around
+              #'wusticality--ivy-strip-fn-require-match)
+
   (defun wusticality--ivy-highlight-fallback (orig-fn str)
     (let ((ivy--old-re
            (if (consp ivy--old-re)
