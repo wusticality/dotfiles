@@ -1007,9 +1007,6 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
     (add-hook
      'org-mode-hook
      (lambda ()
-       ;; Set a reasonable width.
-       (set-fill-column 80)
-
        ;; Auto fill please.
        (turn-on-auto-fill)
 
@@ -1975,7 +1972,8 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
 ;;
 
 (use-package markdown-mode
-  :mode "\\.md\\'")
+  :mode "\\.md\\'"
+  :hook (markdown-mode . turn-on-auto-fill))
 
 ;;
 ;; haskell-mode
