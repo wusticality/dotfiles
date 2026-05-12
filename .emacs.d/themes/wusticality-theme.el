@@ -14,22 +14,17 @@
 (defvar wusticality-foreground "#bbbbbb")
 (defvar wusticality-hline "#1d2026")
 (defvar wusticality-blue "#61afef")
-(defvar wusticality-tan "#e5c07b")
-(defvar wusticality-brown "#d19a66")
+(defvar wusticality-yellow "#e5c07b")
 (defvar wusticality-gray "#5c6370")
 (defvar wusticality-pink "#ef596f")
 (defvar wusticality-magenta "#d55fde")
 (defvar wusticality-green "#89ca78")
-(defvar wusticality-orange "#ff8c00")
+(defvar wusticality-orange "#ed8328")
 (defvar wusticality-red "#be5046")
 (defvar wusticality-slate "#31353d")
 (defvar wusticality-dark-blue "#005faf")
 (defvar wusticality-purple "#af87ff")
-(defvar wusticality-cyan "#2bbac5")
-
-;; (defvar wusticality-yellow "#ffff87")
-;; (defvar wusticality-dark-red "#870000")
-;; (defvar wusticality-black "#080808")
+(defvar wusticality-cyan "#30b8a6")
 
 ;; Declare the theme.
 (custom-theme-set-faces
@@ -84,7 +79,7 @@
  `(wusticality-modeline-modified ((t (:foreground ,wusticality-green :weight bold))))
  `(wusticality-modeline-buffer-name ((t (:foreground ,wusticality-magenta :weight bold))))
  `(wusticality-modeline-position ((t (:foreground ,wusticality-green :weight bold))))
- `(wusticality-modeline-line-column ((t (:foreground ,wusticality-brown :weight bold))))
+ `(wusticality-modeline-line-column ((t (:foreground ,wusticality-orange :weight bold))))
  `(wusticality-modeline-major-mode ((t (:foreground ,wusticality-blue :weight bold))))
  `(wusticality-modeline-git-icon ((t (:foreground ,wusticality-green :weight bold))))
  `(wusticality-modeline-git-branch ((t (:foreground ,wusticality-green :weight bold))))
@@ -109,11 +104,11 @@
  ;; font lock
  ;;
 
- `(font-lock-bracket-face ((t (:foreground ,wusticality-tan))))
+ `(font-lock-bracket-face ((t (:foreground ,wusticality-yellow))))
  `(font-lock-builtin-face ((t (:foreground ,wusticality-blue))))
  `(font-lock-comment-delimiter-face ((t (:foreground ,wusticality-gray :italic t))))
  `(font-lock-comment-face ((t (:foreground ,wusticality-gray :italic t))))
- `(font-lock-constant-face ((t (:foreground ,wusticality-brown))))
+ `(font-lock-constant-face ((t (:foreground ,wusticality-orange))))
  `(font-lock-delimiter-face ((t (:foreground ,wusticality-foreground))))
  `(font-lock-doc-face ((t (:foreground ,wusticality-gray :italic t))))
  `(font-lock-doc-markup-face ((t (:foreground ,wusticality-gray :italic t))))
@@ -123,9 +118,9 @@
  `(font-lock-keyword-face ((t (:foreground ,wusticality-magenta :italic t))))
  `(font-lock-misc-punctuation-face ((t (:foreground ,wusticality-foreground))))
  `(font-lock-negation-char-face ((t (:inherit font-lock-operator-face))))
- `(font-lock-number-face ((t (:foreground ,wusticality-tan))))
+ `(font-lock-number-face ((t (:foreground ,wusticality-yellow))))
  `(font-lock-operator-face ((t (:foreground ,wusticality-magenta))))
- `(font-lock-preprocessor-face ((t (:foreground ,wusticality-tan :italic t))))
+ `(font-lock-preprocessor-face ((t (:foreground ,wusticality-yellow :italic t))))
  `(font-lock-property-name-face ((t (:foreground ,wusticality-foreground))))
  `(font-lock-property-use-face ((t (:foreground ,wusticality-foreground))))
  `(font-lock-punctuation-face ((t (:foreground ,wusticality-foreground))))
@@ -215,36 +210,36 @@
  ;; lsp-face-highlight-textual
  ;; lsp-face-highlight-write
  ;; lsp-face-rename
- `(lsp-face-semhl-class ((t (:foreground ,wusticality-tan))))
- `(lsp-face-semhl-comment ((t (:foreground ,wusticality-gray :italic t))))
- `(lsp-face-semhl-constant ((t (:foreground ,wusticality-brown))))
+ `(lsp-face-semhl-class ((t (:inherit font-lock-type-face))))
+ `(lsp-face-semhl-comment ((t (:inherit font-lock-comment-face))))
+ `(lsp-face-semhl-constant ((t (:inherit font-lock-constant-face))))
  ;; lsp-face-semhl-decorator
  ;; lsp-face-semhl-default-library
  ;; lsp-face-semhl-definition
  ;; lsp-face-semhl-deprecated
- `(lsp-face-semhl-enum ((t (:foreground ,wusticality-tan))))
- ;; lsp-face-semhl-enum-member
- ;; lsp-face-semhl-event
- `(lsp-face-semhl-function ((t (:foreground ,wusticality-blue))))
- ;; lsp-face-semhl-implementation
- ;; lsp-face-semhl-interface
- `(lsp-face-semhl-keyword ((t (:foreground ,wusticality-magenta :italic t))))
- ;; lsp-face-semhl-label
- `(lsp-face-semhl-macro ((t (:foreground ,wusticality-blue))))
+ `(lsp-face-semhl-enum ((t (:inherit font-lock-type-face))))
+ `(lsp-face-semhl-enum-member ((t (:foreground ,wusticality-yellow))))
+ `(lsp-face-semhl-event ((t (:inherit font-lock-function-name-face))))
+ `(lsp-face-semhl-function ((t (:inherit font-lock-function-name-face))))
+ `(lsp-face-semhl-implementation ((t (:inherit font-lock-function-name-face))))
+ `(lsp-face-semhl-interface ((t (:inherit font-lock-type-face))))
+ `(lsp-face-semhl-keyword ((t (:inherit font-lock-keyword-face))))
+ `(lsp-face-semhl-label ((t (:inherit font-lock-constant-face))))
+ `(lsp-face-semhl-macro ((t (:inherit font-lock-builtin-face))))
  `(lsp-face-semhl-member ((t (:foreground ,wusticality-pink))))
- `(lsp-face-semhl-method ((t (:foreground ,wusticality-blue))))
- ;; lsp-face-semhl-modifier
- ;; lsp-face-semhl-namespace
- `(lsp-face-semhl-number ((t (:foreground ,wusticality-brown))))
- ;; lsp-face-semhl-operator
- `(lsp-face-semhl-parameter ((t (:foreground ,wusticality-brown))))
+ `(lsp-face-semhl-method ((t (:inherit font-lock-function-name-face))))
+ `(lsp-face-semhl-modifier ((t (:inherit font-lock-keyword-face))))
+ `(lsp-face-semhl-namespace ((t (:foreground ,wusticality-foreground))))
+ `(lsp-face-semhl-number ((t (:inherit font-lock-number-face))))
+ `(lsp-face-semhl-operator ((t (:inherit font-lock-operator-face))))
+ `(lsp-face-semhl-parameter ((t (:foreground ,wusticality-orange))))
  `(lsp-face-semhl-property ((t (:foreground ,wusticality-pink))))
- ;; lsp-face-semhl-regexp
- `(lsp-face-semhl-static ((t (:foreground ,wusticality-brown))))
- `(lsp-face-semhl-string ((t (:foreground ,wusticality-green))))
- `(lsp-face-semhl-struct ((t (:foreground ,wusticality-tan))))
- `(lsp-face-semhl-type ((t (:foreground ,wusticality-tan))))
- ;; lsp-face-semhl-type-parameter
+ `(lsp-face-semhl-regexp ((t (:inherit font-lock-regexp-face))))
+ `(lsp-face-semhl-static ((t (:foreground ,wusticality-orange))))
+ `(lsp-face-semhl-string ((t (:inherit font-lock-string-face))))
+ `(lsp-face-semhl-struct ((t (:inherit font-lock-type-face))))
+ `(lsp-face-semhl-type ((t (:inherit font-lock-type-face))))
+ `(lsp-face-semhl-type-parameter ((t (:inherit font-lock-type-face))))
  `(lsp-face-semhl-variable ((t (:foreground ,wusticality-foreground))))
  ;; lsp-headerline-breadcrumb-deprecated-face
  ;; lsp-headerline-breadcrumb-path-error-face
@@ -292,7 +287,7 @@
  ;; lsp-rust-analyzer-inlay-param-face
  ;; lsp-rust-analyzer-inlay-type-face
  ;; lsp-rust-analyzer-intra-doc-link-modifier-face
- ;; lsp-rust-analyzer-library-modifier-face
+ `(lsp-rust-analyzer-library-modifier-face ((t)))
  `(lsp-rust-analyzer-mutable-modifier-face ((t)))
  ;; lsp-rust-analyzer-public-modifier-face
  ;; lsp-rust-analyzer-readonly-modifier-face
@@ -395,7 +390,7 @@
  ;; flycheck-fringe-warning
  `(flycheck-info ((t (:underline (:color ,wusticality-green :style line) :bold t))))
  ;; flycheck-verify-select-checker
- `(flycheck-warning ((t (:underline (:color ,wusticality-brown :style line) :bold t))))
+ `(flycheck-warning ((t (:underline (:color ,wusticality-orange :style line) :bold t))))
  ;; flymake-error
  ;; flymake-note
  ;; flymake-warning
