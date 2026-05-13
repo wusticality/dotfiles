@@ -10,7 +10,7 @@
 (deftheme wusticality "My own personal theme.")
 
 ;; Declare the colors.
-(defvar wusticality-background "#282c34")
+(defvar wusticality-background "#31353d")
 (defvar wusticality-foreground "#bbbbbb")
 (defvar wusticality-hline "#1d2026")
 (defvar wusticality-blue "#61afef")
@@ -21,7 +21,7 @@
 (defvar wusticality-green "#89ca78")
 (defvar wusticality-orange "#ed8328")
 (defvar wusticality-red "#be5046")
-(defvar wusticality-slate "#31353d")
+(defvar wusticality-slate "#282c34")
 (defvar wusticality-dark-blue "#005faf")
 (defvar wusticality-purple "#af87ff")
 (defvar wusticality-cyan "#30b8a6")
@@ -34,9 +34,9 @@
  ;; basics
  ;;
 
- `(default ((t (:background ,wusticality-background :foreground ,wusticality-foreground))))
+ `(default ((t (:background ,wusticality-slate :foreground ,wusticality-foreground))))
  `(cursor ((t (:background ,wusticality-red))))
- `(fringe ((t (:background ,wusticality-background))))
+ `(fringe ((t (:background ,wusticality-slate))))
  `(vertical-border ((t (:background ,wusticality-hline :foreground ,wusticality-hline))))
 
  ;;
@@ -58,8 +58,8 @@
  `(hl-line ((t (:background ,wusticality-hline))))
  `(show-paren-match ((t (:background ,wusticality-dark-blue))))
  `(show-paren-mismatch ((t (:background ,wusticality-red))))
- `(lazy-highlight ((t (:background ,wusticality-slate))))
- `(isearch ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
+ `(lazy-highlight ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
+ `(isearch ((t (:background ,wusticality-orange :foreground ,wusticality-hline :weight bold))))
 
  ;;
  ;; minibuffer
@@ -148,9 +148,9 @@
  ;; ivy-highlight-face
  ;; ivy-match-required-face
  ;; ivy-minibuffer-match-face-1
- `(ivy-minibuffer-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
- `(ivy-minibuffer-match-face-3 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
- `(ivy-minibuffer-match-face-4 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
+ `(ivy-minibuffer-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
+ `(ivy-minibuffer-match-face-3 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
+ `(ivy-minibuffer-match-face-4 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
  ;; ivy-minibuffer-match-highlight
  ;; ivy-modified-buffer
  ;; ivy-modified-outside-buffer
@@ -170,8 +170,8 @@
  `(swiper-match-face-2 ((t (:background ,wusticality-orange :foreground ,wusticality-hline :weight bold))))
  ;; swiper-match-face-3
  ;; swiper-match-face-4
- `(swiper-background-match-face-1 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
- `(swiper-background-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-background))))
+ `(swiper-background-match-face-1 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
+ `(swiper-background-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
  ;; swiper-background-match-face-3
  ;; swiper-background-match-face-4
  `(swiper-line-face ((t (:background ,wusticality-hline :extend t))))
@@ -305,8 +305,8 @@
 
  ;; adob--hack
  ;; auto-dim-other-buffers
- `(auto-dim-other-buffers-face ((t (:background ,wusticality-slate))))
- `(auto-dim-other-buffers-hide ((t (:foreground ,wusticality-slate :background ,wusticality-slate))))
+ `(auto-dim-other-buffers-face ((t (:background ,wusticality-background))))
+ `(auto-dim-other-buffers-hide ((t (:foreground ,wusticality-background :background ,wusticality-background))))
 
  ;;
  ;; dirvish
