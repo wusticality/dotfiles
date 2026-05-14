@@ -10,9 +10,9 @@
 (deftheme wusticality "My own personal theme.")
 
 ;; Declare the colors.
-(defvar wusticality-background "#31353d")
+(defvar wusticality-background "#282c34")
 (defvar wusticality-foreground "#bbbbbb")
-(defvar wusticality-hline "#1d2026")
+(defvar wusticality-hline "#16191e")
 (defvar wusticality-blue "#61afef")
 (defvar wusticality-yellow "#e5c07b")
 (defvar wusticality-gray "#5c6370")
@@ -21,7 +21,7 @@
 (defvar wusticality-green "#89ca78")
 (defvar wusticality-orange "#ed8328")
 (defvar wusticality-red "#be5046")
-(defvar wusticality-slate "#282c34")
+(defvar wusticality-slate "#20232a")
 (defvar wusticality-dark-blue "#005faf")
 (defvar wusticality-purple "#af87ff")
 (defvar wusticality-cyan "#30b8a6")
@@ -34,10 +34,11 @@
  ;; basics
  ;;
 
- `(default ((t (:background ,wusticality-slate :foreground ,wusticality-foreground))))
+ `(default ((t (:background ,wusticality-background :foreground ,wusticality-foreground))))
  `(cursor ((t (:background ,wusticality-red))))
- `(fringe ((t (:background ,wusticality-slate))))
+ `(fringe ((t (:background ,wusticality-background))))
  `(vertical-border ((t (:background ,wusticality-hline :foreground ,wusticality-hline))))
+ `(wusticality-selected-window ((t (:background ,wusticality-slate))))
 
  ;;
  ;; status
@@ -298,15 +299,6 @@
  ;; lsp-signature-face
  ;; lsp-signature-highlight-function-argument
  ;; lsp-signature-posframe
-
- ;;
- ;; auto-dim-other-buffers
- ;;
-
- ;; adob--hack
- ;; auto-dim-other-buffers
- `(auto-dim-other-buffers-face ((t (:background ,wusticality-background))))
- `(auto-dim-other-buffers-hide ((t (:foreground ,wusticality-background :background ,wusticality-background))))
 
  ;;
  ;; dirvish

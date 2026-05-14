@@ -8,26 +8,26 @@ cursor = "#be5046"
 [colors.bright]
 black = "#282c34"
 blue = "#61afef"
-cyan = "#2bbac5"
+cyan = "#30b8a6"
 green = "#89ca78"
 magenta = "#d55fde"
 red = "#ef596f"
-white = "#abb2bf"
+white = "#bbbbbb"
 yellow = "#e5c07b"
 
 [colors.normal]
 black = "#282c34"
 blue = "#61afef"
-cyan = "#2bbac5"
+cyan = "#30b8a6"
 green = "#89ca78"
 magenta = "#d55fde"
 red = "#ef596f"
-white = "#abb2bf"
+white = "#bbbbbb"
 yellow = "#e5c07b"
 
 [colors.primary]
 background = "#282c34"
-foreground = "#abb2bf"
+foreground = "#bbbbbb"
 
 [env]
 TERM = "xterm-256color"

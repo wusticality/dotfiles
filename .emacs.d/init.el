@@ -1712,43 +1712,65 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
     (setq rainbow-x-colors nil)))
 
 ;;
-;; auto-dim-other-buffers
+;; selected-window highlight
 ;;
 
-;; Tmux-like per-window backgrounds: selected window keeps the theme
-;; default, non-selected windows get lifted to wusticality-slate.
-;; Uses Emacs 27's :filtered face spec under the hood, so rendering
-;; is truly per-window (same buffer in two windows still differs).
-(use-package auto-dim-other-buffers
-  :demand t
-  :config
-  (progn
-    (auto-dim-other-buffers-mode 1)
+;; Tint the currently-selected window with `wusticality-selected-window'
+;; while every other window stays at the theme's default background.
+;; Uses Emacs 27's `:filtered' face spec so rendering is truly
+;; per-window: the same buffer shown in two windows can render with
+;; different backgrounds depending on which one is selected.
+;;
+;; Mechanism:
+;;   1. Each buffer carries a face-remap on `default' whose `:filtered'
+;;      clause says "when the displaying window has parameter
+;;      `my-selected' set, inherit from `wusticality-selected-window'."
+;;   2. On real selection changes we update window parameters so only
+;;      the freshly-selected window has `my-selected' = t.
+;;
+;; We hook `window-selection-change-functions' instead of
+;; `buffer-list-update-hook' because the latter fires on every buffer
+;; mutation - including transient `(with-selected-window W ...)' calls
+;; from packages like dirvish-follow, completion previews, ivy, etc. -
+;; and would flip the highlight to the wrong window.
 
-    ;; Rebind adob to real window selection changes.
-    ;;
-    ;; adob out-of-the-box tracks the "selected window" via
-    ;; buffer-list-update-hook. That hook fires on any buffer
-    ;; mutation, including those that happen inside
-    ;; (with-selected-window W ...) — and many packages use that
-    ;; idiom to transiently select a window (to move point, render,
-    ;; etc.) without intending to truly change focus. dirvish's
-    ;; follow-mode is one such offender, but completion previews,
-    ;; helm/ivy, tooltips and more do it too. Each transient
-    ;; selection confuses adob into flipping its dim state, leaving
-    ;; the wrong window looking "selected" until the next real
-    ;; selection change.
-    ;;
-    ;; window-selection-change-functions (Emacs 27+) is the correct
-    ;; hook: it fires only on REAL selection changes, not during
-    ;; save-selected-window / with-selected-window. Swap adob onto
-    ;; that.
-    (remove-hook 'buffer-list-update-hook
-                 #'adob--buffer-list-update-hook)
+(use-package emacs
+  :straight (:type built-in)
+  :init
+  (progn
+    (defface wusticality-selected-window
+      '((t :background "#20232a"))
+      "Background applied to the currently selected window.
+Themes override this to match their palette.")
+
+    (defun my/lit-selected-apply ()
+      "Install the selected-window face remap in the current buffer."
+      (face-remap-add-relative
+       'default
+       '(:filtered (:window my-selected t)
+                   (:inherit wusticality-selected-window))))
+
+    (defun my/lit-selected-update (&optional frame)
+      "Mark only the selected window of FRAME with the `my-selected' param."
+      (dolist (win (window-list frame))
+        (set-window-parameter win 'my-selected nil))
+      (set-window-parameter (selected-window) 'my-selected t))
+
+    ;; Apply the remap to new buffers as they get a major mode.
+    (add-hook 'after-change-major-mode-hook #'my/lit-selected-apply)
+
+    ;; Apply to all existing buffers once init is done.
+    (add-hook 'after-init-hook
+              (lambda ()
+                (dolist (buf (buffer-list))
+                  (with-current-buffer buf (my/lit-selected-apply)))
+                (my/lit-selected-update)))
+
+    ;; Update window parameter on real selection changes.
     (add-hook 'window-selection-change-functions
               (lambda (frame)
                 (with-selected-frame frame
-                  (adob--update))))))
+                  (my/lit-selected-update))))))
 
 ;;
 ;; vterm
