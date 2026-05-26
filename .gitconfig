@@ -52,6 +52,9 @@ insteadOf = https://github.com/
 [status]
 showUntrackedFiles = all
 
+[url "git@kakarot.chorse.space:"]
+insteadOf = https://kakarot.chorse.space/
+
 [submodule]
 recurse = true
 
