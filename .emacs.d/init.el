@@ -1738,6 +1738,12 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
   :straight (:type built-in)
   :init
   (progn
+    ;; tmux sets TERM=tmux-256color, which Emacs doesn't recognize as
+    ;; xterm-family - so terminal/xterm.el never runs and focus
+    ;; reporting (CSI ?1004h) is never enabled. Alias it so the xterm
+    ;; init runs. Requires `set -g focus-events on' in tmux.conf.
+    (add-to-list 'term-file-aliases '("tmux-256color" . "xterm-256color"))
+
     (defface wusticality-selected-window
       '((t :background "#20232a"))
       "Background applied to the currently selected window.
@@ -1769,8 +1775,39 @@ Themes override this to match their palette.")
     ;; Update window parameter on real selection changes.
     (add-hook 'window-selection-change-functions
               (lambda (frame)
-                (with-selected-frame frame
-                  (my/lit-selected-update))))))
+                (my/lit-selected-update)))
+
+    (defun my/lit-selected-clear-all ()
+      "Drop the `my-selected' parameter from every window."
+      (dolist (frame (frame-list))
+        (dolist (win (window-list frame))
+          (set-window-parameter win 'my-selected nil))))
+
+    ;; Force-enable xterm focus event reporting on every TTY frame and
+    ;; map the response sequences. We bind them to synthetic keys
+    ;; (rather than calling handlers from input-decode-map directly)
+    ;; so they flow through the command loop and trigger redisplay.
+    (defun my/tty-enable-focus-events (&optional frame)
+      (let ((frame (or frame (selected-frame))))
+        (when (and (frame-live-p frame)
+                   (not (display-graphic-p frame))
+                   (getenv "TMUX"))
+          (with-selected-frame frame
+            (send-string-to-terminal "\e[?1004h"))
+          (define-key input-decode-map "\e[I" [my-focus-in])
+          (define-key input-decode-map "\e[O" [my-focus-out]))))
+    (add-hook 'tty-setup-hook #'my/tty-enable-focus-events)
+    (add-hook 'after-make-frame-functions #'my/tty-enable-focus-events)
+    (my/tty-enable-focus-events)
+
+    (defun my/handle-tty-focus-in ()
+      (interactive)
+      (my/lit-selected-update))
+    (defun my/handle-tty-focus-out ()
+      (interactive)
+      (my/lit-selected-clear-all))
+    (global-set-key [my-focus-in]  #'my/handle-tty-focus-in)
+    (global-set-key [my-focus-out] #'my/handle-tty-focus-out)))
 
 ;;
 ;; vterm
