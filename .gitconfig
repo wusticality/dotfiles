@@ -46,6 +46,9 @@ process = git-lfs filter-process
 [url "git@github.com:"]
 insteadOf = https://github.com/
 
+[url "git@kakarot.chorse.space:"]
+insteadOf = https://kakarot.chorse.space/
+
 [submodule]
 recurse = true
 
