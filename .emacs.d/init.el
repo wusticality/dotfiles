@@ -1835,6 +1835,15 @@ Themes override this to match their palette.")
       (interactive)
       (process-send-string vterm--process "\e\r")))
 
+  ;; Interrupt TUIs with C-g. In terminal Emacs a lone Esc is the Meta prefix
+  ;; (same byte), so it never reaches the child - you can't ESC out of Claude
+  ;; Code's prompt or interrupt it. Send Escape via C-g instead, which is
+  ;; unambiguous. In vterm-copy-mode, restore C-g to `keyboard-quit' so it
+  ;; cancels selections normally (that map doesn't bind C-g, so without this it
+  ;; would fall through to the send-escape binding).
+  (define-key vterm-mode-map (kbd "C-g") #'vterm-send-escape)
+  (define-key vterm-copy-mode-map (kbd "C-g") #'keyboard-quit)
+
   ;; Kill per-keystroke line flicker. vterm repaints the current (prompt) line
   ;; on every keystroke, and global-hl-line-mode paints a full-width background
   ;; on that line. In terminal Emacs each repaint briefly shows the default
