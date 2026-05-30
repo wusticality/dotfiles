@@ -1833,7 +1833,16 @@ Themes override this to match their palette.")
   (define-key vterm-mode-map (kbd "M-RET")
     (lambda ()
       (interactive)
-      (process-send-string vterm--process "\e\r"))))
+      (process-send-string vterm--process "\e\r")))
+
+  ;; Kill per-keystroke line flicker. vterm repaints the current (prompt) line
+  ;; on every keystroke, and global-hl-line-mode paints a full-width background
+  ;; on that line. In terminal Emacs each repaint briefly shows the default
+  ;; background before the hl-line background fills, so the whole line flashes.
+  ;; Exempt vterm buffers from the global highlight (the hl-line highlighter
+  ;; honors a buffer-local nil here - see global-hl-line-highlight).
+  (add-hook 'vterm-mode-hook
+            (lambda () (setq-local global-hl-line-mode nil))))
 
 ;;
 ;; agent-shell
