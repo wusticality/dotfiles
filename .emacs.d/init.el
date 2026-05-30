@@ -1842,7 +1842,33 @@ Themes override this to match their palette.")
   ;; Exempt vterm buffers from the global highlight (the hl-line highlighter
   ;; honors a buffer-local nil here - see global-hl-line-highlight).
   (add-hook 'vterm-mode-hook
-            (lambda () (setq-local global-hl-line-mode nil))))
+            (lambda () (setq-local global-hl-line-mode nil)))
+
+  ;; Claude Code's prompt puts a non-breaking space (U+00A0) after the > arrow.
+  ;; Emacs highlights nobreak spaces via the `nobreak-space' face (cyan plus
+  ;; underline by default), so it renders as a stray blue underline in vterm
+  ;; while a real terminal shows it blank. Remap the face to default in vterm
+  ;; buffers so the prompt looks normal; nbsp highlighting stays on elsewhere.
+  (add-hook 'vterm-mode-hook
+            (lambda ()
+              (face-remap-add-relative 'nobreak-space :inherit 'default)
+              (face-remap-add-relative 'nobreak-hyphen :inherit 'default)))
+
+  ;; Let the selected-window dimming reach vterm. vterm bakes the default
+  ;; background into each cell as an explicit color (vterm--get-color returns
+  ;; (face-background 'default) for index -1), which ignores the per-window
+  ;; `:filtered' remap on `default' that dims the selected window. Returning
+  ;; nil for the default background instead leaves those cells referencing the
+  ;; `default' face, so the dimming applies per-window like everywhere else.
+  (defun wusticality-vterm--transparent-default-bg (orig index &rest args)
+    "Don't bake the default background; let cells inherit the `default' face."
+    (if (and (= index -1)
+             (not (member :foreground args))
+             (not (member :inverse-video args))
+             (not (member :underline args)))
+        nil
+      (apply orig index args)))
+  (advice-add 'vterm--get-color :around #'wusticality-vterm--transparent-default-bg))
 
 ;;
 ;; agent-shell
