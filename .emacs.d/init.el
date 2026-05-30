@@ -1823,7 +1823,17 @@ Themes override this to match their palette.")
   (vterm-color-blue    ((t (:foreground "#61afef" :background "#61afef"))))
   (vterm-color-magenta ((t (:foreground "#d55fde" :background "#d55fde"))))
   (vterm-color-cyan    ((t (:foreground "#2bbac5" :background "#2bbac5"))))
-  (vterm-color-white   ((t (:foreground "#abb2bf" :background "#abb2bf")))))
+  (vterm-color-white   ((t (:foreground "#abb2bf" :background "#abb2bf"))))
+  :config
+  ;; Shift+Enter: Alacritty sends ESC CR (Meta+Return) for Shift+Return, which
+  ;; arrives here decoded as M-RET. Without a vterm binding it falls through to
+  ;; the global M-RET (lsp-execute-code-action) instead of reaching the child.
+  ;; Forward the raw ESC CR to the PTY so TUIs like Claude Code see Meta+Return
+  ;; and insert a newline. Mirrors vterm-send-return's process-send-string.
+  (define-key vterm-mode-map (kbd "M-RET")
+    (lambda ()
+      (interactive)
+      (process-send-string vterm--process "\e\r"))))
 
 ;;
 ;; agent-shell
