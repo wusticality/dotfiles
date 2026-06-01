@@ -483,13 +483,14 @@
   :straight (:type built-in)
   :init
   (progn
-    (defface wusticality-modeline-modified    '((t (:weight bold))) "Modified indicator.")
-    (defface wusticality-modeline-buffer-name '((t (:weight bold))) "Buffer name.")
-    (defface wusticality-modeline-position    '((t (:weight bold))) "Buffer % position.")
-    (defface wusticality-modeline-line-column '((t (:weight bold))) "Line/column.")
-    (defface wusticality-modeline-major-mode  '((t (:weight bold))) "Major mode.")
-    (defface wusticality-modeline-git-icon    '((t (:weight bold))) "Git branch icon.")
-    (defface wusticality-modeline-git-branch  '((t (:weight bold))) "Git branch name.")
+    (defface wusticality-modeline-modified    '((t)) "Modified indicator.")
+    (defface wusticality-modeline-buffer-name '((t)) "Buffer name.")
+    (defface wusticality-modeline-position    '((t)) "Buffer % position.")
+    (defface wusticality-modeline-line-column '((t)) "Line/column.")
+    (defface wusticality-modeline-major-mode  '((t)) "Major mode.")
+    (defface wusticality-modeline-git-icon    '((t)) "Git branch icon.")
+    (defface wusticality-modeline-git-branch  '((t)) "Git branch name.")
+    (defface wusticality-modeline-view-mode   '((t)) "Vterm copy-mode (VIEW) indicator.")
 
     (defun wusticality-modeline-icon (icon-fn icon face &optional height)
       "Return a propertized nerd-icons ICON via ICON-FN inheriting FACE.
@@ -539,7 +540,11 @@ Optional HEIGHT defaults to 0.85."
                                             'wusticality-modeline-git-icon)
                  " "
                  (propertize (car (vc-git-branches))
-                             'face 'wusticality-modeline-git-branch))))))))
+                             'face 'wusticality-modeline-git-branch))))
+
+       ;; vterm copy-mode indicator, shown only while active.
+       (:eval (when (bound-and-true-p vterm-copy-mode)
+                (propertize "VIEW " 'face 'wusticality-modeline-view-mode)))))))
 
 ;;
 ;; header-line
@@ -549,8 +554,8 @@ Optional HEIGHT defaults to 0.85."
   :straight (:type built-in)
   :init
   (progn
-    (defface wusticality-header-modified '((t (:weight bold))) "Header modified indicator.")
-    (defface wusticality-header-file     '((t (:weight bold))) "Header file path.")
+    (defface wusticality-header-modified '((t)) "Header modified indicator.")
+    (defface wusticality-header-file     '((t)) "Header file path.")
 
     (defun wusticality-header-truncate-path (path budget)
       "Truncate PATH from the left at component boundaries to fit BUDGET columns.
@@ -690,7 +695,7 @@ marker."
   ;; Theme-side faces for the recolored match in the selected
   ;; swiper candidate (see custom format function below).
   (defface wusticality-ivy-selected-match
-    '((t :inherit highlight :weight bold))
+    '((t))
     "Face for matches inside the selected swiper candidate.")
 
   ;; Increase the height.
@@ -1748,9 +1753,9 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
     (add-to-list 'term-file-aliases '("tmux-256color" . "xterm-256color"))
 
     (defface wusticality-selected-window
-      '((t :background "#20232a"))
+      '((t))
       "Background applied to the currently selected window.
-Themes override this to match their palette.")
+Styled by the wusticality theme.")
 
     (defun my/lit-selected-apply ()
       "Install the selected-window face remap in the current buffer."
@@ -1847,6 +1852,14 @@ Themes override this to match their palette.")
   ;; would fall through to the send-escape binding).
   (define-key vterm-mode-map (kbd "C-g") #'vterm-send-escape)
   (define-key vterm-copy-mode-map (kbd "C-g") #'keyboard-quit)
+
+  ;; Shorter binding for copy mode, replacing vterm's default C-c C-t. Stays in
+  ;; the safe C-c prefix; bound in both maps so the same key toggles it on and
+  ;; off. Mnemonic matches tmux's `t'.
+  (define-key vterm-mode-map (kbd "C-c C-t") nil)
+  (define-key vterm-copy-mode-map (kbd "C-c C-t") nil)
+  (define-key vterm-mode-map (kbd "C-c t") #'vterm-copy-mode)
+  (define-key vterm-copy-mode-map (kbd "C-c t") #'vterm-copy-mode)
 
   ;; Per-buffer vterm display setup for full-screen TUIs like Claude Code.
   ;; Named (not a lambda) so reloading init.el via F12 redefines it in place

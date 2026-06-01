@@ -84,6 +84,7 @@
  `(wusticality-modeline-major-mode ((t (:foreground ,wusticality-blue :weight bold))))
  `(wusticality-modeline-git-icon ((t (:foreground ,wusticality-green :weight bold))))
  `(wusticality-modeline-git-branch ((t (:foreground ,wusticality-green :weight bold))))
+ `(wusticality-modeline-view-mode ((t (:foreground ,wusticality-yellow :weight bold))))
 
  ;;
  ;; header-line
