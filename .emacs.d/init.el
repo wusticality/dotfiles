@@ -129,8 +129,10 @@
           (set-frame-parameter frame 'menu-bar-lines 0)
           (set-frame-parameter frame 'tool-bar-lines 0))))
 
-    (add-hook 'after-make-frame-functions
-              (lambda (_frame) (my/zero-tty-bars)))
+    ;; my/zero-tty-bars takes (&rest _), so it accepts the frame arg directly -
+    ;; no wrapper lambda needed (a named fn also keeps the hook idempotent on
+    ;; reload, where a fresh lambda would stack a new copy each F12).
+    (add-hook 'after-make-frame-functions #'my/zero-tty-bars)
 
     ;; emacs-plus's GUI frame creation flips menu-bar-mode back on
     ;; globally; the TTY frame inherits the menu bar after that.
@@ -1003,15 +1005,13 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
   :straight (:type built-in)
   :init
   (progn
-    ;; The style.
-    (add-hook
-     'org-mode-hook
-     (lambda ()
-       ;; Auto fill please.
-       (turn-on-auto-fill)
-
-       ;; Only show rightmost stars.
-       (org-indent-mode)))))
+    ;; The style. Named (not a lambda) so F12 reload redefines it in place
+    ;; rather than stacking another copy on the hook.
+    (defun my/org-mode-setup ()
+      "Set up org buffers: auto-fill, and show only the rightmost stars."
+      (turn-on-auto-fill)
+      (org-indent-mode))
+    (add-hook 'org-mode-hook #'my/org-mode-setup)))
 
 ;;
 ;; latex
@@ -1021,8 +1021,11 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
   :straight (:type built-in)
   :init
   (progn
-    ;; Only use one '%' in comments, please.
-    (add-hook 'latex-mode-hook (lambda () (setq-local comment-add 0)))))
+    ;; Only use one '%' in comments, please. Named so reload stays idempotent.
+    (defun my/latex-mode-setup ()
+      "Use a single % to start LaTeX comments."
+      (setq-local comment-add 0))
+    (add-hook 'latex-mode-hook #'my/latex-mode-setup)))
 
 ;;
 ;; yasnippet
@@ -1766,16 +1769,17 @@ Themes override this to match their palette.")
     (add-hook 'after-change-major-mode-hook #'my/lit-selected-apply)
 
     ;; Apply to all existing buffers once init is done.
-    (add-hook 'after-init-hook
-              (lambda ()
-                (dolist (buf (buffer-list))
-                  (with-current-buffer buf (my/lit-selected-apply)))
-                (my/lit-selected-update)))
+    (defun my/lit-selected-init ()
+      "Install the selected-window remap in all buffers, then mark the selection."
+      (dolist (buf (buffer-list))
+        (with-current-buffer buf (my/lit-selected-apply)))
+      (my/lit-selected-update))
+    (add-hook 'after-init-hook #'my/lit-selected-init)
 
-    ;; Update window parameter on real selection changes.
-    (add-hook 'window-selection-change-functions
-              (lambda (frame)
-                (my/lit-selected-update)))
+    ;; Update window parameter on real selection changes. The hook passes the
+    ;; frame, which my/lit-selected-update accepts as its optional arg - so it
+    ;; goes on directly (named -> idempotent on reload, no wrapper lambda).
+    (add-hook 'window-selection-change-functions #'my/lit-selected-update)
 
     (defun my/lit-selected-clear-all ()
       "Drop the `my-selected' parameter from every window."
@@ -1844,24 +1848,24 @@ Themes override this to match their palette.")
   (define-key vterm-mode-map (kbd "C-g") #'vterm-send-escape)
   (define-key vterm-copy-mode-map (kbd "C-g") #'keyboard-quit)
 
-  ;; Kill per-keystroke line flicker. vterm repaints the current (prompt) line
-  ;; on every keystroke, and global-hl-line-mode paints a full-width background
-  ;; on that line. In terminal Emacs each repaint briefly shows the default
-  ;; background before the hl-line background fills, so the whole line flashes.
-  ;; Exempt vterm buffers from the global highlight (the hl-line highlighter
-  ;; honors a buffer-local nil here - see global-hl-line-highlight).
-  (add-hook 'vterm-mode-hook
-            (lambda () (setq-local global-hl-line-mode nil)))
+  ;; Per-buffer vterm display setup for full-screen TUIs like Claude Code.
+  ;; Named (not a lambda) so reloading init.el via F12 redefines it in place
+  ;; instead of stacking another copy on vterm-mode-hook.
+  (defun wusticality-vterm--setup ()
+    "Per-buffer vterm display fixes."
 
-  ;; Claude Code's prompt puts a non-breaking space (U+00A0) after the > arrow.
-  ;; Emacs highlights nobreak spaces via the `nobreak-space' face (cyan plus
-  ;; underline by default), so it renders as a stray blue underline in vterm
-  ;; while a real terminal shows it blank. Remap the face to default in vterm
-  ;; buffers so the prompt looks normal; nbsp highlighting stays on elsewhere.
-  (add-hook 'vterm-mode-hook
-            (lambda ()
-              (face-remap-add-relative 'nobreak-space :inherit 'default)
-              (face-remap-add-relative 'nobreak-hyphen :inherit 'default)))
+    ;; Kill per-keystroke line flicker: vterm repaints the current (prompt) line
+    ;; every keystroke and global-hl-line-mode paints a full-width background on
+    ;; it, so in both GUI and terminal Emacs the whole line flashes. Exempt vterm
+    ;; from the global highlight (the highlighter honors a buffer-local nil).
+    (setq-local global-hl-line-mode nil)
+
+    ;; Claude's prompt puts a non-breaking space (U+00A0) after the > arrow.
+    ;; Emacs's nobreak-space face (cyan + underline) would show it as a stray
+    ;; blue underline; remap to default so it renders blank like a real terminal.
+    (face-remap-add-relative 'nobreak-space :inherit 'default)
+    (face-remap-add-relative 'nobreak-hyphen :inherit 'default))
+  (add-hook 'vterm-mode-hook #'wusticality-vterm--setup)
 
   ;; Let the selected-window dimming reach vterm. vterm bakes the default
   ;; background into each cell as an explicit color (vterm--get-color returns
@@ -1926,26 +1930,28 @@ Themes override this to match their palette.")
   :hook (rust-ts-mode . lsp-deferred)
   :config
   (progn
-    ;; Setup new rust buffers.
-    (add-hook
-     'rust-ts-mode-hook
-     (lambda ()
-       ;; Truncate lines.
-       (setq truncate-lines t)
+    ;; Setup new rust buffers. Named (not a lambda) so F12 reload redefines it
+    ;; in place instead of stacking another copy on the hook.
+    (defun my/rust-ts-mode-setup ()
+      "Configure new Rust buffers."
 
-       ;; Prevent lsp-mode from making edits before saving.
-       (setq-local lsp-before-save-edits nil)
+      ;; Truncate lines.
+      (setq truncate-lines t)
 
-       ;; Let's organize imports and format on save.
-       (add-hook 'before-save-hook 'lsp-organize-imports t t)
-       (add-hook 'before-save-hook 'lsp-format-buffer t t)
+      ;; Prevent lsp-mode from making edits before saving.
+      (setq-local lsp-before-save-edits nil)
 
-       ;; Use the nightly toolchain for formatting.
-       (setq-local lsp-rust-analyzer-rustfmt-extra-args '["+nightly"])
+      ;; Let's organize imports and format on save.
+      (add-hook 'before-save-hook 'lsp-organize-imports t t)
+      (add-hook 'before-save-hook 'lsp-format-buffer t t)
 
-       ;; Increase the fontlock level.
-       (setq-local treesit-font-lock-level 4)
-       (treesit-font-lock-recompute-features)))))
+      ;; Use the nightly toolchain for formatting.
+      (setq-local lsp-rust-analyzer-rustfmt-extra-args '["+nightly"])
+
+      ;; Increase the fontlock level.
+      (setq-local treesit-font-lock-level 4)
+      (treesit-font-lock-recompute-features))
+    (add-hook 'rust-ts-mode-hook #'my/rust-ts-mode-setup)))
 
 ;;
 ;; toml-ts-mode
@@ -1968,26 +1974,22 @@ Themes override this to match their palette.")
     ;; Use the correct tab width please.
     (setq go-ts-mode-indent-offset tab-width)
 
-    ;; Setup new go buffers.
-    (add-hook
-     'go-ts-mode-hook
-     (lambda ()
-       ;; Truncate lines.
-       (setq truncate-lines t)
-
-       ;; Golang uses tabs, not spaces.
-       (setq-default indent-tabs-mode t)
-
-       ;; Prevent lsp-mode from making edits before saving.
-       (setq-local lsp-before-save-edits nil)
-
-       ;; Let's organize imports and format on save.
-       (add-hook 'before-save-hook 'lsp-organize-imports t t)
-       (add-hook 'before-save-hook 'lsp-format-buffer t t)
-
-       ;; Increase the fontlock level.
-       (setq-local treesit-font-lock-level 4)
-       (treesit-font-lock-recompute-features)))))
+    ;; Setup new go buffers. Named so F12 reload stays idempotent.
+    (defun my/go-ts-mode-setup ()
+      "Configure new Go buffers."
+      ;; Truncate lines.
+      (setq truncate-lines t)
+      ;; Golang uses tabs, not spaces.
+      (setq-default indent-tabs-mode t)
+      ;; Prevent lsp-mode from making edits before saving.
+      (setq-local lsp-before-save-edits nil)
+      ;; Let's organize imports and format on save.
+      (add-hook 'before-save-hook 'lsp-organize-imports t t)
+      (add-hook 'before-save-hook 'lsp-format-buffer t t)
+      ;; Increase the fontlock level.
+      (setq-local treesit-font-lock-level 4)
+      (treesit-font-lock-recompute-features))
+    (add-hook 'go-ts-mode-hook #'my/go-ts-mode-setup)))
 
 ;;
 ;; go-mod-ts-mode
@@ -2126,16 +2128,18 @@ Themes override this to match their palette.")
   (progn
     ;; Fill chat messages based on window width.
     (make-variable-buffer-local 'erc-fill-column)
-    (add-hook
-     'window-configuration-change-hook
-     (lambda ()
-       (save-excursion
-         (walk-windows
-          (lambda (w)
-            (let ((buffer (window-buffer w)))
-              (set-buffer buffer)
-              (when (eq major-mode 'erc-mode)
-                (setq erc-fill-column (- (window-width w) 2)))))))))
+    ;; Named so F12 reload doesn't stack copies on this global hook. (The inner
+    ;; lambda is a walk-windows callback, not a hook, so it never stacked.)
+    (defun my/erc-update-fill-column ()
+      "Set `erc-fill-column' from each ERC window's width."
+      (save-excursion
+        (walk-windows
+         (lambda (w)
+           (let ((buffer (window-buffer w)))
+             (set-buffer buffer)
+             (when (eq major-mode 'erc-mode)
+               (setq erc-fill-column (- (window-width w) 2))))))))
+    (add-hook 'window-configuration-change-hook #'my/erc-update-fill-column)
 
     ;; Let's ignore the notice prefix.
     (setq erc-notice-prefix nil)
