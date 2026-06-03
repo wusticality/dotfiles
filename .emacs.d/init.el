@@ -1861,6 +1861,16 @@ Styled by the wusticality theme.")
   (define-key vterm-mode-map (kbd "C-c t") #'vterm-copy-mode)
   (define-key vterm-copy-mode-map (kbd "C-c t") #'vterm-copy-mode)
 
+  ;; Create a new named vterm. vterm treats a string arg as the new buffer
+  ;; name (via generate-new-buffer, so a repeated name gets <2> etc.).
+  ;; C-c ; echoes the tmux terminal prefix C-;: plain bytes (TTY-safe) and
+  ;; reachable inside vterm too, where C-c is an Emacs-handled exception.
+  (defun my/vterm-new (name)
+    "Create a new vterm buffer named NAME."
+    (interactive "snew vterm: ")
+    (vterm name))
+  (global-set-key (kbd "C-c ;") #'my/vterm-new)
+
   ;; Per-buffer vterm display setup for full-screen TUIs like Claude Code.
   ;; Named (not a lambda) so reloading init.el via F12 redefines it in place
   ;; instead of stacking another copy on vterm-mode-hook.
