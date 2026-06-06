@@ -1834,15 +1834,18 @@ Styled by the wusticality theme.")
   (vterm-color-cyan    ((t (:foreground "#2bbac5" :background "#2bbac5"))))
   (vterm-color-white   ((t (:foreground "#abb2bf" :background "#abb2bf"))))
   :config
-  ;; Shift+Enter: Alacritty sends ESC CR (Meta+Return) for Shift+Return, which
-  ;; arrives here decoded as M-RET. Without a vterm binding it falls through to
-  ;; the global M-RET (lsp-execute-code-action) instead of reaching the child.
-  ;; Forward the raw ESC CR to the PTY so TUIs like Claude Code see Meta+Return
-  ;; and insert a newline. Mirrors vterm-send-return's process-send-string.
-  (define-key vterm-mode-map (kbd "M-RET")
-    (lambda ()
-      (interactive)
-      (process-send-string vterm--process "\e\r")))
+  ;; Shift+Enter inserts a newline in TUIs like Claude Code. The key reaches
+  ;; Emacs differently depending on the frame: in terminal Emacs Alacritty sends
+  ;; ESC CR for Shift+Return, decoded as M-RET; in GUI Emacs the key arrives
+  ;; directly as <S-return>. Bind both to forward the raw ESC CR (Meta+Return)
+  ;; to the child. (Without this, M-RET would hit the global lsp-execute-code-
+  ;; action binding instead of reaching the terminal.)
+  (defun wusticality-vterm-meta-return ()
+    "Send Meta+Return (ESC CR) to the vterm child - a newline in TUIs like Claude."
+    (interactive)
+    (process-send-string vterm--process "\e\r"))
+  (define-key vterm-mode-map (kbd "M-RET") #'wusticality-vterm-meta-return)
+  (define-key vterm-mode-map (kbd "<S-return>") #'wusticality-vterm-meta-return)
 
   ;; Interrupt TUIs with C-g. In terminal Emacs a lone Esc is the Meta prefix
   ;; (same byte), so it never reaches the child - you can't ESC out of Claude
