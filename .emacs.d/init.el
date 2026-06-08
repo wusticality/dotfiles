@@ -1893,6 +1893,16 @@ Styled by the wusticality theme.")
     (face-remap-add-relative 'nobreak-hyphen :inherit 'default))
   (add-hook 'vterm-mode-hook #'wusticality-vterm--setup)
 
+  ;; Show hl-line only while in vterm-copy-mode (VIEW), to locate point. Normal
+  ;; vterm keeps it off (see wusticality-vterm--setup) to avoid per-keystroke
+  ;; flicker; in copy-mode the output is frozen and you navigate like a buffer,
+  ;; so it's safe and useful. This buffer-local hl-line-mode is independent of
+  ;; the global-hl-line-mode we disable above.
+  (defun wusticality-vterm--copy-mode-hl-line ()
+    "Enable hl-line in vterm-copy-mode, disable it otherwise."
+    (hl-line-mode (if (bound-and-true-p vterm-copy-mode) 1 -1)))
+  (add-hook 'vterm-copy-mode-hook #'wusticality-vterm--copy-mode-hl-line)
+
   ;; Let the selected-window dimming reach vterm. vterm bakes the default
   ;; background into each cell as an explicit color (vterm--get-color returns
   ;; (face-background 'default) for index -1), which ignores the per-window
