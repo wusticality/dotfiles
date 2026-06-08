@@ -1146,7 +1146,21 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
     (setq lsp-semantic-tokens-enable t)
 
     ;; Don't enable code lens.
-    (setq lsp-lens-enable nil)))
+    (setq lsp-lens-enable nil))
+  :config
+  (progn
+    ;; Clear lsp symbol highlights when entering the minibuffer, so swiper /
+    ;; counsel / isearch matches aren't muddled by the same purple. lsp's idle
+    ;; hook can't re-add them during a minibuffer session (it requires the
+    ;; source buffer to be current - see lsp--on-idle), so this one-shot clear
+    ;; holds for the whole search; lsp re-highlights on idle once the session
+    ;; ends (completed or cancelled). Built-in remove-overlays, no advice.
+    (defun my/lsp-clear-highlights-for-search ()
+      "Clear lsp symbol highlights in the buffer the minibuffer was entered from."
+      (when-let ((buf (window-buffer (minibuffer-selected-window))))
+        (with-current-buffer buf
+          (remove-overlays nil nil 'lsp-highlight t))))
+    (add-hook 'minibuffer-setup-hook #'my/lsp-clear-highlights-for-search)))
 
 ;;
 ;; jump hydra

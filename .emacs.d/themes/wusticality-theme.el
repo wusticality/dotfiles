@@ -59,7 +59,7 @@
  `(hl-line ((t (:background ,wusticality-hline))))
  `(show-paren-match ((t (:background ,wusticality-dark-blue))))
  `(show-paren-mismatch ((t (:background ,wusticality-red))))
- `(lazy-highlight ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
+ `(lazy-highlight ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
  `(isearch ((t (:background ,wusticality-orange :foreground ,wusticality-hline :weight bold))))
 
  ;;
@@ -150,9 +150,9 @@
  ;; ivy-highlight-face
  ;; ivy-match-required-face
  ;; ivy-minibuffer-match-face-1
- `(ivy-minibuffer-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
- `(ivy-minibuffer-match-face-3 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
- `(ivy-minibuffer-match-face-4 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
+ `(ivy-minibuffer-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
+ `(ivy-minibuffer-match-face-3 ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
+ `(ivy-minibuffer-match-face-4 ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
  ;; ivy-minibuffer-match-highlight
  ;; ivy-modified-buffer
  ;; ivy-modified-outside-buffer
@@ -172,8 +172,8 @@
  `(swiper-match-face-2 ((t (:background ,wusticality-orange :foreground ,wusticality-hline :weight bold))))
  ;; swiper-match-face-3
  ;; swiper-match-face-4
- `(swiper-background-match-face-1 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
- `(swiper-background-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-slate))))
+ `(swiper-background-match-face-1 ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
+ `(swiper-background-match-face-2 ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
  ;; swiper-background-match-face-3
  ;; swiper-background-match-face-4
  `(swiper-line-face ((t (:background ,wusticality-hline :extend t))))
@@ -208,9 +208,9 @@
  ;; lsp-dired-path-hint-face
  ;; lsp-dired-path-info-face
  ;; lsp-dired-path-warning-face
- ;; lsp-face-highlight-read
- ;; lsp-face-highlight-textual
- ;; lsp-face-highlight-write
+ `(lsp-face-highlight-read ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
+ `(lsp-face-highlight-textual ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
+ `(lsp-face-highlight-write ((t (:background ,wusticality-purple :foreground ,wusticality-slate :weight bold))))
  ;; lsp-face-rename
  `(lsp-face-semhl-class ((t (:inherit font-lock-type-face))))
  `(lsp-face-semhl-comment ((t (:inherit font-lock-comment-face))))
