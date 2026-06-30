@@ -15,5 +15,12 @@ alias nomad-prod='kstack -c prod.dc3a nomad -- ui -authenticate'
 # (dotfiles → github.com) and tries to auth against github.com.
 export GITLAB_HOST=kakarot.chorse.space
 
+# MariaDB (growth) aliases.
+alias mariadb-dev-ro='tsh db connect mariadb-growth-0-ro-dev --db-user=teleport_dba_proxies_db_eng_ro_growth_mtls_v0'
+alias mariadb-dev-rw='tsh db connect mariadb-growth-0-rw-dev --db-user=teleport_dba_proxies_db_eng_rw_growth_mtls_v0'
+alias mariadb-uat-ro='tsh db connect mariadb-growth-0-ro-uat --db-user=teleport_dba_proxies_db_eng_ro_growth_mtls_v0'
+alias mariadb-uat-rw='tsh db connect mariadb-growth-0-rw-uat --db-user=teleport_dba_proxies_db_eng_rw_growth_mtls_v0'
+alias mariadb-prod-ro='tsh db connect mariadb-growth-0-ro-prod --db-user=teleport_dba_proxies_db_eng_ro_growth_mtls_v0'
+
 # Abyss username.
 export ABYSS_USERNAME=kevin.depue
