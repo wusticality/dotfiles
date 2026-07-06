@@ -1848,6 +1848,17 @@ Styled by the wusticality theme.")
   (vterm-color-cyan    ((t (:foreground "#2bbac5" :background "#2bbac5"))))
   (vterm-color-white   ((t (:foreground "#abb2bf" :background "#abb2bf"))))
   :config
+  ;; Claude Code's fullscreen renderer sends incremental frame diffs and
+  ;; relies on DEC mode 2026 (synchronized output), which libvterm lacks -
+  ;; without it, mid-frame snapshots show as transient tearing (<= one
+  ;; vterm-timer-delay). The env var below forces a full-screen repaint every
+  ;; frame, which fixes tearing but costs a whole-canvas vterm rewrite per
+  ;; KEYSTROKE (heavy typing lag, modeline position flapping). The historical
+  ;; *persistent* corruption came from vterm's resize bookkeeping bugs, fixed
+  ;; upstream (module rebuilt 2026-07-06) - so diffs + transient flicker
+  ;; should be acceptable. Re-enable only if persistent corruption returns:
+  ;; (add-to-list 'vterm-environment "CLAUDE_CODE_ALT_SCREEN_FULL_REPAINT=1")
+
   ;; Shift+Enter inserts a newline in TUIs like Claude Code. The key reaches
   ;; Emacs differently depending on the frame: in terminal Emacs Alacritty sends
   ;; ESC CR for Shift+Return, decoded as M-RET; in GUI Emacs the key arrives
