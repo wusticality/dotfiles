@@ -1878,6 +1878,33 @@ Styled by the wusticality theme.")
   (define-key vterm-mode-map (kbd "C-c t") #'vterm-copy-mode)
   (define-key vterm-copy-mode-map (kbd "C-c t") #'vterm-copy-mode)
 
+  ;; Emacs-style paging inside fullscreen TUIs (Claude Code). The TUI owns the
+  ;; viewport, so "scrolling" means sending it keys: PgUp/PgDn page (and pause
+  ;; Claude's auto-follow), Ctrl+Home/Ctrl+End jump to start/end (End also
+  ;; resumes auto-follow). Map the familiar Emacs motions onto those sends.
+  ;; Costs the raw C-v / M-v / M-< / M-> bytes to shell programs (rarely
+  ;; missed; readline's M-< / M-> history jumps are the casualty).
+  (defun wusticality-vterm-page-down ()
+    "Send PgDn to the terminal (page forward in fullscreen TUIs)."
+    (interactive)
+    (vterm-send-key "<next>"))
+  (defun wusticality-vterm-page-up ()
+    "Send PgUp to the terminal (page back; pauses TUI auto-follow)."
+    (interactive)
+    (vterm-send-key "<prior>"))
+  (defun wusticality-vterm-goto-top ()
+    "Send Ctrl+Home to the terminal (jump to conversation start)."
+    (interactive)
+    (vterm-send-key "<home>" nil nil t))
+  (defun wusticality-vterm-goto-bottom ()
+    "Send Ctrl+End to the terminal (jump to bottom, resume auto-follow)."
+    (interactive)
+    (vterm-send-key "<end>" nil nil t))
+  (define-key vterm-mode-map (kbd "C-v") #'wusticality-vterm-page-down)
+  (define-key vterm-mode-map (kbd "M-v") #'wusticality-vterm-page-up)
+  (define-key vterm-mode-map (kbd "M-<") #'wusticality-vterm-goto-top)
+  (define-key vterm-mode-map (kbd "M->") #'wusticality-vterm-goto-bottom)
+
   ;; Create a new named vterm. vterm treats a string arg as the new buffer
   ;; name (via generate-new-buffer, so a repeated name gets <2> etc.).
   ;; C-c ; echoes the tmux terminal prefix C-;: plain bytes (TTY-safe) and
