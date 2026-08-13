@@ -23,6 +23,9 @@ lg = log --graph --color --pretty=format:'%C(bold red)%h%C(reset) %s (%C(green)%
 editor = emacs
 autocrlf = input
 
+[diff]
+context = 6
+
 [push]
 default = simple
 
