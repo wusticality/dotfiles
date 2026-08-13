@@ -85,6 +85,9 @@
  `(wusticality-modeline-git-icon ((t (:foreground ,wusticality-green :weight bold))))
  `(wusticality-modeline-git-branch ((t (:foreground ,wusticality-green :weight bold))))
  `(wusticality-modeline-view-mode ((t (:foreground ,wusticality-yellow :weight bold))))
+ `(wusticality-modeline-lsp-ready ((t (:foreground ,wusticality-orange :weight bold))))
+ `(wusticality-modeline-lsp-busy ((t (:foreground ,wusticality-orange :weight bold))))
+ `(wusticality-modeline-lsp-error ((t (:foreground ,wusticality-orange :weight bold))))
 
  ;;
  ;; header-line

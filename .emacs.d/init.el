@@ -491,6 +491,29 @@
     (defface wusticality-modeline-git-icon    '((t)) "Git branch icon.")
     (defface wusticality-modeline-git-branch  '((t)) "Git branch name.")
     (defface wusticality-modeline-view-mode   '((t)) "Vterm copy-mode (VIEW) indicator.")
+    (defface wusticality-modeline-lsp-ready   '((t)) "LSP server initialized and idle.")
+    (defface wusticality-modeline-lsp-busy    '((t)) "LSP server starting or working.")
+    (defface wusticality-modeline-lsp-error   '((t)) "LSP server dead or detached.")
+
+    (defun wusticality-modeline-lsp ()
+      "Return a (TEXT . FACE) LSP status pair, or nil when lsp-mode is off.
+Distinguishes: no workspace attached (server dead), waiting on the
+initialize handshake, busy with server-reported work (e.g. indexing),
+and initialized + idle."
+      (when (bound-and-true-p lsp-mode)
+        (let* ((workspaces (lsp-workspaces))
+               (progress (and workspaces (s-trim (or (lsp--progress-status) "")))))
+          (cond
+           ((null workspaces)
+            (cons "off" 'wusticality-modeline-lsp-error))
+           ((seq-some (lambda (workspace)
+                        (eq (lsp--workspace-status workspace) 'starting))
+                      workspaces)
+            (cons "loading" 'wusticality-modeline-lsp-busy))
+           ((not (s-blank? progress))
+            (cons (s-truncate 32 progress) 'wusticality-modeline-lsp-busy))
+           (t
+            (cons "ready" 'wusticality-modeline-lsp-ready))))))
 
     (defun wusticality-modeline-icon (icon-fn icon face &optional height)
       "Return a propertized nerd-icons ICON via ICON-FN inheriting FACE.
@@ -539,8 +562,17 @@ Optional HEIGHT defaults to 0.85."
                                             "nf-dev-git_branch"
                                             'wusticality-modeline-git-icon)
                  " "
-                 (propertize (car (vc-git-branches))
+                 (propertize (concat (car (vc-git-branches)) " ")
                              'face 'wusticality-modeline-git-branch))))
+
+       ;; LSP status, shown only in lsp-managed buffers.
+       (:eval (when-let ((state (wusticality-modeline-lsp)))
+                (concat
+                 (wusticality-modeline-icon #'nerd-icons-octicon
+                                            "nf-oct-server"
+                                            (cdr state))
+                 " "
+                 (propertize (concat (car state) " ") 'face (cdr state)))))
 
        ;; vterm copy-mode indicator, shown only while active.
        (:eval (when (bound-and-true-p vterm-copy-mode)
