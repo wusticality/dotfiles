@@ -29,6 +29,9 @@ alias cp="cp -i"
 alias mv="mv -i"
 
 # use exa instead of ls
+# eza asks for bold bright-black (dim gray) punctuation -- the permission
+# dashes and symlink arrows. Override to the default foreground instead.
+export EZA_COLORS="xx=0"
 alias ls="eza --color=always"
 alias ll="eza --color=always -l"
 alias la="eza --color=always -la"
