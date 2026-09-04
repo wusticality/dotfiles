@@ -278,7 +278,89 @@
 
     ;; Disable GUI tooltip popups; help-echo still
     ;; renders in the echo area, matching TTY behavior.
-    (tooltip-mode -1)))
+    (tooltip-mode -1)
+
+    ;; y-or-n-p leaves "Kill frame? (y or n) n" sitting in the echo area
+    ;; after you answer. Clear it so the minibuffer goes back to empty.
+    (defun my/confirm (prompt)
+      "Ask PROMPT with `y-or-n-p', then clear the echo area."
+      (prog1 (y-or-n-p prompt)
+        (message nil)))
+
+    ;; C-x C-c is one slip from C-x C-s, so confirm it - once. What it
+    ;; destroys varies: on a client frame with others open it closes just
+    ;; that frame, but a last-frame-standing nowait client (and any
+    ;; standalone emacs -nw) falls through to save-buffers-kill-emacs.
+    ;; That inner call would consult `confirm-kill-emacs' and ask a
+    ;; second time, so bind it off for the duration and ask here only.
+    (defun my/kill-terminal-quits-p ()
+      "Non-nil if `save-buffers-kill-terminal' would exit Emacs outright."
+      (let ((client (frame-parameter nil 'client)))
+        (or (null client)
+            (and (eq client 'nowait) (null (cdr (frame-list)))))))
+
+    (defun my/confirm-kill-terminal (orig &rest args)
+      "Confirm once, then apply ORIG to ARGS without a second prompt.
+On a client frame let ORIG run, since it knows how to detach the client.
+On a standalone Emacs defer to `my/close-frame-or-quit', so C-x C-c
+closes one of several frames instead of taking the whole process down -
+matching what Cmd-Q does."
+      (if (frame-parameter nil 'client)
+          (when (my/confirm "Kill frame? ")
+            (let ((confirm-kill-emacs nil))
+              (apply orig args)))
+        (my/close-frame-or-quit)))
+
+    (advice-add 'save-buffers-kill-terminal :around
+                #'my/confirm-kill-terminal)
+
+    ;; Cmd-Q would otherwise run save-buffers-kill-emacs and take the
+    ;; daemon with it - every frame, every buffer, the whole session. A
+    ;; GUI frame has no client process of its own (emacsclient -n exits
+    ;; immediately), so the window belongs to the daemon and quitting it
+    ;; is all Cmd-Q can mean by default. Rebind it to the macOS meaning
+    ;; instead: close this window, leave the session running. Quitting
+    ;; for real is M-x kill-emacs, or my/quit-emacs to be asked first.
+    (defun my/quit-emacs ()
+      "Ask, then quit Emacs and any daemon behind it."
+      (interactive)
+      (when (my/confirm "Kill Emacs? ")
+        (save-buffers-kill-emacs)))
+
+    ;; Cmd-Q and Cmd-W both mean "close this window" on macOS, but
+    ;; delete-frame errors on the last frame ("Attempt to delete the sole
+    ;; visible or iconified frame"), which is what a standalone GUI Emacs
+    ;; always is. Fall through to quitting there. Under a daemon the
+    ;; hidden F1 frame keeps frame-list non-singular, so closing the last
+    ;; GUI frame still just closes it and the session survives.
+    (defun my/close-frame-or-quit ()
+      "Close this frame, or quit Emacs when it is the only one."
+      (interactive)
+      (if (cdr (frame-list))
+          (when (my/confirm "Kill frame? ")
+            (delete-frame))
+        (when (my/confirm "Kill Emacs? ")
+          (save-buffers-kill-emacs))))
+
+    (when is-mac
+      (global-set-key (kbd "s-q") #'my/close-frame-or-quit)
+      (global-set-key (kbd "s-w") #'my/close-frame-or-quit))
+
+    ;; Cmd-W, C-x 5 0 and the window close button all run delete-frame,
+    ;; which C-x C-c's guard never sees. Ask there too - but only when
+    ;; the user actually invoked it: delete-frame-functions has real
+    ;; subscribers (company-box, server, frame-local) and packages delete
+    ;; frames programmatically, which must not be interrupted. Frames
+    ;; deleted as part of save-buffers-kill-terminal carry that as
+    ;; `this-command', so they do not double-prompt either.
+    (defun my/confirm-delete-frame (orig &rest args)
+      "Confirm interactive frame deletion before applying ORIG to ARGS."
+      (if (and (memq this-command '(delete-frame handle-delete-frame))
+               (not (my/confirm "Kill frame? ")))
+          (message "Cancelled.")
+        (apply orig args)))
+
+    (advice-add 'delete-frame :around #'my/confirm-delete-frame)))
 
 ;;
 ;; global keybindings
@@ -452,18 +534,6 @@
     (when is-gnu
       (custom-set-faces
        `(default ((t (:height 116 :width normal :family "BlexMono Nerd Font Mono"))))))))
-
-;;
-;; paths
-;;
-
-(use-package exec-path-from-shell
-  :demand t
-  :if (display-graphic-p)
-  :config
-  (progn
-    ;; Load our path from ~/.bash_profile.
-    (exec-path-from-shell-initialize)))
 
 ;;
 ;; nerd-icons
