@@ -11,7 +11,10 @@ kd_add_path_tail "$HOME/.local/bin"
 shopt -s checkwinsize
 
 # Editor.
-export EDITOR='emacsclient -t -a ""'
+# -a gives a fallback when no server is running. A NON-empty value just
+# runs that command; only an EMPTY -a "" means "start a daemon", which
+# is what once stacked up nine of them. So this never creates a daemon.
+export EDITOR='emacsclient -t -a "emacs -nw"'
 
 # History settings.
 export HISTFILE=$HOME/.history
