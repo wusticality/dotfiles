@@ -26,8 +26,20 @@ _kd_emacs_tty() {
     "$@"
 }
 
-# ee = standalone TTY (no daemon), ec = TTY client (spawns daemon
-# if needed), eg = GUI client.
+# ee / ec are the terminal pair - a standalone Emacs and a client frame
+# on the server. gee / gec are the same two in the GUI. es starts the
+# server and is the only alias here that can create one: none of these
+# carry emacsclient's -a "", which turns an unreachable socket into a
+# brand new daemon rather than an error, and is how nine of them once
+# piled up.
+#
+# The GUI pair skips _kd_emacs_tty, which exists to set TERM and
+# TERMINFO_DIRS for 24-bit colour in a TTY that a GUI frame never reads.
+# gec also replaces the bundled Emacs Client .app, whose compiled
+# AppleScript hardcodes -a "" (and a stale PATH); that bundle stays
+# installed for Finder / Dock / org-protocol.
 alias ee='_kd_emacs_tty emacs -nw'
-alias ec='_kd_emacs_tty emacsclient -t -a ""'
-alias eg='open -a /opt/homebrew/opt/emacs-plus/Emacs\ Client.app'
+alias ec='_kd_emacs_tty emacsclient -t'
+alias gee='emacs'
+alias gec='emacsclient -c -n'
+alias es='_kd_emacs_tty emacs --daemon'
