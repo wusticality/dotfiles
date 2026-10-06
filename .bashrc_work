@@ -24,3 +24,11 @@ alias mariadb-prod-ro='tsh db connect mariadb-growth-0-ro-prod --db-user=telepor
 
 # Abyss username.
 export ABYSS_USERNAME=kevin.depue
+
+# BEGIN SONATYPE MANAGED
+# Managed by Sonatype endpoint sync: load Nexus env-var tool settings.
+for __sonatype_env in "$HOME/.config/sonatype/hf.env" "$HOME/.config/sonatype/python.env"; do
+  [ -r "$__sonatype_env" ] && . "$__sonatype_env"
+done
+unset __sonatype_env
+# END SONATYPE MANAGED
