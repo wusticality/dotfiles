@@ -21,4 +21,6 @@ allowed-tools: Bash Read
    `--title "$(cat <<'EOF' ... EOF)"` and `--description "$(cat <<'EOF' ... EOF)"`. Because the
    heredocs are quoted, do not escape backticks or `$` inside — backslashes come through
    literally. The `--yes` flag skips the interactive confirmation.
-5. Print the MR URL as the final line so the terminal renders it as a clickable link.
+5. Copy the MR URL to the clipboard with `printf %s <url> | pbcopy`.
+6. Print the MR URL as the final line so the terminal renders it as a clickable link, and note
+   that it was copied to the clipboard.
