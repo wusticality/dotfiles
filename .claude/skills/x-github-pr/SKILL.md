@@ -17,4 +17,6 @@ allowed-tools: Bash Read
    multi-line titles or bodies inline, use a quoted heredoc: `"$(cat <<'EOF' ... EOF)"`. Because
    the heredoc is quoted, do not escape backticks or `$` inside — backslashes come through
    literally.
-5. Print the PR URL as the final line so the terminal renders it as a clickable link.
+5. Copy the PR URL to the clipboard with `printf %s <url> | pbcopy`.
+6. Print the PR URL as the final line so the terminal renders it as a clickable link, and note
+   that it was copied to the clipboard.
