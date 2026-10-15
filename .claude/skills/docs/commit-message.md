@@ -27,8 +27,11 @@ short; length must be earned.
 
 ## Structure
 
-- **Subject**: title-style headline, ≤ 68 chars, capitalized, no trailing punctuation. Reads as a
-  title, not a sentence (`Add git commit and PR workflow skills`, not `This commit adds...`).
+- **Subject**: headline, ≤ 68 chars, no trailing punctuation. Reads as a title, not a sentence
+  (`Add git commit and PR workflow skills`, not `This commit adds...`).
+- Use sentence case: capitalize only the first word, plus proper nouns and acronyms
+  (`Post consumer trades from executed quotes`, not `Post Consumer Trades From Executed Quotes`).
+  Identifiers keep their own casing.
 - **Body** (only if it adds something the subject can't): blank line, then state what it does -
   `This commit [does X].` for a commit, `This MR [does X].` for an MR - plus the *why* if it isn't
   obvious. Keep it tight.
