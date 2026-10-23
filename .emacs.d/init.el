@@ -1244,6 +1244,9 @@ With C-u, pick from known projects. With C-u C-u, pick a directory."
     ;; Disable lsp logging.
     (setq lsp-log-io nil)
 
+    ;; Keep progress messages without the hourglass glyph.
+    (setq lsp-progress-prefix "")
+
     ;; We use our own header, so don't use lsp's.
     (setq lsp-headerline-breadcrumb-enable nil)
 
