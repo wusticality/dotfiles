@@ -4,10 +4,7 @@
 kd_add_path_tail "/opt/homebrew/bin"
 kd_add_path_tail "$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
-# Make `emacs` connect to the daemon on the terminal, and `gemacs`
-# spawn the gui version of emacs, also connecting to the daemon.
-#
-# `emacs` overrides TERM to a custom terminfo entry (tmux-emacs when
+# Terminal Emacs uses a custom terminfo entry (tmux-emacs when
 # inside tmux, xterm-emacs otherwise) that extends the corresponding
 # 256-color base with `setf24`/`setb24` capabilities. Emacs consults
 # terminfo strictly: without those it falls back to ANSI 16-color
@@ -26,20 +23,17 @@ _kd_emacs_tty() {
     "$@"
 }
 
-# ee / ec are the terminal pair - a standalone Emacs and a client frame
-# on the server. gee / gec are the same two in the GUI. es starts the
-# server and is the only alias here that can create one: none of these
-# carry emacsclient's -a "", which turns an unreachable socket into a
-# brand new daemon rather than an error, and is how nine of them once
-# piled up.
-#
-# The GUI pair skips _kd_emacs_tty, which exists to set TERM and
-# TERMINFO_DIRS for 24-bit colour in a TTY that a GUI frame never reads.
-# gec also replaces the bundled Emacs Client .app, whose compiled
-# AppleScript hardcodes -a "" (and a stale PATH); that bundle stays
-# installed for Finder / Dock / org-protocol.
-alias ee='_kd_emacs_tty emacs -nw'
-alias ec='_kd_emacs_tty emacsclient -t'
-alias gee='emacs'
-alias gec='emacsclient -c -n'
+# Start the server manually; clients never start one implicitly.
 alias es='_kd_emacs_tty emacs --daemon'
+
+# Open a terminal frame on the existing server.
+alias et='_kd_emacs_tty emacsclient -t'
+
+# Open a GUI frame on the existing server without waiting.
+alias eg='emacsclient -c -n'
+
+# Start a separate terminal Emacs.
+alias etn='_kd_emacs_tty emacs -nw'
+
+# Start a separate GUI Emacs.
+alias egn='emacs'
