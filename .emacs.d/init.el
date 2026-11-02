@@ -2084,18 +2084,38 @@ Styled by the wusticality theme.")
 ;;
 
 (use-package agent-shell
-  :disabled t
   :demand t
   :init
   (progn
+    ;; Use a compact text header.
+    (setq agent-shell-header-style 'text)
+
+    ;; Hide the welcome banner.
+    (setq agent-shell-show-welcome-message nil)
+
+    ;; Don't automatically insert context.
+    (setq agent-shell-context-sources nil)
+
+    ;; Syntax highlight code blocks.
     (setq agent-shell-highlight-blocks t)
-    (setq agent-shell-thought-process-icon (all-the-icons-fileicon "brain"))
-    ;; (setq agent-shell-permission-icon (all-the-icons-material "security"))
-    )
+
+    ;; Use a brain icon for thoughts.
+    (setq agent-shell-thought-process-icon (nerd-icons-mdicon "nf-md-brain")))
   :config
   (progn
-	;; Syntax highlight code correctly in agent-shell chat windows.
-	;; Since we use tree-sitter, we have to provide these mappings.
+    ;; Startup output is present when agent-shell runs its mode hook.
+    (defun my/agent-shell-trim-leading-blank-lines ()
+      "Remove blank lines before the first agent-shell section."
+      (let ((inhibit-read-only t))
+        (save-excursion
+          (goto-char (point-min))
+          (let ((start (point)))
+            (skip-chars-forward "\n")
+            (delete-region start (point))))))
+    (add-hook 'agent-shell-mode-hook #'my/agent-shell-trim-leading-blank-lines)
+
+    ;; Use tree-sitter modes for fenced code blocks. The renderer appends
+    ;; -mode to these prefixes and does not use major-mode-remap-alist.
     (dolist (mapping '(("rust" . "rust-ts")
                        ("toml" . "toml-ts")
                        ("go" . "go-ts")
@@ -2114,7 +2134,7 @@ Styled by the wusticality theme.")
                        ("csharp" . "csharp-ts")
                        ("python" . "python-ts")
                        ("java" . "java-ts")))
-      (add-to-list 'markdown-overlays-language-mapping mapping))))
+      (add-to-list 'agent-shell-markdown-language-mapping mapping))))
 
 ;;
 ;; rust-ts-mode
